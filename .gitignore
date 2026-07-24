@@ -1,0 +1,34 @@
+# Meta de fábrica — nunca se publica (ver portfolio-pack.md §0)
+.claude/
+PORTFOLIO.md
+INTERVIEW-PREP.md
+LOGO-CONCEPTS.md
+TASKS.md
+MANUAL-PRUEBAS.md
+commit-plan.md
+commit-plan.ps1
+commit-plan.sh
+build-history.*
+memory/
+*.tsbuildinfo
+
+# .NET
+apps/api/**/bin/
+apps/api/**/obj/
+*.user
+
+# Angular / Node
+apps/web/node_modules/
+apps/web/.angular/
+apps/web/dist/
+
+# Env / secrets
+.env
+.env.local
+**/appsettings.Development.json
+**/serviceAccountKey.json
+
+# OS / editor
+.vs/
+.vscode/
+.DS_Store
