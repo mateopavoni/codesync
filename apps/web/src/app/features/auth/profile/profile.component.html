@@ -1,0 +1,43 @@
+<div class="profile-page">
+  <div class="profile-header">
+    <h1>Perfil</h1>
+    <a routerLink="/dashboard" class="btn-secondary">Volver al dashboard</a>
+  </div>
+
+  @if (loading()) {
+    <app-loading-spinner message="Cargando perfil..." />
+  } @else if (error()) {
+    <app-error-message [message]="error()!" [retryable]="true" (retry)="retryLoad()" />
+  } @else if (profile()) {
+    <div class="profile-card">
+      <div class="avatar-section">
+        @if (profile()!.photoURL) {
+          <img [src]="profile()!.photoURL" [alt]="profile()!.displayName ?? 'Avatar'" class="avatar" />
+        } @else {
+          <div class="avatar-placeholder" aria-hidden="true">
+            {{ (profile()!.displayName ?? profile()!.email ?? 'U')[0].toUpperCase() }}
+          </div>
+        }
+        <div class="user-info">
+          <h2>{{ profile()!.displayName ?? 'Sin nombre' }}</h2>
+          <p class="user-email">{{ profile()!.email }}</p>
+        </div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-item">
+          <span class="stat-value">{{ profile()!.level }}</span>
+          <span class="stat-label">Nivel</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-value">{{ profile()!.completedChallengesCount }}</span>
+          <span class="stat-label">Desafíos completados</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-value">{{ profile()!.createdAt | slice:0:10 }}</span>
+          <span class="stat-label">Miembro desde</span>
+        </div>
+      </div>
+    </div>
+  }
+</div>

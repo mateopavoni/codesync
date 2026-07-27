@@ -1,0 +1,181 @@
+/* ==========================================================================
+   Login — Auth page (sistema de diseño CodeSync / Stitch)
+   ========================================================================== */
+
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--cs-sp-lg);
+  background: var(--cs-bg);
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 420px;
+  background: var(--cs-surface-low);
+  border: 1px solid var(--cs-outline-var);
+  border-radius: var(--cs-radius-lg);
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--cs-sp-lg);
+}
+
+.auth-header { text-align: center; }
+
+.brand {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--cs-primary);
+  margin: 0 0 6px;
+  letter-spacing: -0.3px;
+}
+
+.subtitle {
+  font-size: var(--cs-text-body-sm);
+  color: var(--cs-on-surface-var);
+  margin: 0;
+}
+
+/* Formulario */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--cs-sp-md);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field label {
+  font-size: var(--cs-text-body-sm);
+  font-weight: 500;
+  color: var(--cs-on-surface);
+}
+
+.field input {
+  padding: 10px var(--cs-sp-md);
+  background: var(--cs-surface-container);
+  border: 1px solid var(--cs-outline-var);
+  border-radius: var(--cs-radius-lg);
+  color: var(--cs-on-surface);
+  font-size: 0.9375rem;
+  font-family: var(--cs-font-ui);
+  transition: border-color 0.15s, box-shadow 0.15s;
+  outline: none;
+}
+
+.field input:focus {
+  border-color: var(--cs-primary);
+  box-shadow: 0 0 0 2px rgba(173, 198, 255, 0.15);
+}
+
+.field input.invalid { border-color: var(--cs-error); }
+.field input.invalid:focus { box-shadow: 0 0 0 2px rgba(255, 180, 171, 0.15); }
+
+.field input::placeholder { color: var(--cs-outline); }
+
+.field-error {
+  font-size: var(--cs-text-label);
+  color: var(--cs-error);
+}
+
+/* Botón principal */
+.btn-primary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 44px;
+  padding: 0 var(--cs-sp-md);
+  background: var(--cs-primary);
+  color: var(--cs-on-primary);
+  border: none;
+  border-radius: var(--cs-radius-lg);
+  font-size: var(--cs-text-body);
+  font-weight: 600;
+  font-family: var(--cs-font-ui);
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.btn-primary:hover:not(:disabled) { opacity: 0.88; }
+.btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* Spinner dentro del botón */
+.btn-spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(0, 46, 106, 0.3);
+  border-top-color: var(--cs-on-primary);
+  border-radius: 50%;
+  animation: spin 0.75s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Divider */
+.divider {
+  display: flex;
+  align-items: center;
+  gap: var(--cs-sp-sm);
+  color: var(--cs-on-surface-var);
+  font-size: var(--cs-text-label);
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--cs-outline-var);
+}
+
+/* Botones OAuth */
+.oauth-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--cs-sp-sm);
+}
+
+.btn-oauth {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--cs-sp-sm);
+  padding: 10px;
+  background: var(--cs-surface-container);
+  border: 1px solid var(--cs-outline-var);
+  border-radius: var(--cs-radius-lg);
+  color: var(--cs-on-surface);
+  font-size: var(--cs-text-body-sm);
+  font-weight: 500;
+  font-family: var(--cs-font-ui);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.btn-oauth:hover:not(:disabled) {
+  border-color: var(--cs-primary);
+  background: rgba(173, 198, 255, 0.08);
+}
+
+.btn-oauth:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* Link */
+.auth-link {
+  text-align: center;
+  font-size: var(--cs-text-body-sm);
+  color: var(--cs-on-surface-var);
+  margin: 0;
+}
+
+.auth-link a {
+  color: var(--cs-primary);
+  text-decoration: none;
+}
+.auth-link a:hover { text-decoration: underline; }

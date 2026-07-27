@@ -1,0 +1,140 @@
+/* ==========================================================================
+   Profile — página de perfil de usuario (CodeSync / Stitch)
+   ========================================================================== */
+
+.profile-page {
+  padding: var(--cs-sp-lg);
+  max-width: 720px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--cs-sp-lg);
+}
+
+.profile-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--cs-sp-md);
+  flex-wrap: wrap;
+}
+
+.profile-header h1 {
+  font-size: var(--cs-text-display);
+  font-weight: 700;
+  letter-spacing: var(--cs-ls-display);
+  color: var(--cs-on-surface);
+  margin: 0;
+}
+
+.btn-secondary {
+  padding: var(--cs-sp-sm) var(--cs-sp-md);
+  background: var(--cs-surface-container);
+  border: 1px solid var(--cs-outline-var);
+  border-radius: var(--cs-radius-lg);
+  color: var(--cs-on-surface);
+  font-size: var(--cs-text-body-sm);
+  font-weight: 500;
+  text-decoration: none;
+  transition: border-color 0.15s, background 0.15s;
+}
+.btn-secondary:hover {
+  border-color: var(--cs-primary);
+  background: rgba(173, 198, 255, 0.06);
+}
+
+.profile-card {
+  background: var(--cs-surface-low);
+  border: 1px solid var(--cs-outline-var);
+  border-radius: var(--cs-radius-lg);
+  padding: var(--cs-sp-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--cs-sp-lg);
+}
+
+.avatar-section {
+  display: flex;
+  align-items: center;
+  gap: var(--cs-sp-md);
+}
+
+.avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--cs-outline-var);
+  flex-shrink: 0;
+}
+
+.avatar-placeholder {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: var(--cs-primary-container);
+  color: var(--cs-on-primary);
+  font-size: 1.5rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: 2px solid var(--cs-outline-var);
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.user-info h2 {
+  font-size: var(--cs-text-headline);
+  font-weight: 700;
+  color: var(--cs-on-surface);
+  margin: 0;
+}
+
+.user-email {
+  font-size: var(--cs-text-body-sm);
+  color: var(--cs-on-surface-var);
+  margin: 0;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: var(--cs-sp-sm);
+}
+
+.stat-item {
+  background: var(--cs-surface-container);
+  border: 1px solid var(--cs-outline-var);
+  border-radius: var(--cs-radius-lg);
+  padding: var(--cs-sp-md);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  text-align: center;
+}
+
+.stat-value {
+  font-size: var(--cs-text-display);
+  font-weight: 700;
+  color: var(--cs-on-surface);
+  line-height: 1;
+}
+
+.stat-label {
+  font-size: var(--cs-text-label);
+  font-weight: 600;
+  letter-spacing: var(--cs-ls-label);
+  text-transform: uppercase;
+  color: var(--cs-on-surface-var);
+}
+
+@media (max-width: 480px) {
+  .avatar-section { flex-direction: column; text-align: center; }
+}
