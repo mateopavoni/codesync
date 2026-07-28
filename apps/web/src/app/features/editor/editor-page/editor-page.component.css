@@ -1,0 +1,317 @@
+/* ==========================================================================
+   Editor page — IDE layout 3 paneles (Stitch: codesync_collaborative_editor)
+   ========================================================================== */
+
+.editor-page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--cs-bg);
+}
+
+.full-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+}
+
+/* --- Topbar del editor (h-panel-header en Stitch = 40px, acá usamos 48px) --- */
+.editor-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--cs-sp-md);
+  height: 48px;
+  background: var(--cs-surface-container);
+  border-bottom: 1px solid var(--cs-outline-var);
+  flex-shrink: 0;
+}
+
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: var(--cs-sp-sm);
+  min-width: 0;
+}
+
+.back-link {
+  color: var(--cs-on-surface-var);
+  display: flex;
+  align-items: center;
+  transition: color 0.15s;
+  flex-shrink: 0;
+  padding: 4px;
+  border-radius: var(--cs-radius-md);
+}
+.back-link:hover { color: var(--cs-on-surface); }
+
+.challenge-title {
+  font-size: var(--cs-text-body);
+  font-weight: 600;
+  color: var(--cs-on-surface);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Badges en topbar */
+.lang-badge {
+  padding: 2px var(--cs-sp-sm);
+  background: var(--cs-surface-variant);
+  border: 1px solid var(--cs-outline-var);
+  border-radius: var(--cs-radius-md);
+  font-size: var(--cs-text-label);
+  font-family: var(--cs-font-code);
+  color: var(--cs-on-surface-var);
+  flex-shrink: 0;
+}
+
+.room-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--cs-text-label);
+  font-weight: 600;
+  letter-spacing: var(--cs-ls-label);
+  text-transform: uppercase;
+  padding: 2px var(--cs-sp-sm);
+  background: rgba(78, 222, 163, 0.12);
+  border: 1px solid rgba(78, 222, 163, 0.3);
+  border-radius: var(--cs-radius-md);
+  color: var(--cs-secondary);
+  flex-shrink: 0;
+}
+
+/* Live dot animado */
+.room-indicator::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  background: var(--cs-secondary);
+  border-radius: 50%;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: var(--cs-sp-sm);
+}
+
+/* Botón Ejecutar */
+.btn-run {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px var(--cs-sp-md);
+  background: var(--cs-secondary-cont);
+  color: var(--cs-on-secondary-cont);
+  border: none;
+  border-radius: var(--cs-radius-xl);
+  font-size: var(--cs-text-body-sm);
+  font-weight: 600;
+  font-family: var(--cs-font-ui);
+  cursor: pointer;
+  transition: opacity 0.15s, filter 0.15s;
+}
+
+.btn-run:hover:not(:disabled) { filter: brightness(1.1); }
+.btn-run:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.run-spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(0, 49, 31, 0.3);
+  border-top-color: var(--cs-on-secondary-cont);
+  border-radius: 50%;
+  animation: spin 0.75s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* --- Layout de 3 columnas --- */
+.editor-layout {
+  display: grid;
+  grid-template-columns: 280px 1fr 340px;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* Panel izquierdo: enunciado */
+.problem-panel {
+  border-right: 1px solid var(--cs-outline-var);
+  overflow-y: auto;
+  background: var(--cs-surface-low);
+}
+
+.problem-content {
+  padding: var(--cs-sp-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--cs-sp-md);
+}
+
+.problem-content h2 {
+  font-size: var(--cs-text-headline);
+  font-weight: 600;
+  color: var(--cs-on-surface);
+  margin: 0;
+}
+
+.problem-content h3 {
+  font-size: var(--cs-text-body-sm);
+  font-weight: 600;
+  letter-spacing: var(--cs-ls-label);
+  text-transform: uppercase;
+  color: var(--cs-on-surface-var);
+  margin: 0;
+}
+
+.problem-description {
+  font-size: var(--cs-text-body-sm);
+  line-height: 1.7;
+  color: var(--cs-on-surface);
+  white-space: pre-wrap;
+  margin: 0;
+}
+
+.examples { display: flex; flex-direction: column; gap: var(--cs-sp-sm); }
+
+.example {
+  background: var(--cs-surface-container);
+  border: 1px solid var(--cs-outline-var);
+  border-radius: var(--cs-radius-lg);
+  padding: var(--cs-sp-sm) var(--cs-sp-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--cs-sp-xs);
+}
+
+.example-row {
+  display: flex;
+  align-items: baseline;
+  gap: var(--cs-sp-sm);
+}
+
+.ex-label {
+  font-size: var(--cs-text-label);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: var(--cs-ls-label);
+  color: var(--cs-on-surface-var);
+  min-width: 52px;
+  flex-shrink: 0;
+}
+
+.example code {
+  font-family: var(--cs-font-code);
+  font-size: var(--cs-text-code);
+  color: var(--cs-on-surface);
+}
+
+/* Panel central: editor Monaco */
+.editor-main {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+  background: #0f172a; /* Canvas del editor — fondo profundo como en Stitch */
+}
+
+.submission-error {
+  padding: var(--cs-sp-sm) var(--cs-sp-md);
+  flex-shrink: 0;
+}
+
+.editor-main app-monaco-editor {
+  flex: 1;
+  min-height: 0;
+}
+
+/* Panel derecho: resultado / coach / chat */
+.output-panel {
+  border-left: 1px solid var(--cs-outline-var);
+  background: var(--cs-surface-low);
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+/* Tabs del panel */
+.panel-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--cs-outline-var);
+  flex-shrink: 0;
+}
+
+.tab-btn {
+  flex: 1;
+  padding: var(--cs-sp-sm);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--cs-on-surface-var);
+  font-size: var(--cs-text-body-sm);
+  font-weight: 500;
+  font-family: var(--cs-font-ui);
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.tab-btn:hover { color: var(--cs-on-surface); }
+
+.tab-btn.active {
+  color: var(--cs-primary);
+  border-bottom-color: var(--cs-primary);
+}
+
+.tab-badge {
+  width: 7px;
+  height: 7px;
+  background: var(--cs-tertiary);
+  border-radius: 50%;
+}
+
+.tab-content {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* --- Responsive --- */
+@media (max-width: 1100px) {
+  .editor-layout {
+    grid-template-columns: 240px 1fr 280px;
+  }
+}
+
+@media (max-width: 900px) {
+  .editor-layout {
+    grid-template-columns: 1fr;
+    grid-template-rows: 200px 1fr 260px;
+  }
+  .problem-panel {
+    max-height: 200px;
+    border-right: none;
+    border-bottom: 1px solid var(--cs-outline-var);
+  }
+  .output-panel {
+    max-height: 260px;
+    border-left: none;
+    border-top: 1px solid var(--cs-outline-var);
+  }
+}

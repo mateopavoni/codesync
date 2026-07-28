@@ -1,0 +1,9 @@
+<div class="editor-wrapper">
+  @if (loading()) {
+    <app-loading-spinner message="Cargando editor..." [overlay]="true" />
+  }
+  @if (editorError()) {
+    <app-error-message [message]="editorError()!" />
+  }
+  <div #container class="editor-container" [style.visibility]="loading() ? 'hidden' : 'visible'"></div>
+</div>

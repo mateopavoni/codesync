@@ -1,0 +1,131 @@
+<div class="editor-page">
+  @if (challengeLoading()) {
+    <div class="full-center">
+      <app-loading-spinner message="Cargando desafío..." />
+    </div>
+  } @else if (challengeError()) {
+    <div class="full-center">
+      <app-error-message [message]="challengeError()!" [retryable]="true" (retry)="retryChallenge()" />
+    </div>
+  } @else {
+    <!-- Barra superior -->
+    <header class="editor-topbar">
+      <div class="topbar-left">
+        <a routerLink="/desafios" class="back-link" aria-label="Volver a desafíos">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <polyline points="15 18 9 12 15 6"/>
+          </svg>
+        </a>
+        @if (challenge()) {
+          <h1 class="challenge-title">{{ challenge()!.title }}</h1>
+          <span class="lang-badge">{{ challenge()!.language }}</span>
+        }
+        @if (roomId()) {
+          <span class="room-indicator">Sala activa</span>
+        }
+      </div>
+
+      <div class="topbar-right">
+        <button
+          type="button"
+          class="btn-run"
+          (click)="onRunCode()"
+          [disabled]="submitting()"
+          aria-label="Ejecutar código"
+        >
+          @if (submitting()) {
+            <span class="run-spinner" aria-hidden="true"></span>
+            Ejecutando...
+          } @else {
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <polygon points="5 3 19 12 5 21 5 3"/>
+            </svg>
+            Ejecutar
+          }
+        </button>
+      </div>
+    </header>
+
+    <!-- Layout principal -->
+    <div class="editor-layout">
+      <!-- Panel izquierdo: enunciado -->
+      <aside class="problem-panel">
+        <div class="problem-content">
+          @if (challenge()) {
+            <h2>{{ challenge()!.title }}</h2>
+            <p class="problem-description">{{ challenge()!.description }}</p>
+
+            @if (challenge()!.testCases?.length) {
+              <h3>Ejemplos</h3>
+              <div class="examples">
+                @for (tc of (challenge()!.testCases ?? []); track tc.id) {
+                  @if (tc.isPublic) {
+                    <div class="example">
+                      <div class="example-row">
+                        <span class="ex-label">Entrada</span>
+                        <code>{{ tc.input || '(vacía)' }}</code>
+                      </div>
+                      <div class="example-row">
+                        <span class="ex-label">Salida</span>
+                        <code>{{ tc.expectedOutput }}</code>
+                      </div>
+                    </div>
+                  }
+                }
+              </div>
+            }
+          }
+        </div>
+      </aside>
+
+      <!-- Panel central: editor -->
+      <main class="editor-main">
+        @if (submissionError()) {
+          <div class="submission-error">
+            <app-error-message [message]="submissionError()!" />
+          </div>
+        }
+        <app-monaco-editor
+          [value]="currentCode()"
+          [language]="challenge()?.language ?? 'javascript'"
+          [remoteCursors]="remoteCursors()"
+          (valueChange)="onCodeChange($event)"
+          (cursorChange)="onCursorChange($event)"
+        />
+      </main>
+
+      <!-- Panel derecho: resultado / coach -->
+      <aside class="output-panel">
+        <div class="panel-tabs">
+          <button
+            type="button"
+            class="tab-btn"
+            [class.active]="activePanel() === 'resultado'"
+            (click)="setActivePanel('resultado')"
+          >
+            Resultado
+          </button>
+          <button
+            type="button"
+            class="tab-btn"
+            [class.active]="activePanel() === 'coach'"
+            (click)="setActivePanel('coach')"
+          >
+            IA Coach
+            @if (coachFeedback()) {
+              <span class="tab-badge" aria-label="Feedback disponible"></span>
+            }
+          </button>
+        </div>
+
+        <div class="tab-content">
+          @if (activePanel() === 'resultado') {
+            <app-execution-panel [result]="submissionResult()" />
+          } @else {
+            <app-coach-panel [feedback]="coachFeedback()" [hints]="coachHints()" />
+          }
+        </div>
+      </aside>
+    </div>
+  }
+</div>
