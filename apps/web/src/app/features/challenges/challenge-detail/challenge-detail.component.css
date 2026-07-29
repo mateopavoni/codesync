@@ -1,0 +1,160 @@
+/* ==========================================================================
+   Challenge detail — CodeSync (Stitch system)
+   ========================================================================== */
+
+.detail-page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: var(--cs-sp-lg);
+}
+
+.detail-layout {
+  display: flex;
+  flex-direction: column;
+  gap: var(--cs-sp-lg);
+}
+
+.detail-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--cs-sp-sm);
+}
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: var(--cs-sp-sm);
+  font-size: var(--cs-text-body-sm);
+  color: var(--cs-on-surface-var);
+}
+
+.breadcrumb a {
+  color: var(--cs-primary);
+  text-decoration: none;
+}
+.breadcrumb a:hover { text-decoration: underline; }
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--cs-sp-sm);
+}
+
+.lang-tag {
+  padding: 2px var(--cs-sp-sm);
+  background: var(--cs-surface-variant);
+  border: 1px solid var(--cs-outline-var);
+  border-radius: var(--cs-radius-md);
+  font-size: var(--cs-text-label);
+  font-family: var(--cs-font-code);
+  color: var(--cs-on-surface-var);
+}
+
+.btn-start {
+  padding: var(--cs-sp-sm) var(--cs-sp-lg);
+  background: var(--cs-primary);
+  color: var(--cs-on-primary);
+  border-radius: var(--cs-radius-xl);
+  font-size: var(--cs-text-body-sm);
+  font-weight: 600;
+  text-decoration: none;
+  transition: opacity 0.15s;
+}
+.btn-start:hover { opacity: 0.88; }
+
+.detail-layout h1 {
+  font-size: var(--cs-text-display);
+  font-weight: 700;
+  letter-spacing: var(--cs-ls-display);
+  color: var(--cs-on-surface);
+  margin: 0;
+}
+
+/* Secciones */
+.section {
+  background: var(--cs-surface-low);
+  border: 1px solid var(--cs-outline-var);
+  border-radius: var(--cs-radius-lg);
+  padding: var(--cs-sp-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--cs-sp-sm);
+}
+
+.section h2 {
+  font-size: var(--cs-text-body-sm);
+  font-weight: 600;
+  letter-spacing: var(--cs-ls-label);
+  text-transform: uppercase;
+  color: var(--cs-on-surface-var);
+  margin: 0;
+}
+
+.description-text {
+  line-height: 1.7;
+  color: var(--cs-on-surface);
+  white-space: pre-wrap;
+  font-size: var(--cs-text-body);
+}
+
+/* Test cases */
+.test-cases {
+  display: flex;
+  flex-direction: column;
+  gap: var(--cs-sp-sm);
+}
+
+.test-case {
+  background: var(--cs-surface-container);
+  border: 1px solid var(--cs-outline-var);
+  border-radius: var(--cs-radius-lg);
+  padding: var(--cs-sp-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--cs-sp-sm);
+}
+
+.tc-row {
+  display: flex;
+  align-items: baseline;
+  gap: var(--cs-sp-md);
+}
+
+.tc-label {
+  font-size: var(--cs-text-label);
+  font-weight: 600;
+  letter-spacing: var(--cs-ls-label);
+  text-transform: uppercase;
+  color: var(--cs-on-surface-var);
+  min-width: 130px;
+  flex-shrink: 0;
+}
+
+.tc-value {
+  font-family: var(--cs-font-code);
+  font-size: var(--cs-text-code);
+  background: var(--cs-surface-lowest);
+  padding: 3px var(--cs-sp-sm);
+  border-radius: var(--cs-radius-md);
+  color: var(--cs-on-surface);
+}
+
+.empty-text {
+  color: var(--cs-on-surface-var);
+  font-size: var(--cs-text-body-sm);
+}
+
+/* Tags */
+.tag-list { display: flex; flex-wrap: wrap; gap: var(--cs-sp-sm); }
+
+.tag {
+  font-size: var(--cs-text-label);
+  font-family: var(--cs-font-code);
+  padding: 2px var(--cs-sp-sm);
+  background: var(--cs-surface-variant);
+  border: 1px solid var(--cs-outline-var);
+  border-radius: var(--cs-radius-md);
+  color: var(--cs-on-surface-var);
+}

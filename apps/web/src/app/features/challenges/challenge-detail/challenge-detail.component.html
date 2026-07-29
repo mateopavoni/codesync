@@ -1,0 +1,65 @@
+<div class="detail-page">
+  @if (loading()) {
+    <app-loading-spinner message="Cargando desafío..." />
+  } @else if (error()) {
+    <app-error-message [message]="error()!" [retryable]="true" (retry)="retryLoad()" />
+  } @else if (challenge()) {
+    <div class="detail-layout">
+      <div class="detail-header">
+        <div class="breadcrumb">
+          <a routerLink="/desafios">Desafíos</a>
+          <span aria-hidden="true">/</span>
+          <span>{{ challenge()!.title }}</span>
+        </div>
+        <div class="header-actions">
+          <span class="badge" [class]="'badge-' + challenge()!.difficulty">
+            {{ difficultyLabel[challenge()!.difficulty] }}
+          </span>
+          <span class="lang-tag">{{ challenge()!.language }}</span>
+          <a [routerLink]="['/editor', challenge()!.id]" class="btn-start">
+            Resolver desafío
+          </a>
+        </div>
+      </div>
+
+      <h1>{{ challenge()!.title }}</h1>
+
+      <div class="section">
+        <h2>Descripción</h2>
+        <div class="description-text">{{ challenge()!.description }}</div>
+      </div>
+
+      <div class="section">
+        <h2>Test cases visibles</h2>
+        @if (challenge()!.testCases.length === 0) {
+          <p class="empty-text">Este desafío no tiene test cases públicos.</p>
+        } @else {
+          <div class="test-cases">
+            @for (tc of challenge()!.testCases; track tc.id) {
+              @if (tc.isPublic) {
+                <div class="test-case">
+                  <div class="tc-row">
+                    <span class="tc-label">Entrada:</span>
+                    <code class="tc-value">{{ tc.input || '(vacía)' }}</code>
+                  </div>
+                  <div class="tc-row">
+                    <span class="tc-label">Salida esperada:</span>
+                    <code class="tc-value">{{ tc.expectedOutput }}</code>
+                  </div>
+                </div>
+              }
+            }
+          </div>
+        }
+      </div>
+
+      @if (challenge()!.tags?.length) {
+        <div class="tag-list">
+          @for (tag of (challenge()!.tags ?? []); track tag) {
+            <span class="tag">{{ tag }}</span>
+          }
+        </div>
+      }
+    </div>
+  }
+</div>

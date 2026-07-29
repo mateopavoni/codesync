@@ -1,0 +1,182 @@
+/* ==========================================================================
+   Challenge list — CodeSync (Stitch: codesync_dashboard challenge grid)
+   ========================================================================== */
+
+.challenges-page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: var(--cs-sp-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--cs-sp-lg);
+}
+
+/* Header */
+.page-header { display: flex; flex-direction: column; gap: 4px; }
+
+.page-header h1 {
+  font-size: var(--cs-text-display);
+  font-weight: 700;
+  letter-spacing: var(--cs-ls-display);
+  color: var(--cs-on-surface);
+  margin: 0;
+}
+
+.page-subtitle {
+  color: var(--cs-on-surface-var);
+  margin: 0;
+  font-size: var(--cs-text-body);
+}
+
+/* Filtros */
+.filters {
+  display: flex;
+  align-items: center;
+  gap: var(--cs-sp-sm);
+  flex-wrap: wrap;
+}
+
+.filter-label {
+  font-size: var(--cs-text-body-sm);
+  color: var(--cs-on-surface-var);
+}
+
+.filter-btn {
+  padding: 6px var(--cs-sp-md);
+  background: var(--cs-surface-container);
+  border: 1px solid var(--cs-outline-var);
+  border-radius: var(--cs-radius-xl);
+  color: var(--cs-on-surface-var);
+  font-size: var(--cs-text-label);
+  font-weight: 600;
+  letter-spacing: var(--cs-ls-label);
+  text-transform: uppercase;
+  cursor: pointer;
+  font-family: var(--cs-font-ui);
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+
+.filter-btn:hover {
+  border-color: var(--cs-primary);
+  color: var(--cs-on-surface);
+}
+
+.filter-btn.active {
+  background: rgba(173, 198, 255, 0.12);
+  border-color: var(--cs-primary);
+  color: var(--cs-primary);
+}
+
+/* Grid de desafíos */
+.challenge-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--cs-sp-md);
+}
+
+/* Card (estilo Stitch dashboard) */
+.challenge-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--cs-sp-sm);
+  background: var(--cs-surface-low);
+  border: 1px solid var(--cs-outline-var);
+  border-radius: var(--cs-radius-lg);
+  padding: var(--cs-sp-md);
+  text-decoration: none;
+  color: var(--cs-on-surface);
+  transition: border-color 0.2s, transform 0.2s;
+  cursor: pointer;
+}
+
+.challenge-card:hover {
+  border-color: var(--cs-primary);
+  transform: translateY(-2px);
+}
+
+.card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--cs-sp-sm);
+}
+
+.card-title {
+  font-size: var(--cs-text-headline);
+  font-weight: 600;
+  color: var(--cs-on-surface);
+  margin: 0;
+  flex: 1;
+  line-height: var(--cs-lh-headline);
+}
+
+.challenge-card:hover .card-title { color: var(--cs-primary); }
+
+/* Badge (complementa los globales de styles.css) */
+.badge-Easy,
+.badge-facil {
+  background: rgba(78, 222, 163, 0.15);
+  color: var(--cs-secondary);
+  border: 1px solid rgba(78, 222, 163, 0.3);
+}
+
+.badge-Medium,
+.badge-medio {
+  background: rgba(245, 158, 11, 0.15);
+  color: #f59e0b;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.badge-Hard,
+.badge-dificil {
+  background: rgba(255, 180, 171, 0.15);
+  color: var(--cs-error);
+  border: 1px solid rgba(255, 180, 171, 0.3);
+}
+
+.card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+}
+
+.lang-tag {
+  font-size: var(--cs-text-label);
+  font-weight: 600;
+  color: var(--cs-on-surface-var);
+  background: var(--cs-surface-variant);
+  padding: 2px var(--cs-sp-sm);
+  border-radius: var(--cs-radius-md);
+  font-family: var(--cs-font-code);
+}
+
+.completed-badge {
+  font-size: var(--cs-text-label);
+  font-weight: 600;
+  color: var(--cs-secondary);
+  letter-spacing: var(--cs-ls-label);
+  text-transform: uppercase;
+}
+
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--cs-sp-xs);
+}
+
+.tag {
+  font-size: var(--cs-text-label);
+  font-family: var(--cs-font-code);
+  padding: 2px var(--cs-sp-sm);
+  background: var(--cs-surface-variant);
+  border: 1px solid var(--cs-outline-var);
+  border-radius: var(--cs-radius-md);
+  color: var(--cs-on-surface-var);
+}
+
+.empty-state {
+  text-align: center;
+  padding: 80px var(--cs-sp-lg);
+  color: var(--cs-on-surface-var);
+}

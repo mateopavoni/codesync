@@ -1,0 +1,58 @@
+<div class="challenges-page">
+  <div class="page-header">
+    <h1>Desafíos</h1>
+    <p class="page-subtitle">Resolvé problemas reales y mejorá tus habilidades</p>
+  </div>
+
+  <div class="filters">
+    <span class="filter-label">Dificultad:</span>
+    @for (opt of difficultyOptions; track opt.value) {
+      <button
+        type="button"
+        class="filter-btn"
+        [class.active]="selectedDifficulty() === opt.value"
+        (click)="selectDifficulty(opt.value)"
+      >
+        {{ opt.label }}
+      </button>
+    }
+  </div>
+
+  @if (loading()) {
+    <app-loading-spinner message="Cargando desafíos..." />
+  } @else if (error()) {
+    <app-error-message [message]="error()!" [retryable]="true" (retry)="loadChallenges()" />
+  } @else if (challenges().length === 0) {
+    <div class="empty-state">
+      <p>No hay desafíos disponibles para este filtro.</p>
+    </div>
+  } @else {
+    <div class="challenge-grid">
+      @for (challenge of challenges(); track trackById($index, challenge)) {
+        <a [routerLink]="['/desafios', challenge.id]" class="challenge-card">
+          <div class="card-header">
+            <h2 class="card-title">{{ challenge.title }}</h2>
+            <span class="badge" [class]="'badge-' + challenge.difficulty">
+              {{ difficultyLabel[challenge.difficulty] }}
+            </span>
+          </div>
+
+          <div class="card-footer">
+            <span class="lang-tag">{{ challenge.language }}</span>
+            @if (challenge.completedAt) {
+              <span class="completed-badge">Completado</span>
+            }
+          </div>
+
+          @if (challenge.tags?.length) {
+            <div class="tag-list">
+              @for (tag of (challenge.tags ?? []); track tag) {
+                <span class="tag">{{ tag }}</span>
+              }
+            </div>
+          }
+        </a>
+      }
+    </div>
+  }
+</div>
