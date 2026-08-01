@@ -1,0 +1,98 @@
+<div class="dashboard-page">
+  <div class="dashboard-header">
+    <div>
+      <h1>Dashboard</h1>
+      @if (currentUser) {
+        <p class="welcome">Bienvenido, {{ currentUser.displayName ?? currentUser.email }}</p>
+      }
+    </div>
+    <div class="header-actions">
+      <a routerLink="/desafios" class="btn-primary">Ver desafíos</a>
+      <a routerLink="/colaboracion" class="btn-secondary">Sala colaborativa</a>
+    </div>
+  </div>
+
+  @if (loading()) {
+    <app-loading-spinner message="Cargando dashboard..." />
+  } @else if (error()) {
+    <app-error-message [message]="error()!" [retryable]="true" (retry)="loadDashboard()" />
+  } @else if (data()) {
+    <!-- Stats -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <span class="stat-value">{{ data()!.profile.level }}</span>
+        <span class="stat-label">Nivel actual</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-value">{{ data()!.completedChallenges.length }}</span>
+        <span class="stat-label">Completados</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-value">{{ data()!.pendingChallenges.length }}</span>
+        <span class="stat-label">Pendientes</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-value">{{ data()!.recentFeedback.length }}</span>
+        <span class="stat-label">Feedbacks recibidos</span>
+      </div>
+    </div>
+
+    <div class="content-grid">
+      <!-- Desafíos pendientes -->
+      <section class="section-card">
+        <h2>Para resolver</h2>
+        @if (data()!.pendingChallenges.length === 0) {
+          <p class="empty-text">No tenés desafíos pendientes. ¡Explorá nuevos!</p>
+        } @else {
+          <div class="challenge-list">
+            @for (ch of data()!.pendingChallenges; track ch.id) {
+              <a [routerLink]="['/desafios', ch.id]" class="challenge-row">
+                <span class="ch-title">{{ ch.title }}</span>
+                <span class="badge" [class]="'badge-' + ch.difficulty">
+                  {{ difficultyLabel[ch.difficulty] }}
+                </span>
+              </a>
+            }
+          </div>
+        }
+      </section>
+
+      <!-- Feedback reciente del IA Coach -->
+      <section class="section-card">
+        <h2>Feedback reciente del Coach</h2>
+        @if (data()!.recentFeedback.length === 0) {
+          <p class="empty-text">
+            El IA Coach deja feedback cuando un test falla. ¡Empezá a resolver desafíos!
+          </p>
+        } @else {
+          <div class="feedback-list">
+            @for (fb of data()!.recentFeedback; track fb.id) {
+              <div class="feedback-item">
+                <div class="fb-header">
+                  <span class="fb-challenge">{{ fb.challengeTitle }}</span>
+                  <span class="fb-date">{{ fb.createdAt | slice:0:10 }}</span>
+                </div>
+                <p class="fb-message">{{ fb.message }}</p>
+              </div>
+            }
+          </div>
+        }
+      </section>
+    </div>
+
+    <!-- Desafíos completados -->
+    @if (data()!.completedChallenges.length > 0) {
+      <section class="section-card">
+        <h2>Completados</h2>
+        <div class="challenge-list">
+          @for (ch of data()!.completedChallenges; track ch.id) {
+            <div class="challenge-row completed">
+              <span class="ch-title">{{ ch.title }}</span>
+              <span class="badge badge-facil">Completado</span>
+            </div>
+          }
+        </div>
+      </section>
+    }
+  }
+</div>
