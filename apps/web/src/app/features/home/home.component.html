@@ -1,0 +1,151 @@
+<!-- Landing page (usuarios no autenticados) -->
+
+<!-- Topbar fija -->
+<header class="home-topbar" role="banner">
+  <div class="topbar-brand" aria-label="CodeSync">
+    <span class="material-symbols-outlined topbar-logo-icon" aria-hidden="true"
+          style="font-variation-settings: 'FILL' 1;">code_blocks</span>
+    <span class="topbar-brand-name">CodeSync</span>
+  </div>
+
+  <nav class="topbar-nav" aria-label="Navegación principal">
+    <a href="#features" class="topbar-link">Funcionalidades</a>
+    <a href="#about" class="topbar-link">Acerca de</a>
+  </nav>
+
+  <div class="topbar-actions">
+    <a routerLink="/login" class="topbar-login">Iniciar sesión</a>
+    <a routerLink="/registro" class="topbar-cta">Empezar gratis</a>
+  </div>
+</header>
+
+<!-- Contenido principal -->
+<main id="main-content">
+
+  <!-- Hero -->
+  <section class="hero" aria-labelledby="hero-heading">
+    <div class="hero-inner">
+      <span class="material-symbols-outlined hero-icon" aria-hidden="true"
+            style="font-variation-settings: 'FILL' 1;">code_blocks</span>
+
+      <h1 id="hero-heading" class="hero-title">
+        Aprendé a programar,<br>
+        juntos.
+        <span class="hero-title--accent">Instantáneamente.</span>
+      </h1>
+
+      <p class="hero-subtitle">
+        La plataforma educativa colaborativa diseñada para el futuro del desarrollo.
+        Codificá en tiempo real, resolvé desafíos y mejorá tus habilidades
+        con la ayuda del Coach de IA integrado.
+      </p>
+
+      <div class="hero-actions">
+        <a routerLink="/registro" class="btn-primary-lg">
+          Probar gratis
+        </a>
+        <a routerLink="/login" class="btn-ghost-lg">
+          <span class="material-symbols-outlined" aria-hidden="true">play_circle</span>
+          Ver demo
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features grid -->
+  <section class="features" id="features" aria-labelledby="features-heading">
+    <div class="features-inner">
+      <header class="features-header">
+        <h2 id="features-heading" class="features-title">
+          Herramientas profesionales, experiencia educativa
+        </h2>
+        <p class="features-subtitle">
+          Todo lo que necesitás para dominar la programación en un entorno
+          que fomenta la colaboración y el aprendizaje activo.
+        </p>
+      </header>
+
+      <div class="features-grid" role="list">
+        <!-- Feature 1 -->
+        <article class="feature-card" role="listitem">
+          <div class="feature-icon-wrap feature-icon--secondary" aria-hidden="true">
+            <span class="material-symbols-outlined"
+                  style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+          </div>
+          <h3 class="feature-title">Ejecución instantánea</h3>
+          <p class="feature-desc">
+            Escribí código y mirá los resultados al instante sin configuraciones complejas.
+            Soportamos múltiples lenguajes en un entorno seguro con sandbox Docker.
+          </p>
+        </article>
+
+        <!-- Feature 2 -->
+        <article class="feature-card" role="listitem">
+          <div class="feature-icon-wrap feature-icon--primary" aria-hidden="true">
+            <span class="material-symbols-outlined"
+                  style="font-variation-settings: 'FILL' 1;">group</span>
+          </div>
+          <h3 class="feature-title">Colaboración en tiempo real</h3>
+          <p class="feature-desc">
+            Programá junto a tus compañeros en el mismo editor. Cursores en tiempo
+            real vía Firebase Realtime y chat integrado en el IDE.
+          </p>
+        </article>
+
+        <!-- Feature 3 -->
+        <article class="feature-card" role="listitem">
+          <div class="feature-icon-wrap feature-icon--tertiary" aria-hidden="true">
+            <span class="material-symbols-outlined"
+                  style="font-variation-settings: 'FILL' 1;">psychology</span>
+          </div>
+          <h3 class="feature-title">IA Coach (Gemini)</h3>
+          <p class="feature-desc">
+            Un asistente inteligente que te guía cuando te atascás, explica conceptos
+            complejos y sugiere mejoras en tu código sin darte la respuesta directa.
+          </p>
+        </article>
+
+        <!-- Feature 4 -->
+        <article class="feature-card" role="listitem">
+          <div class="feature-icon-wrap feature-icon--warning" aria-hidden="true">
+            <span class="material-symbols-outlined"
+                  style="font-variation-settings: 'FILL' 1;">trophy</span>
+          </div>
+          <h3 class="feature-title">Desafíos progresivos</h3>
+          <p class="feature-desc">
+            Resolvé problemas reales con test cases automatizados. Niveles Easy, Medium y Hard
+            con feedback inmediato del Coach cuando fallás.
+          </p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA section -->
+  <section class="cta-section" id="about" aria-labelledby="cta-heading">
+    <div class="cta-inner">
+      <h2 id="cta-heading" class="cta-title">
+        Listo para empezar a programar en equipo?
+      </h2>
+      <p class="cta-subtitle">
+        Creá tu cuenta gratis y comenzá a aprender con los mejores del mundo.
+      </p>
+      <a routerLink="/registro" class="btn-primary-lg">
+        Crear cuenta gratuita
+      </a>
+    </div>
+  </section>
+
+</main>
+
+<!-- Footer -->
+<footer class="home-footer" role="contentinfo">
+  <div class="footer-brand" aria-label="CodeSync">CodeSync</div>
+  <nav class="footer-links" aria-label="Links del footer">
+    <a routerLink="/login" class="footer-link">Iniciar sesión</a>
+    <a routerLink="/registro" class="footer-link">Registrarse</a>
+  </nav>
+  <p class="footer-copy">
+    <span aria-hidden="true">&copy;</span> 2024 CodeSync. Proyecto de portfolio de Mateo Pavoni.
+  </p>
+</footer>
