@@ -31,6 +31,7 @@ export class LoginComponent {
       const { email, password } = this.form.getRawValue();
       await this.authService.loginWithEmail(email!, password!);
     } catch (err) {
+      console.error("[CodeSync auth]", err);
       this.error.set(this.mapFirebaseError(err));
     } finally {
       this.loading.set(false);
@@ -43,6 +44,7 @@ export class LoginComponent {
     try {
       await this.authService.loginWithGoogle();
     } catch (err) {
+      console.error("[CodeSync auth]", err);
       this.error.set(this.mapFirebaseError(err));
     } finally {
       this.loading.set(false);
@@ -55,6 +57,7 @@ export class LoginComponent {
     try {
       await this.authService.loginWithGithub();
     } catch (err) {
+      console.error("[CodeSync auth]", err);
       this.error.set(this.mapFirebaseError(err));
     } finally {
       this.loading.set(false);
