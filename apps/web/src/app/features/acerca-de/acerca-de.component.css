@@ -1,0 +1,96 @@
+.page {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: calc(56px + var(--cs-sp-xxl, 64px)) var(--cs-sp-lg) var(--cs-sp-xxl, 64px);
+}
+
+.page-hero {
+  text-align: center;
+  margin: 0 auto var(--cs-sp-xxl, 64px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--cs-sp-md);
+}
+
+.page-eyebrow {
+  font-size: var(--cs-text-label);
+  font-weight: 600;
+  letter-spacing: var(--cs-ls-label);
+  text-transform: uppercase;
+  color: var(--cs-primary);
+}
+
+.page-title {
+  font-size: clamp(28px, 4vw, 40px);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: var(--cs-on-surface);
+  margin: 0;
+}
+
+.page-subtitle {
+  font-size: var(--cs-text-body);
+  line-height: 1.65;
+  color: var(--cs-on-surface-var);
+  margin: 0;
+}
+
+.about-section {
+  margin-bottom: var(--cs-sp-xl);
+}
+
+.about-title {
+  font-size: var(--cs-text-headline);
+  font-weight: 600;
+  color: var(--cs-on-surface);
+  margin: 0 0 var(--cs-sp-sm);
+}
+
+.about-text {
+  font-size: var(--cs-text-body);
+  line-height: 1.7;
+  color: var(--cs-on-surface-var);
+  margin: 0;
+}
+
+.stack-list {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--cs-sp-sm);
+  margin: var(--cs-sp-md) 0 0;
+  padding: 0;
+}
+
+.stack-pill {
+  padding: 6px var(--cs-sp-md);
+  background: var(--cs-surface-container);
+  border: 1px solid var(--cs-outline-var);
+  border-radius: var(--cs-radius-xl);
+  font-size: var(--cs-text-label);
+  color: var(--cs-on-surface-var);
+}
+
+.page-cta {
+  text-align: center;
+  margin-top: var(--cs-sp-xxl, 64px);
+  padding-top: var(--cs-sp-xxl, 64px);
+  border-top: 1px solid var(--cs-outline-var);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--cs-sp-lg);
+}
+
+.page-cta-title {
+  font-size: clamp(22px, 3vw, 28px);
+  font-weight: 700;
+  color: var(--cs-on-surface);
+  margin: 0;
+}
+
+@media (max-width: 767px) {
+  .page { padding-top: calc(56px + var(--cs-sp-xl)); padding-left: var(--cs-sp-md); padding-right: var(--cs-sp-md); }
+}

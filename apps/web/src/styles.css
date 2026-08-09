@@ -240,3 +240,38 @@ code, pre, kbd {
   color: var(--cs-error);
   border-color: rgba(255, 180, 171, 0.3);
 }
+
+/* --- Botones CTA grandes (páginas públicas: home, funcionalidades, acerca-de) --- */
+.btn-primary-lg {
+  padding: 14px var(--cs-sp-xl);
+  background: var(--cs-primary);
+  color: var(--cs-on-primary);
+  border-radius: var(--cs-radius-lg);
+  font-size: var(--cs-text-body);
+  font-weight: 600;
+  text-decoration: none;
+  transition: opacity 0.15s;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--cs-sp-sm);
+}
+.btn-primary-lg:hover { opacity: 0.88; }
+
+.btn-ghost-lg {
+  padding: 14px var(--cs-sp-xl);
+  background: transparent;
+  color: var(--cs-on-surface);
+  border: 1px solid var(--cs-outline-var);
+  border-radius: var(--cs-radius-lg);
+  font-size: var(--cs-text-body);
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.15s, border-color 0.15s;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--cs-sp-sm);
+}
+.btn-ghost-lg:hover {
+  background: var(--cs-surface-container);
+  border-color: var(--cs-outline);
+}

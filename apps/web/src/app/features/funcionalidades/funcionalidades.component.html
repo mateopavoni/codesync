@@ -1,0 +1,63 @@
+<app-public-header />
+
+<main id="main-content" class="page">
+  <header class="page-hero">
+    <span class="page-eyebrow">Funcionalidades</span>
+    <h1 class="page-title">Todo lo que necesitás para aprender a programar en equipo</h1>
+    <p class="page-subtitle">
+      Un IDE colaborativo con ejecución sandboxed, feedback de IA y desafíos progresivos —
+      pensado para aprender programando, no solo leyendo.
+    </p>
+  </header>
+
+  <section class="features-grid" role="list">
+    <article class="feature-card feature-card--a" role="listitem">
+      <span class="feature-index" aria-hidden="true">01</span>
+      <h2 class="feature-title">Ejecución instantánea</h2>
+      <p class="feature-desc">
+        Escribí código y mirá los resultados al instante sin configuraciones complejas.
+        Cada envío corre en un contenedor Docker aislado, con timeout y límites de recursos,
+        así que podés experimentar libremente sin arriesgar el resto del sistema.
+      </p>
+      <p class="feature-detail">Soporta Python y JavaScript, con más lenguajes en el roadmap.</p>
+    </article>
+
+    <article class="feature-card feature-card--b" role="listitem">
+      <span class="feature-index" aria-hidden="true">02</span>
+      <h2 class="feature-title">Colaboración en tiempo real</h2>
+      <p class="feature-desc">
+        Programá junto a tus compañeros en el mismo editor. Cursores en tiempo real vía
+        Firebase Realtime Database y chat integrado, para trabajar en equipo sin salir del IDE.
+      </p>
+      <p class="feature-detail">Salas con código de invitación, hasta 4 personas por sala.</p>
+    </article>
+
+    <article class="feature-card feature-card--c" role="listitem">
+      <span class="feature-index" aria-hidden="true">03</span>
+      <h2 class="feature-title">IA Coach (Gemini)</h2>
+      <p class="feature-desc">
+        Un asistente inteligente que te guía cuando te atascás, explica conceptos complejos
+        y sugiere mejoras en tu código sin darte la respuesta directa — pensado para que
+        aprendas el "por qué", no para que copies y pegues.
+      </p>
+      <p class="feature-detail">Se activa automáticamente cuando un test falla.</p>
+    </article>
+
+    <article class="feature-card feature-card--d" role="listitem">
+      <span class="feature-index" aria-hidden="true">04</span>
+      <h2 class="feature-title">Desafíos progresivos</h2>
+      <p class="feature-desc">
+        Resolvé problemas reales con test cases automatizados. Niveles fácil, medio y difícil,
+        con feedback inmediato del Coach cuando fallás y seguimiento de tu progreso en el dashboard.
+      </p>
+      <p class="feature-detail">Nuevos desafíos se suman de forma regular.</p>
+    </article>
+  </section>
+
+  <section class="page-cta">
+    <h2 class="page-cta-title">¿Listo para probarlo?</h2>
+    <a routerLink="/registro" class="btn-primary-lg">Crear cuenta gratuita</a>
+  </section>
+</main>
+
+<app-public-footer />

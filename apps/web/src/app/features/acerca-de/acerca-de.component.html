@@ -1,0 +1,46 @@
+<app-public-header />
+
+<main id="main-content" class="page">
+  <header class="page-hero">
+    <span class="page-eyebrow">Acerca de</span>
+    <h1 class="page-title">Un IDE colaborativo, construido como proyecto de portfolio</h1>
+    <p class="page-subtitle">
+      CodeSync es una plataforma educativa para aprender a programar en equipo: editor
+      sincronizado en tiempo real, desafíos con ejecución sandboxed y un Coach de IA que
+      da feedback cuando algo falla.
+    </p>
+  </header>
+
+  <section class="about-section">
+    <h2 class="about-title">Por qué existe</h2>
+    <p class="about-text">
+      Nace como proyecto de portfolio de Mateo Pavoni: una excusa para construir, de punta
+      a punta, un producto real — desde la arquitectura del backend hasta el sandbox de
+      ejecución de código y la colaboración en tiempo real — no un tutorial ni un CRUD de juguete.
+    </p>
+  </section>
+
+  <section class="about-section">
+    <h2 class="about-title">Cómo está construido</h2>
+    <p class="about-text">
+      Monorepo con backend en .NET 8 (Clean Architecture + CQRS) y frontend en Angular 20
+      standalone. Firebase resuelve autenticación, sincronización en tiempo real (editor,
+      cursores, chat) y persistencia de desafíos y progreso. El código se ejecuta en
+      contenedores Docker aislados, y el Coach de IA usa la API de Gemini.
+    </p>
+    <ul class="stack-list">
+      <li class="stack-pill">.NET 8 · Clean Architecture</li>
+      <li class="stack-pill">Angular 20 standalone</li>
+      <li class="stack-pill">Firebase (Auth, Firestore, Realtime DB)</li>
+      <li class="stack-pill">Docker sandbox</li>
+      <li class="stack-pill">Gemini API</li>
+    </ul>
+  </section>
+
+  <section class="page-cta">
+    <h2 class="page-cta-title">¿Querés probarlo?</h2>
+    <a routerLink="/registro" class="btn-primary-lg">Crear cuenta gratuita</a>
+  </section>
+</main>
+
+<app-public-footer />
