@@ -46,6 +46,7 @@
   --cs-on-error:          #690005;
   --cs-error-cont:        #93000a;
   --cs-on-error-cont:     #ffdad6;
+  --cs-warning:           #f59e0b;
 
   /* --- Tipografía --- */
   --cs-font-ui:   'Inter', system-ui, -apple-system, sans-serif;
@@ -179,6 +180,20 @@ code, pre, kbd {
 }
 
 /* ==========================================================================
+   Entrance — usado por cards/rows en dashboard, challenges, colaboración, perfil.
+   ========================================================================== */
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ==========================================================================
    Motion — respetar prefers-reduced-motion
    ========================================================================== */
 @media (prefers-reduced-motion: reduce) {
@@ -215,7 +230,7 @@ code, pre, kbd {
 .badge-Medium,
 .badge-medio {
   background: rgba(245, 158, 11, 0.15);
-  color: #f59e0b;
+  color: var(--cs-warning);
   border-color: rgba(245, 158, 11, 0.3);
 }
 
