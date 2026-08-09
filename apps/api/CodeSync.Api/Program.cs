@@ -141,13 +141,16 @@ app.UseExceptionHandler(exceptionHandlerApp =>
     });
 });
 
-// ── Dev: Swagger + challenge seed ─────────────────────────────────────────────
+// ── Dev: Swagger ───────────────────────────────────────────────────────────────
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+}
 
-    using var scope = app.Services.CreateScope();
+// ── Challenge seed (idempotente por titulo+idioma, seguro en cualquier entorno) ─
+using (var scope = app.Services.CreateScope())
+{
     try
     {
         var seeder = scope.ServiceProvider.GetRequiredService<ChallengeSeeder>();
@@ -155,7 +158,7 @@ if (app.Environment.IsDevelopment())
     }
     catch (Exception ex)
     {
-        Log.Warning(ex, "Challenge seeder skipped (Firebase may not be configured locally).");
+        Log.Warning(ex, "Challenge seeder skipped (Firebase may not be configured).");
     }
 }
 

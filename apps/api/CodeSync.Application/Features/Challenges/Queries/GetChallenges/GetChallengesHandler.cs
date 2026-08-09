@@ -17,6 +17,7 @@ internal sealed class GetChallengesHandler : IRequestHandler<GetChallengesQuery,
         var challenges = await _repo.GetAllActiveAsync(cancellationToken);
 
         return challenges
+            .Where(c => string.IsNullOrEmpty(request.Difficulty) || c.Difficulty.ToApiString() == request.Difficulty)
             .OrderBy(c => c.Difficulty)
             .ThenBy(c => c.Title)
             .Select(c => new ChallengeSummaryDto(

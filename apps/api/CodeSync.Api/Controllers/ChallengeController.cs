@@ -19,9 +19,9 @@ public sealed class ChallengeController : ControllerBase
     [HttpGet]
     [AllowAnonymous]
     [ProducesResponseType(typeof(IReadOnlyList<ChallengeSummaryDto>), 200)]
-    public async Task<IActionResult> GetAll(CancellationToken ct)
+    public async Task<IActionResult> GetAll([FromQuery] string? difficulty, CancellationToken ct)
     {
-        var result = await _mediator.Send(new GetChallengesQuery(), ct);
+        var result = await _mediator.Send(new GetChallengesQuery(difficulty), ct);
         return Ok(result);
     }
 
