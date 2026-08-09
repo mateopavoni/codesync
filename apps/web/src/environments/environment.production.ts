@@ -1,6 +1,8 @@
 export const environment = {
   production: true,
   apiUrl: 'https://codesync-api.mateopavoni.com.ar/api',
+  useEmulators: false,
+  emulatorAuthUrl: '',
   firebase: {
     apiKey: 'REMOVED-FIREBASE-WEB-KEY',
     authDomain: 'codesync-95667.firebaseapp.com',
