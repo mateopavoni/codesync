@@ -3,11 +3,13 @@ import { RouterLink } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../../core/services/auth.service';
 import { ErrorMessageComponent } from '../../../shared/components/error-message/error-message.component';
+import { AuthShellComponent } from '../../../shared/components/auth-shell/auth-shell.component';
+import { PasswordStrengthComponent } from '../../../shared/components/password-strength/password-strength.component';
 
 @Component({
   selector: 'app-signup',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink, ErrorMessageComponent],
+  imports: [ReactiveFormsModule, RouterLink, ErrorMessageComponent, AuthShellComponent, PasswordStrengthComponent],
   templateUrl: './signup.component.html',
   styleUrl: './signup.component.css',
 })

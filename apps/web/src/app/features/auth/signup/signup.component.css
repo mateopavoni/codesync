@@ -2,27 +2,6 @@
    Signup — derivado del mismo sistema que Login (CodeSync / Stitch)
    ========================================================================== */
 
-.auth-page {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: var(--cs-sp-lg);
-  background: var(--cs-bg);
-}
-
-.auth-card {
-  width: 100%;
-  max-width: 420px;
-  background: var(--cs-surface-low);
-  border: 1px solid var(--cs-outline-var);
-  border-radius: var(--cs-radius-lg);
-  padding: 40px;
-  display: flex;
-  flex-direction: column;
-  gap: var(--cs-sp-lg);
-}
-
 .auth-header { text-align: center; }
 
 .brand {
