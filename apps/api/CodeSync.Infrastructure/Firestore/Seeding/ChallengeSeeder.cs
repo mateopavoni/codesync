@@ -24,15 +24,23 @@ public sealed class ChallengeSeeder
     public async Task SeedAsync(CancellationToken ct = default)
     {
         var existing = await _repo.GetAllActiveAsync(ct);
-        if (existing.Count > 0)
+        var existingKeys = existing
+            .Select(c => (c.Title, c.Language))
+            .ToHashSet();
+
+        var missing = SeedData
+            .Where(c => !existingKeys.Contains((c.Title, c.Language)))
+            .ToList();
+
+        if (missing.Count == 0)
         {
             _logger.LogInformation("Challenges already seeded ({Count} found). Skipping.", existing.Count);
             return;
         }
 
-        _logger.LogInformation("Seeding {Count} challenges...", SeedData.Count);
+        _logger.LogInformation("Seeding {Count} missing challenges...", missing.Count);
 
-        foreach (var challenge in SeedData)
+        foreach (var challenge in missing)
         {
             await _repo.CreateAsync(challenge, ct);
         }
@@ -141,6 +149,45 @@ public sealed class ChallengeSeeder
             }
         },
 
+        new Challenge
+        {
+            Title = "Contar vocales",
+            Description = "Dada una cadena de texto, retorna la cantidad de vocales (a, e, i, o, u) que contiene, sin distinguir mayusculas de minusculas.",
+            Difficulty = DifficultyLevel.Easy,
+            Language = ProgrammingLanguage.Python,
+            FunctionName = "solution",
+            SolutionTemplate = "def solution(s):\n    pass",
+            IsActive = true,
+            CreatedAt = DateTime.UtcNow,
+            TestCases = new List<TestCase>
+            {
+                new() { Args = "[\"hello\"]",       ExpectedOutput = "2", IsVisible = true },
+                new() { Args = "[\"CodeSync\"]",    ExpectedOutput = "2", IsVisible = true },
+                new() { Args = "[\"\"]",            ExpectedOutput = "0", IsVisible = false },
+                new() { Args = "[\"aeiouAEIOU\"]",  ExpectedOutput = "10", IsVisible = false }
+            }
+        },
+
+        new Challenge
+        {
+            Title = "Es primo",
+            Description = "Dado un numero entero n, retorna true si es un numero primo, false en caso contrario.",
+            Difficulty = DifficultyLevel.Hard,
+            Language = ProgrammingLanguage.Python,
+            FunctionName = "solution",
+            SolutionTemplate = "def solution(n):\n    pass",
+            IsActive = true,
+            CreatedAt = DateTime.UtcNow,
+            TestCases = new List<TestCase>
+            {
+                new() { Args = "[2]",  ExpectedOutput = "true",  IsVisible = true },
+                new() { Args = "[17]", ExpectedOutput = "true",  IsVisible = true },
+                new() { Args = "[1]",  ExpectedOutput = "false", IsVisible = false },
+                new() { Args = "[15]", ExpectedOutput = "false", IsVisible = false },
+                new() { Args = "[97]", ExpectedOutput = "true",  IsVisible = false }
+            }
+        },
+
         // ─── JAVASCRIPT ────────────────────────────────────────────────────────
 
         new Challenge
@@ -234,6 +281,45 @@ public sealed class ChallengeSeeder
                 new() { Args = "[1]",  ExpectedOutput = "1",  IsVisible = true },
                 new() { Args = "[5]",  ExpectedOutput = "5",  IsVisible = true },
                 new() { Args = "[10]", ExpectedOutput = "55", IsVisible = false }
+            }
+        },
+
+        new Challenge
+        {
+            Title = "Contar vocales",
+            Description = "Dada una cadena de texto, retorna la cantidad de vocales (a, e, i, o, u) que contiene, sin distinguir mayusculas de minusculas.",
+            Difficulty = DifficultyLevel.Easy,
+            Language = ProgrammingLanguage.JavaScript,
+            FunctionName = "solution",
+            SolutionTemplate = "function solution(s) {\n    \n}",
+            IsActive = true,
+            CreatedAt = DateTime.UtcNow,
+            TestCases = new List<TestCase>
+            {
+                new() { Args = "[\"hello\"]",      ExpectedOutput = "2",  IsVisible = true },
+                new() { Args = "[\"CodeSync\"]",   ExpectedOutput = "2",  IsVisible = true },
+                new() { Args = "[\"\"]",           ExpectedOutput = "0",  IsVisible = false },
+                new() { Args = "[\"aeiouAEIOU\"]", ExpectedOutput = "10", IsVisible = false }
+            }
+        },
+
+        new Challenge
+        {
+            Title = "Es primo",
+            Description = "Dado un numero entero n, retorna true si es un numero primo, false en caso contrario.",
+            Difficulty = DifficultyLevel.Hard,
+            Language = ProgrammingLanguage.JavaScript,
+            FunctionName = "solution",
+            SolutionTemplate = "function solution(n) {\n    \n}",
+            IsActive = true,
+            CreatedAt = DateTime.UtcNow,
+            TestCases = new List<TestCase>
+            {
+                new() { Args = "[2]",  ExpectedOutput = "true",  IsVisible = true },
+                new() { Args = "[17]", ExpectedOutput = "true",  IsVisible = true },
+                new() { Args = "[1]",  ExpectedOutput = "false", IsVisible = false },
+                new() { Args = "[15]", ExpectedOutput = "false", IsVisible = false },
+                new() { Args = "[97]", ExpectedOutput = "true",  IsVisible = false }
             }
         }
     };
