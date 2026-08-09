@@ -1,0 +1,37 @@
+<header class="home-topbar" role="banner">
+  <a routerLink="/" class="topbar-brand" aria-label="CodeSync — ir al inicio">
+    <span class="material-symbols-outlined topbar-logo-icon" aria-hidden="true"
+          style="font-variation-settings: 'FILL' 1;">code_blocks</span>
+    <span class="topbar-brand-name">CodeSync</span>
+  </a>
+
+  <nav class="topbar-nav" aria-label="Navegación principal">
+    <a routerLink="/funcionalidades" routerLinkActive="topbar-link--active" class="topbar-link">Funcionalidades</a>
+    <a routerLink="/acerca-de" routerLinkActive="topbar-link--active" class="topbar-link">Acerca de</a>
+  </nav>
+
+  <div class="topbar-actions">
+    <a routerLink="/login" class="topbar-login">Iniciar sesión</a>
+    <a routerLink="/registro" class="topbar-cta">Empezar gratis</a>
+  </div>
+
+  <button type="button"
+          class="topbar-menu-btn"
+          (click)="toggleMobileNav()"
+          [attr.aria-expanded]="mobileNavOpen()"
+          aria-haspopup="true"
+          aria-label="Abrir menú">
+    <span class="material-symbols-outlined" aria-hidden="true">
+      {{ mobileNavOpen() ? 'close' : 'menu' }}
+    </span>
+  </button>
+
+  @if (mobileNavOpen()) {
+    <nav class="topbar-mobile-panel" aria-label="Navegación móvil">
+      <a routerLink="/funcionalidades" class="topbar-mobile-link" (click)="closeMobileNav()">Funcionalidades</a>
+      <a routerLink="/acerca-de" class="topbar-mobile-link" (click)="closeMobileNav()">Acerca de</a>
+      <a routerLink="/login" class="topbar-mobile-link" (click)="closeMobileNav()">Iniciar sesión</a>
+      <a routerLink="/registro" class="topbar-mobile-link topbar-mobile-link--cta" (click)="closeMobileNav()">Empezar gratis</a>
+    </nav>
+  }
+</header>

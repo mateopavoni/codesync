@@ -9,7 +9,7 @@ import { AuthService } from './core/services/auth.service';
 // dispara apenas cierra el popup de OAuth, antes de que el login termine de
 // navegar a /dashboard — sin este filtro el sidebar aparecía superpuesto al
 // formulario de login durante esa ventana).
-const PUBLIC_ROUTES = new Set(['/', '/login', '/registro']);
+const PUBLIC_ROUTES = new Set(['/', '/login', '/registro', '/funcionalidades', '/acerca-de']);
 
 @Component({
   selector: 'app-root',

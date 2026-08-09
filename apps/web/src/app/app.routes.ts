@@ -9,6 +9,18 @@ export const routes: Routes = [
       import('./features/home/home.component').then((m) => m.HomeComponent),
   },
   {
+    path: 'funcionalidades',
+    loadComponent: () =>
+      import('./features/funcionalidades/funcionalidades.component').then(
+        (m) => m.FuncionalidadesComponent,
+      ),
+  },
+  {
+    path: 'acerca-de',
+    loadComponent: () =>
+      import('./features/acerca-de/acerca-de.component').then((m) => m.AcercaDeComponent),
+  },
+  {
     path: 'login',
     loadComponent: () =>
       import('./features/auth/login/login.component').then((m) => m.LoginComponent),

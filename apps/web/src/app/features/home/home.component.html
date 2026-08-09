@@ -1,43 +1,6 @@
 <!-- Landing page (usuarios no autenticados) -->
 
-<!-- Topbar fija -->
-<header class="home-topbar" role="banner">
-  <div class="topbar-brand" aria-label="CodeSync">
-    <span class="material-symbols-outlined topbar-logo-icon" aria-hidden="true"
-          style="font-variation-settings: 'FILL' 1;">code_blocks</span>
-    <span class="topbar-brand-name">CodeSync</span>
-  </div>
-
-  <nav class="topbar-nav" aria-label="Navegación principal">
-    <a href="#features" class="topbar-link">Funcionalidades</a>
-    <a href="#about" class="topbar-link">Acerca de</a>
-  </nav>
-
-  <div class="topbar-actions">
-    <a routerLink="/login" class="topbar-login">Iniciar sesión</a>
-    <a routerLink="/registro" class="topbar-cta">Empezar gratis</a>
-  </div>
-
-  <button type="button"
-          class="topbar-menu-btn"
-          (click)="toggleMobileNav()"
-          [attr.aria-expanded]="mobileNavOpen()"
-          aria-haspopup="true"
-          aria-label="Abrir menú">
-    <span class="material-symbols-outlined" aria-hidden="true">
-      {{ mobileNavOpen() ? 'close' : 'menu' }}
-    </span>
-  </button>
-
-  @if (mobileNavOpen()) {
-    <nav class="topbar-mobile-panel" aria-label="Navegación móvil">
-      <a href="#features" class="topbar-mobile-link" (click)="closeMobileNav()">Funcionalidades</a>
-      <a href="#about" class="topbar-mobile-link" (click)="closeMobileNav()">Acerca de</a>
-      <a routerLink="/login" class="topbar-mobile-link" (click)="closeMobileNav()">Iniciar sesión</a>
-      <a routerLink="/registro" class="topbar-mobile-link topbar-mobile-link--cta" (click)="closeMobileNav()">Empezar gratis</a>
-    </nav>
-  }
-</header>
+<app-public-header />
 
 <!-- Contenido principal -->
 <main id="main-content">
@@ -73,8 +36,8 @@
     </div>
   </section>
 
-  <!-- Features grid -->
-  <section class="features" id="features" aria-labelledby="features-heading">
+  <!-- Features grid (teaser — detalle completo en /funcionalidades) -->
+  <section class="features" aria-labelledby="features-heading">
     <div class="features-inner">
       <header class="features-header">
         <h2 id="features-heading" class="features-title">
@@ -127,11 +90,18 @@
           </p>
         </article>
       </div>
+
+      <div class="features-more">
+        <a routerLink="/funcionalidades" class="features-more-link">
+          Ver todas las funcionalidades
+          <span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span>
+        </a>
+      </div>
     </div>
   </section>
 
   <!-- CTA section -->
-  <section class="cta-section" id="about" aria-labelledby="cta-heading">
+  <section class="cta-section" aria-labelledby="cta-heading">
     <div class="cta-inner">
       <h2 id="cta-heading" class="cta-title">
         Listo para empezar a programar en equipo?
@@ -147,14 +117,4 @@
 
 </main>
 
-<!-- Footer -->
-<footer class="home-footer" role="contentinfo">
-  <div class="footer-brand" aria-label="CodeSync">CodeSync</div>
-  <nav class="footer-links" aria-label="Links del footer">
-    <a routerLink="/login" class="footer-link">Iniciar sesión</a>
-    <a routerLink="/registro" class="footer-link">Registrarse</a>
-  </nav>
-  <p class="footer-copy">
-    <span aria-hidden="true">&copy;</span> 2026 CodeSync. Proyecto de portfolio de Mateo Pavoni.
-  </p>
-</footer>
+<app-public-footer />
