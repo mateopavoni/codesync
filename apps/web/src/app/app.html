@@ -1,7 +1,8 @@
 <!-- Skip link (a11y — WCAG 2.4.1) -->
 <a href="#main-content" class="skip-link">Saltar al contenido</a>
 
-@if (currentUser$ | async; as user) {
+@if (showShell$ | async) {
+  @let user = (currentUser$ | async)!;
   <!-- Sidebar (desktop) -->
   <nav class="app-sidebar" aria-label="Navegación principal">
     <!-- Brand -->
@@ -114,6 +115,6 @@
 
 <main id="main-content"
       class="app-main"
-      [class.with-sidebar]="(currentUser$ | async) !== null">
+      [class.with-sidebar]="(showShell$ | async)">
   <router-outlet />
 </main>

@@ -155,8 +155,12 @@ code, pre, kbd {
 }
 
 /* ==========================================================================
-   Scrollbar (WebKit — tono IDE)
+   Scrollbar (tono IDE — WebKit/Blink + Firefox)
    ========================================================================== */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--cs-outline-var) transparent;
+}
 ::-webkit-scrollbar        { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track  { background: transparent; }
 ::-webkit-scrollbar-thumb  { background: var(--cs-outline-var); border-radius: 3px; }
