@@ -1,5 +1,4 @@
-<div class="auth-page">
-  <div class="auth-card">
+<app-auth-shell>
     <div class="auth-header">
       <h1 class="brand">CodeSync</h1>
       <p class="subtitle">Creá tu cuenta gratuita</p>
@@ -38,6 +37,7 @@
         @if (form.get('password')?.invalid && form.get('password')?.touched) {
           <span class="field-error">Mínimo 6 caracteres</span>
         }
+        <app-password-strength [value]="form.controls.password.value ?? ''" />
       </div>
 
       <div class="field">
@@ -64,5 +64,4 @@
     <p class="auth-link">
       ¿Ya tenés cuenta? <a routerLink="/login">Iniciá sesión</a>
     </p>
-  </div>
-</div>
+</app-auth-shell>
