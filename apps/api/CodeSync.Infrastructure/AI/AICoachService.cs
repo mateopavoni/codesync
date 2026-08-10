@@ -82,6 +82,9 @@ public sealed class AICoachService : IAICoachService
             ProgrammingLanguage.Python => "Python",
             ProgrammingLanguage.JavaScript => "JavaScript",
             ProgrammingLanguage.Html => "HTML",
+            ProgrammingLanguage.Ruby => "Ruby",
+            ProgrammingLanguage.Java => "Java",
+            ProgrammingLanguage.CSharp => "C#",
             _ => language.ToString()
         };
         var diffName = difficulty switch

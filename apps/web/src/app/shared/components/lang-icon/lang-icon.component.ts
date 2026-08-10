@@ -5,6 +5,9 @@ const LANGUAGE_LABEL: Record<ProgrammingLanguage, string> = {
   javascript: 'JavaScript',
   python: 'Python',
   html: 'HTML',
+  ruby: 'Ruby',
+  java: 'Java',
+  csharp: 'C#',
 };
 
 @Component({
