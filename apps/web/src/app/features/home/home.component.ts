@@ -2,11 +2,12 @@ import { Component, OnInit, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { take } from 'rxjs/operators';
 import { AuthService } from '../../core/services/auth.service';
+import { ShaderBackgroundComponent } from '../../shared/components/shader-background/shader-background.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, ShaderBackgroundComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
 })
