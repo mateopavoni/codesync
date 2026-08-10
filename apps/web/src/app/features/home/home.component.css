@@ -161,21 +161,30 @@
   justify-content: center;
   align-items: center;
   flex-wrap: wrap;
-  gap: var(--cs-sp-lg);
-  text-align: center;
+  gap: var(--cs-sp-md);
   margin-top: var(--cs-sp-xl);
+  padding-top: var(--cs-sp-xl);
+  border-top: 1px solid var(--cs-outline-var);
 }
 
 .features-more-link {
   display: inline-flex;
   align-items: center;
   gap: var(--cs-sp-xs);
-  color: var(--cs-primary);
+  padding: 10px var(--cs-sp-lg);
+  border: 1px solid var(--cs-outline-var);
+  border-radius: var(--cs-radius-xl);
+  color: var(--cs-on-surface);
   font-size: var(--cs-text-body-sm);
   font-weight: 600;
   text-decoration: none;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
 }
-.features-more-link:hover { opacity: 0.85; }
+.features-more-link:hover {
+  background: var(--cs-surface-container);
+  border-color: var(--cs-primary);
+  color: var(--cs-primary);
+}
 .features-more-link .material-symbols-outlined { font-size: 18px !important; }
 
 /* --- CTA section --- */

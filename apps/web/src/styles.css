@@ -241,6 +241,30 @@ code, pre, kbd {
   border-color: rgba(255, 180, 171, 0.3);
 }
 
+/* --- Listas de tags informativos (stack tecnico, specs del sandbox) ---
+   usadas en funcionalidades y acerca-de --- */
+.stack-list {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--cs-sp-sm);
+  margin: var(--cs-sp-md) 0 0;
+  padding: 0;
+}
+
+.stack-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px var(--cs-sp-sm);
+  background: rgba(173, 198, 255, 0.15);
+  color: var(--cs-primary);
+  border: 1px solid rgba(173, 198, 255, 0.3);
+  border-radius: var(--cs-radius-xl);
+  font-size: var(--cs-text-label);
+  font-weight: 600;
+  letter-spacing: var(--cs-ls-label);
+}
+
 /* --- Botones CTA grandes (páginas públicas: home, funcionalidades, acerca-de) --- */
 .btn-primary-lg {
   padding: 14px var(--cs-sp-xl);
