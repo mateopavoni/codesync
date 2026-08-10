@@ -91,6 +91,7 @@ import type { SubmissionResult } from '../../../core/models/submission.model';
       gap: 10px;
       padding: 12px 14px;
       border-radius: 8px;
+      animation: fade-in-up 0.3s ease-out both;
     }
     .summary.all-passed {
       background: rgba(78, 222, 163, 0.1);
@@ -118,6 +119,8 @@ import type { SubmissionResult } from '../../../core/models/submission.model';
       border-radius: 8px;
       background: var(--cs-surface-container);
       border: 1px solid var(--cs-outline-var);
+      transition: border-color 0.15s;
+      animation: fade-in-up 0.3s ease-out both;
     }
     .tc-row.passed { border-color: rgba(78, 222, 163, 0.3); }
     .tc-row.failed { border-color: rgba(255, 180, 171, 0.3); }
