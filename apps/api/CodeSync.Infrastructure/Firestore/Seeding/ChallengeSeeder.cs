@@ -24,6 +24,22 @@ public sealed class ChallengeSeeder
     public async Task SeedAsync(CancellationToken ct = default)
     {
         var existing = await _repo.GetAllActiveAsync(ct);
+
+        // ponytail: migracion de una sola vez — los primeros 6 challenges se
+        // sembraron con el mismo titulo en Python y JavaScript (se veian
+        // "duplicados" en la UI). Renombra en Firestore los docs viejos para
+        // que coincidan con los titulos nuevos de SeedData; se puede borrar
+        // este bloque una vez confirmado que corrio contra el ambiente real.
+        foreach (var (oldTitle, language, newTitle) in LegacyTitleRenames)
+        {
+            var stale = existing.FirstOrDefault(c => c.Title == oldTitle && c.Language == language);
+            if (stale is not null)
+            {
+                stale.Title = newTitle;
+                await _repo.UpdateAsync(stale, ct);
+            }
+        }
+
         var existingKeys = existing
             .Select(c => (c.Title, c.Language))
             .ToHashSet();
@@ -48,13 +64,29 @@ public sealed class ChallengeSeeder
         _logger.LogInformation("Seeding complete.");
     }
 
+    private static readonly List<(string OldTitle, ProgrammingLanguage Language, string NewTitle)> LegacyTitleRenames = new()
+    {
+        ("Suma de dos numeros", ProgrammingLanguage.Python, "Suma de dos numeros (Python)"),
+        ("Suma de dos numeros", ProgrammingLanguage.JavaScript, "Suma de dos numeros (JavaScript)"),
+        ("Revertir un string", ProgrammingLanguage.Python, "Revertir un string (Python)"),
+        ("Revertir un string", ProgrammingLanguage.JavaScript, "Revertir un string (JavaScript)"),
+        ("FizzBuzz", ProgrammingLanguage.Python, "FizzBuzz (Python)"),
+        ("FizzBuzz", ProgrammingLanguage.JavaScript, "FizzBuzz (JavaScript)"),
+        ("Fibonacci", ProgrammingLanguage.Python, "Fibonacci (Python)"),
+        ("Fibonacci", ProgrammingLanguage.JavaScript, "Fibonacci (JavaScript)"),
+        ("Contar vocales", ProgrammingLanguage.Python, "Contar vocales (Python)"),
+        ("Contar vocales", ProgrammingLanguage.JavaScript, "Contar vocales (JavaScript)"),
+        ("Es primo", ProgrammingLanguage.Python, "Es primo (Python)"),
+        ("Es primo", ProgrammingLanguage.JavaScript, "Es primo (JavaScript)"),
+    };
+
     private static readonly List<Challenge> SeedData = new()
     {
         // ─── PYTHON ────────────────────────────────────────────────────────────
 
         new Challenge
         {
-            Title = "Suma de dos numeros",
+            Title = "Suma de dos numeros (Python)",
             Description = "Escribe una funcion que recibe dos numeros enteros y retorna su suma.",
             Difficulty = DifficultyLevel.Easy,
             Language = ProgrammingLanguage.Python,
@@ -73,7 +105,7 @@ public sealed class ChallengeSeeder
 
         new Challenge
         {
-            Title = "Revertir un string",
+            Title = "Revertir un string (Python)",
             Description = "Dada una cadena de texto, retorna la cadena invertida.",
             Difficulty = DifficultyLevel.Easy,
             Language = ProgrammingLanguage.Python,
@@ -111,7 +143,7 @@ public sealed class ChallengeSeeder
 
         new Challenge
         {
-            Title = "FizzBuzz",
+            Title = "FizzBuzz (Python)",
             Description = "Dado un numero n, retorna \"Fizz\" si es divisible por 3, \"Buzz\" si es divisible por 5, \"FizzBuzz\" si es divisible por ambos, o el numero como string si no lo es.",
             Difficulty = DifficultyLevel.Medium,
             Language = ProgrammingLanguage.Python,
@@ -131,7 +163,7 @@ public sealed class ChallengeSeeder
 
         new Challenge
         {
-            Title = "Fibonacci",
+            Title = "Fibonacci (Python)",
             Description = "Retorna el n-esimo numero de la secuencia de Fibonacci. F(0)=0, F(1)=1, F(n)=F(n-1)+F(n-2).",
             Difficulty = DifficultyLevel.Hard,
             Language = ProgrammingLanguage.Python,
@@ -151,7 +183,7 @@ public sealed class ChallengeSeeder
 
         new Challenge
         {
-            Title = "Contar vocales",
+            Title = "Contar vocales (Python)",
             Description = "Dada una cadena de texto, retorna la cantidad de vocales (a, e, i, o, u) que contiene, sin distinguir mayusculas de minusculas.",
             Difficulty = DifficultyLevel.Easy,
             Language = ProgrammingLanguage.Python,
@@ -170,7 +202,7 @@ public sealed class ChallengeSeeder
 
         new Challenge
         {
-            Title = "Es primo",
+            Title = "Es primo (Python)",
             Description = "Dado un numero entero n, retorna true si es un numero primo, false en caso contrario.",
             Difficulty = DifficultyLevel.Hard,
             Language = ProgrammingLanguage.Python,
@@ -192,7 +224,7 @@ public sealed class ChallengeSeeder
 
         new Challenge
         {
-            Title = "Suma de dos numeros",
+            Title = "Suma de dos numeros (JavaScript)",
             Description = "Escribe una funcion que recibe dos numeros y retorna su suma.",
             Difficulty = DifficultyLevel.Easy,
             Language = ProgrammingLanguage.JavaScript,
@@ -211,7 +243,7 @@ public sealed class ChallengeSeeder
 
         new Challenge
         {
-            Title = "Revertir un string",
+            Title = "Revertir un string (JavaScript)",
             Description = "Dada una cadena de texto, retorna la cadena invertida.",
             Difficulty = DifficultyLevel.Easy,
             Language = ProgrammingLanguage.JavaScript,
@@ -248,7 +280,7 @@ public sealed class ChallengeSeeder
 
         new Challenge
         {
-            Title = "FizzBuzz",
+            Title = "FizzBuzz (JavaScript)",
             Description = "Dado un numero n, retorna \"Fizz\" si es divisible por 3, \"Buzz\" si es divisible por 5, \"FizzBuzz\" si es divisible por ambos, o el numero como string si no lo es.",
             Difficulty = DifficultyLevel.Medium,
             Language = ProgrammingLanguage.JavaScript,
@@ -267,7 +299,7 @@ public sealed class ChallengeSeeder
 
         new Challenge
         {
-            Title = "Fibonacci",
+            Title = "Fibonacci (JavaScript)",
             Description = "Retorna el n-esimo numero de la secuencia de Fibonacci. F(0)=0, F(1)=1, F(n)=F(n-1)+F(n-2).",
             Difficulty = DifficultyLevel.Hard,
             Language = ProgrammingLanguage.JavaScript,
@@ -286,7 +318,7 @@ public sealed class ChallengeSeeder
 
         new Challenge
         {
-            Title = "Contar vocales",
+            Title = "Contar vocales (JavaScript)",
             Description = "Dada una cadena de texto, retorna la cantidad de vocales (a, e, i, o, u) que contiene, sin distinguir mayusculas de minusculas.",
             Difficulty = DifficultyLevel.Easy,
             Language = ProgrammingLanguage.JavaScript,
@@ -305,7 +337,7 @@ public sealed class ChallengeSeeder
 
         new Challenge
         {
-            Title = "Es primo",
+            Title = "Es primo (JavaScript)",
             Description = "Dado un numero entero n, retorna true si es un numero primo, false en caso contrario.",
             Difficulty = DifficultyLevel.Hard,
             Language = ProgrammingLanguage.JavaScript,

@@ -59,12 +59,20 @@
 }
 
 .topbar-login {
+  padding: 7px var(--cs-sp-md);
+  border: 1px solid var(--cs-outline-var);
+  border-radius: var(--cs-radius-xl);
   font-size: var(--cs-text-body-sm);
+  font-weight: 600;
   color: var(--cs-on-surface-var);
   text-decoration: none;
-  transition: color 0.15s;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
 }
-.topbar-login:hover { color: var(--cs-primary); }
+.topbar-login:hover {
+  background: var(--cs-surface-container);
+  border-color: var(--cs-outline);
+  color: var(--cs-primary);
+}
 
 .topbar-cta {
   padding: 7px var(--cs-sp-md);
