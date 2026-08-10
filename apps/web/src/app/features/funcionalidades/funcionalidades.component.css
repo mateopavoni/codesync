@@ -95,6 +95,50 @@
   margin: 0;
 }
 
+.about-section {
+  margin-top: var(--cs-sp-xxl, 64px);
+}
+
+.about-title {
+  font-size: var(--cs-text-headline);
+  font-weight: 600;
+  color: var(--cs-on-surface);
+  margin: 0 0 var(--cs-sp-sm);
+}
+
+.about-text {
+  font-size: var(--cs-text-body);
+  line-height: 1.7;
+  color: var(--cs-on-surface-var);
+  margin: 0;
+}
+
+.about-text code {
+  font-family: var(--cs-font-code);
+  font-size: 0.9em;
+  background: var(--cs-surface-container);
+  padding: 2px 6px;
+  border-radius: var(--cs-radius-sm, 4px);
+}
+
+.stack-list {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--cs-sp-sm);
+  margin: var(--cs-sp-md) 0 0;
+  padding: 0;
+}
+
+.stack-pill {
+  padding: 6px var(--cs-sp-md);
+  background: var(--cs-surface-container);
+  border: 1px solid var(--cs-outline-var);
+  border-radius: var(--cs-radius-xl);
+  font-size: var(--cs-text-label);
+  color: var(--cs-on-surface-var);
+}
+
 .page-cta {
   text-align: center;
   margin-top: var(--cs-sp-xxl, 64px);
