@@ -1,3 +1,4 @@
+using CodeSync.Application.Common.Extensions;
 using CodeSync.Application.Common.Interfaces;
 using MediatR;
 
@@ -32,18 +33,30 @@ internal sealed class GetDashboardHandler : IRequestHandler<GetDashboardQuery, D
         var feedbacks = await feedbackTask;
 
         if (user == null)
-            return new DashboardDto(0, challenges.Count, Array.Empty<string>(), Array.Empty<RecentFeedbackDto>(), 1);
+            return new DashboardDto(1, Array.Empty<DashboardChallengeDto>(), Array.Empty<DashboardChallengeDto>(), Array.Empty<DashboardFeedbackDto>());
+
+        var completedIds = new HashSet<string>(user.CompletedChallengeIds);
+        var challengesById = challenges.ToDictionary(c => c.Id);
+
+        var completedChallenges = challenges
+            .Where(c => completedIds.Contains(c.Id))
+            .Select(c => new DashboardChallengeDto(c.Id, c.Title, c.Difficulty.ToApiString()))
+            .ToList();
+
+        var pendingChallenges = challenges
+            .Where(c => !completedIds.Contains(c.Id))
+            .Select(c => new DashboardChallengeDto(c.Id, c.Title, c.Difficulty.ToApiString()))
+            .ToList();
 
         var recentFeedback = feedbacks
             .OrderByDescending(f => f.CreatedAt)
-            .Select(f => new RecentFeedbackDto(f.Id, f.ChallengeId, f.CoachFeedback, f.IsFallback, f.CreatedAt))
+            .Select(f => new DashboardFeedbackDto(
+                f.Id,
+                challengesById.TryGetValue(f.ChallengeId, out var ch) ? ch.Title : "Desafío",
+                f.CoachFeedback,
+                f.CreatedAt))
             .ToList();
 
-        return new DashboardDto(
-            user.CompletedChallengeIds.Count,
-            challenges.Count,
-            user.CompletedChallengeIds,
-            recentFeedback,
-            user.Level);
+        return new DashboardDto(user.Level, completedChallenges, pendingChallenges, recentFeedback);
     }
 }
