@@ -1,5 +1,5 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { Component, OnInit, inject, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { ShaderBackgroundComponent } from '../../shared/components/shader-background/shader-background.component';
 import { PublicHeaderComponent } from '../../shared/components/public-header/public-header.component';
@@ -14,17 +14,17 @@ import { PublicFooterComponent } from '../../shared/components/public-footer/pub
 })
 export class HomeComponent implements OnInit {
   private readonly authService = inject(AuthService);
-  private readonly router = inject(Router);
+
+  readonly isLoggedIn = signal(false);
 
   ngOnInit(): void {
     // Espera a que Firebase resuelva el estado de auth (currentUser$ arranca en
-    // `undefined`) antes de decidir si redirige — si se usa take(1) directo sobre
-    // currentUser$, esa primera emisión suele ser `undefined` y nunca redirige a
-    // un usuario ya logueado; con authReady$ el chequeo es determinístico.
+    // `undefined`) antes de decidir qué CTA mostrar — si se usa take(1) directo
+    // sobre currentUser$, esa primera emisión suele ser `undefined`; con
+    // authReady$ el chequeo es determinístico. Ya no redirige solo: el home
+    // se muestra siempre y el usuario logueado decide si entra al dashboard.
     this.authService.authReady$.subscribe(() => {
-      if (this.authService.currentUser) {
-        void this.router.navigate(['/dashboard'], { replaceUrl: true });
-      }
+      this.isLoggedIn.set(!!this.authService.currentUser);
     });
   }
 }

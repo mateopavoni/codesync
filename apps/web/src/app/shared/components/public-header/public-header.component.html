@@ -5,9 +5,18 @@
     <span class="topbar-brand-name">CodeSync</span>
   </a>
 
+  <nav class="topbar-nav" aria-label="Navegación">
+    <a routerLink="/funcionalidades" routerLinkActive="topbar-link--active" class="topbar-link">Funcionalidades</a>
+    <a routerLink="/acerca-de" routerLinkActive="topbar-link--active" class="topbar-link">Acerca de</a>
+  </nav>
+
   <div class="topbar-actions">
-    <a routerLink="/login" class="topbar-login">Iniciar sesión</a>
-    <a routerLink="/registro" class="topbar-cta">Empezar gratis</a>
+    @if (isLoggedIn()) {
+      <a routerLink="/dashboard" class="topbar-cta">Ir al dashboard</a>
+    } @else {
+      <a routerLink="/login" class="topbar-login">Iniciar sesión</a>
+      <a routerLink="/registro" class="topbar-cta">Empezar gratis</a>
+    }
   </div>
 
   <button type="button"
@@ -23,8 +32,14 @@
 
   @if (mobileNavOpen()) {
     <nav class="topbar-mobile-panel" aria-label="Navegación móvil">
-      <a routerLink="/login" class="topbar-mobile-link" (click)="closeMobileNav()">Iniciar sesión</a>
-      <a routerLink="/registro" class="topbar-mobile-link topbar-mobile-link--cta" (click)="closeMobileNav()">Empezar gratis</a>
+      <a routerLink="/funcionalidades" class="topbar-mobile-link" (click)="closeMobileNav()">Funcionalidades</a>
+      <a routerLink="/acerca-de" class="topbar-mobile-link" (click)="closeMobileNav()">Acerca de</a>
+      @if (isLoggedIn()) {
+        <a routerLink="/dashboard" class="topbar-mobile-link topbar-mobile-link--cta" (click)="closeMobileNav()">Ir al dashboard</a>
+      } @else {
+        <a routerLink="/login" class="topbar-mobile-link" (click)="closeMobileNav()">Iniciar sesión</a>
+        <a routerLink="/registro" class="topbar-mobile-link topbar-mobile-link--cta" (click)="closeMobileNav()">Empezar gratis</a>
+      }
     </nav>
   }
 </header>

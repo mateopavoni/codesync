@@ -25,13 +25,19 @@
       </p>
 
       <div class="hero-actions">
-        <a routerLink="/registro" class="btn-primary-lg">
-          Probar gratis
-        </a>
-        <a routerLink="/login" class="btn-ghost-lg">
-          <span class="material-symbols-outlined" aria-hidden="true">play_circle</span>
-          Ver demo
-        </a>
+        @if (isLoggedIn()) {
+          <a routerLink="/dashboard" class="btn-primary-lg">
+            Ir al dashboard
+          </a>
+        } @else {
+          <a routerLink="/registro" class="btn-primary-lg">
+            Probar gratis
+          </a>
+          <a routerLink="/login" class="btn-ghost-lg">
+            <span class="material-symbols-outlined" aria-hidden="true">play_circle</span>
+            Ver demo
+          </a>
+        }
       </div>
     </div>
   </section>
@@ -110,12 +116,19 @@
       <h2 id="cta-heading" class="cta-title">
         Listo para empezar a programar en equipo?
       </h2>
-      <p class="cta-subtitle">
-        Creá tu cuenta gratis y comenzá a aprender con los mejores del mundo.
-      </p>
-      <a routerLink="/registro" class="btn-primary-lg">
-        Crear cuenta gratuita
-      </a>
+      @if (isLoggedIn()) {
+        <p class="cta-subtitle">Volvé a tu espacio de trabajo y seguí donde lo dejaste.</p>
+        <a routerLink="/dashboard" class="btn-primary-lg">
+          Ir al dashboard
+        </a>
+      } @else {
+        <p class="cta-subtitle">
+          Creá tu cuenta gratis y comenzá a aprender con los mejores del mundo.
+        </p>
+        <a routerLink="/registro" class="btn-primary-lg">
+          Crear cuenta gratuita
+        </a>
+      }
     </div>
   </section>
 
