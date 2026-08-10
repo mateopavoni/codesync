@@ -66,6 +66,7 @@ import { Component, Input } from '@angular/core';
       border-radius: 8px;
       padding: 14px 16px;
       overflow: hidden;
+      animation: fade-in-up 0.3s ease-out both;
     }
     .feedback-card::before {
       content: '';
@@ -86,7 +87,7 @@ import { Component, Input } from '@angular/core';
       width: 28px;
       height: 28px;
       border-radius: 6px;
-      background: rgba(160, 120, 255, 0.12);
+      background: rgba(208, 188, 255, 0.12); /* --cs-tertiary #d0bcff en rgba, no un morado aproximado */
       display: flex;
       align-items: center;
       justify-content: center;

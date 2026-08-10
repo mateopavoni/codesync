@@ -194,7 +194,10 @@
   display: flex;
   flex-direction: column;
   gap: var(--cs-sp-xs);
+  transition: border-color 0.15s;
 }
+
+.example:hover { border-color: var(--cs-outline); }
 
 .example-row {
   display: flex;
