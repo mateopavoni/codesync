@@ -91,7 +91,19 @@
   align-items: center;
   gap: 4px;
   text-align: center;
+  transition: border-color 0.2s, transform 0.2s;
+  animation: fade-in-up 0.4s ease-out both;
 }
+
+.stat-card:hover {
+  border-color: var(--cs-primary);
+  transform: translateY(-2px);
+}
+
+.stats-row > .stat-card:nth-child(1) { animation-delay: 0ms; }
+.stats-row > .stat-card:nth-child(2) { animation-delay: 60ms; }
+.stats-row > .stat-card:nth-child(3) { animation-delay: 120ms; }
+.stats-row > .stat-card:nth-child(4) { animation-delay: 180ms; }
 
 .stat-value {
   font-size: var(--cs-text-display);
@@ -126,6 +138,8 @@
   display: flex;
   flex-direction: column;
   gap: var(--cs-sp-sm);
+  animation: fade-in-up 0.4s ease-out both;
+  animation-delay: 220ms;
 }
 
 .section-card h2 {
@@ -156,10 +170,13 @@
   border-radius: var(--cs-radius-lg);
   text-decoration: none;
   color: var(--cs-on-surface);
-  transition: border-color 0.15s;
+  transition: border-color 0.15s, transform 0.15s;
 }
 
-a.challenge-row:hover { border-color: var(--cs-primary); }
+a.challenge-row:hover {
+  border-color: var(--cs-primary);
+  transform: translateY(-1px);
+}
 
 .ch-title {
   font-size: var(--cs-text-body-sm);

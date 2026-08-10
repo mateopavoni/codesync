@@ -98,6 +98,7 @@ import type { ChatMessage } from '../../../core/models/room.model';
       flex-direction: column;
       gap: 2px;
       max-width: 85%;
+      animation: fade-in-up 0.25s ease-out both;
     }
     .message.own { align-self: flex-end; align-items: flex-end; }
     .msg-author {
