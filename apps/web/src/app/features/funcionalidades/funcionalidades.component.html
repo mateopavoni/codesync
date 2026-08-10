@@ -54,6 +54,31 @@
     </article>
   </section>
 
+  <section class="about-section">
+    <h2 class="about-title">Sandbox de ejecución: límites de seguridad</h2>
+    <p class="about-text">
+      Cada envío corre en un contenedor Docker aislado y descartable, sin acceso a red
+      (<code>NetworkMode=none</code>), con 256MB de memoria, filesystem de solo lectura y un
+      timeout de 5 segundos que mata el proceso si se cuelga. Nada de lo que ejecutes puede
+      tocar el resto del sistema ni a otros usuarios.
+    </p>
+    <ul class="stack-list">
+      <li class="stack-pill">Sin red</li>
+      <li class="stack-pill">256MB de memoria</li>
+      <li class="stack-pill">Timeout 5s</li>
+      <li class="stack-pill">Filesystem read-only</li>
+    </ul>
+  </section>
+
+  <section class="about-section">
+    <h2 class="about-title">Uso del IA Coach</h2>
+    <p class="about-text">
+      El Coach tiene un límite de uso por usuario (1 pedido por minuto) para evitar abuso de la
+      cuota gratuita de Gemini. Si lo superás, seguís recibiendo feedback al instante: un hint
+      pregenerado según el desafío y su dificultad, sin cortar tu flujo de trabajo.
+    </p>
+  </section>
+
   <section class="page-cta">
     <h2 class="page-cta-title">¿Listo para probarlo?</h2>
     <a routerLink="/registro" class="btn-primary-lg">Crear cuenta gratuita</a>
