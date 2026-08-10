@@ -11,8 +11,8 @@
   } @else if (profile()) {
     <div class="profile-card">
       <div class="avatar-section">
-        @if (profile()!.photoURL) {
-          <img [src]="profile()!.photoURL" [alt]="profile()!.displayName ?? 'Avatar'" class="avatar" />
+        @if (profile()!.photoUrl) {
+          <img [src]="profile()!.photoUrl" [alt]="profile()!.displayName ?? 'Avatar'" class="avatar" />
         } @else {
           <div class="avatar-placeholder" aria-hidden="true">
             {{ (profile()!.displayName ?? profile()!.email ?? 'U')[0].toUpperCase() }}
@@ -30,11 +30,11 @@
           <span class="stat-label">Nivel</span>
         </div>
         <div class="stat-item">
-          <span class="stat-value">{{ profile()!.completedChallengesCount }}</span>
+          <span class="stat-value">{{ profile()!.completedChallengeCount }}</span>
           <span class="stat-label">Desafíos completados</span>
         </div>
         <div class="stat-item">
-          <span class="stat-value">{{ profile()!.createdAt | slice:0:10 }}</span>
+          <span class="stat-value stat-value--date">{{ profile()!.createdAt | date:'d MMM y' }}</span>
           <span class="stat-label">Miembro desde</span>
         </div>
       </div>

@@ -6,14 +6,14 @@
   <!-- Sidebar (desktop) -->
   <nav class="app-sidebar" aria-label="Navegación principal">
     <!-- Brand -->
-    <div class="sidebar-brand">
+    <a routerLink="/dashboard" class="sidebar-brand">
       <span class="material-symbols-outlined sidebar-icon" aria-hidden="true"
             style="font-variation-settings: 'FILL' 1;">code_blocks</span>
       <div>
         <span class="sidebar-brand-name">CodeSync</span>
         <span class="sidebar-brand-sub">IDE Colaborativo</span>
       </div>
-    </div>
+    </a>
 
     <!-- CTA nueva sala -->
     <div class="sidebar-cta-wrap">
@@ -58,41 +58,49 @@
     <!-- Separador -->
     <div class="sidebar-divider" role="separator" aria-hidden="true"></div>
 
-    <!-- Footer del sidebar -->
-    <div class="sidebar-footer">
-      <a routerLink="/perfil"
-         routerLinkActive="active"
-         [ariaCurrentWhenActive]="'page'"
-         class="sidebar-link">
-        <span class="material-symbols-outlined" aria-hidden="true">person</span>
-        Perfil
-      </a>
-      <button type="button" class="sidebar-logout" (click)="onLogout()">
-        <span class="material-symbols-outlined" aria-hidden="true">logout</span>
-        Salir
+    <!-- Avatar + nombre del usuario (togglea menú Perfil/Salir) -->
+    <div class="sidebar-user-wrap">
+      <button type="button"
+              class="sidebar-user"
+              (click)="toggleUserMenu()"
+              [attr.aria-expanded]="userMenuOpen()"
+              aria-haspopup="true">
+        @if (user.photoURL) {
+          <img [src]="user.photoURL"
+               [alt]="user.displayName ?? 'Avatar'"
+               class="sidebar-avatar" />
+        } @else {
+          <div class="sidebar-avatar-placeholder" aria-hidden="true">
+            {{ (user.displayName ?? user.email ?? 'U')[0].toUpperCase() }}
+          </div>
+        }
+        <span class="sidebar-username" [title]="user.displayName ?? user.email ?? ''">
+          {{ user.displayName ?? user.email }}
+        </span>
+        <span class="material-symbols-outlined sidebar-user-caret" aria-hidden="true">expand_more</span>
       </button>
-    </div>
 
-    <!-- Avatar + nombre del usuario -->
-    <div class="sidebar-user">
-      @if (user.photoURL) {
-        <img [src]="user.photoURL"
-             [alt]="user.displayName ?? 'Avatar'"
-             class="sidebar-avatar" />
-      } @else {
-        <div class="sidebar-avatar-placeholder" aria-hidden="true">
-          {{ (user.displayName ?? user.email ?? 'U')[0].toUpperCase() }}
+      @if (userMenuOpen()) {
+        <div class="sidebar-user-menu" role="menu">
+          <a routerLink="/perfil"
+             role="menuitem"
+             class="sidebar-link"
+             (click)="closeUserMenu()">
+            <span class="material-symbols-outlined" aria-hidden="true">person</span>
+            Perfil
+          </a>
+          <button type="button" class="sidebar-logout" role="menuitem" (click)="onLogout()">
+            <span class="material-symbols-outlined" aria-hidden="true">logout</span>
+            Salir
+          </button>
         </div>
       }
-      <span class="sidebar-username" [title]="user.displayName ?? user.email ?? ''">
-        {{ user.displayName ?? user.email }}
-      </span>
     </div>
   </nav>
 
   <!-- Top bar móvil (visible solo en < 768px) -->
   <div class="mobile-topbar" role="banner">
-    <span class="mobile-brand">CodeSync</span>
+    <a routerLink="/dashboard" class="mobile-brand">CodeSync</a>
     <nav class="mobile-nav" aria-label="Navegación móvil">
       <a routerLink="/dashboard" routerLinkActive="mobile-link--active" class="mobile-link"
          aria-label="Dashboard">

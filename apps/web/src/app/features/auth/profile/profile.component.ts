@@ -1,5 +1,5 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
-import { SlicePipe } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { DashboardService } from '../../../core/services/dashboard.service';
@@ -10,7 +10,7 @@ import type { UserProfile } from '../../../core/models/user.model';
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [SlicePipe, RouterLink, LoadingSpinnerComponent, ErrorMessageComponent],
+  imports: [DatePipe, RouterLink, LoadingSpinnerComponent, ErrorMessageComponent],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css',
 })

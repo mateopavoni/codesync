@@ -131,6 +131,11 @@
   line-height: 1;
 }
 
+.stat-value--date {
+  font-size: var(--cs-text-headline);
+  white-space: nowrap;
+}
+
 .stat-label {
   font-size: var(--cs-text-label);
   font-weight: 600;
