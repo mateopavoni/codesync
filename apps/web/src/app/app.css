@@ -48,6 +48,7 @@
   padding: 0 var(--cs-sp-lg);
   margin-bottom: var(--cs-sp-xl);
   flex-shrink: 0;
+  text-decoration: none;
 }
 
 .sidebar-icon {
@@ -181,14 +182,53 @@
   font-size: 20px !important;
 }
 
-/* User row */
+/* User row (toggle del menú Perfil/Salir) */
+.sidebar-user-wrap {
+  position: relative;
+  margin-top: var(--cs-sp-sm);
+  padding: 0 var(--cs-sp-sm);
+  flex-shrink: 0;
+}
+
 .sidebar-user {
   display: flex;
   align-items: center;
   gap: var(--cs-sp-sm);
+  width: 100%;
   padding: var(--cs-sp-sm) var(--cs-sp-md);
-  margin-top: var(--cs-sp-sm);
+  background: transparent;
+  border: none;
+  border-radius: var(--cs-radius-xl);
+  cursor: pointer;
+  font-family: var(--cs-font-ui);
+  transition: background 0.15s;
+}
+.sidebar-user:hover,
+.sidebar-user[aria-expanded="true"] {
+  background: var(--cs-surface-variant);
+}
+
+.sidebar-user-caret {
+  font-size: 18px !important;
+  color: var(--cs-on-surface-var);
+  margin-left: auto;
   flex-shrink: 0;
+}
+
+.sidebar-user-menu {
+  position: absolute;
+  bottom: calc(100% + 4px);
+  left: var(--cs-sp-sm);
+  right: var(--cs-sp-sm);
+  background: var(--cs-surface);
+  border: 1px solid var(--cs-outline-var);
+  border-radius: var(--cs-radius-lg);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.16);
+  padding: var(--cs-sp-xs);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  z-index: 110;
 }
 
 .sidebar-avatar {
@@ -245,6 +285,7 @@
   font-size: 1.125rem;
   font-weight: 700;
   color: var(--cs-primary);
+  text-decoration: none;
   flex: 1;
 }
 

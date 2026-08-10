@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, HostListener, inject, signal } from '@angular/core';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { AsyncPipe } from '@angular/common';
 import { combineLatest, filter, map, startWith } from 'rxjs';
@@ -21,6 +21,8 @@ export class App {
   readonly authService = inject(AuthService);
   readonly router = inject(Router);
 
+  readonly userMenuOpen = signal(false);
+
   readonly currentUser$ = this.authService.currentUser$;
 
   private readonly url$ = this.router.events.pipe(
@@ -35,5 +37,27 @@ export class App {
 
   async onLogout(): Promise<void> {
     await this.authService.logout();
+  }
+
+  toggleUserMenu(): void {
+    this.userMenuOpen.update((open) => !open);
+  }
+
+  closeUserMenu(): void {
+    this.userMenuOpen.set(false);
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    if (!this.userMenuOpen()) return;
+    const target = event.target as HTMLElement | null;
+    if (!target?.closest('.sidebar-user-wrap')) {
+      this.closeUserMenu();
+    }
+  }
+
+  @HostListener('document:keydown.escape')
+  onEscape(): void {
+    this.closeUserMenu();
   }
 }
