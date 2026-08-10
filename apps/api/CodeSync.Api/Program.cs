@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using System.Threading.RateLimiting;
 using CodeSync.Api.Auth;
 using CodeSync.Application;
@@ -74,7 +75,11 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-builder.Services.AddControllers();
+// El frontend Angular manda enums como string ("python", "javascript"); sin este
+// converter, System.Text.Json solo acepta los valores numéricos del enum de C#
+// y cada submission llega con 400 (Language inválido).
+builder.Services.AddControllers()
+    .AddJsonOptions(o => o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
 // ── Rate limiting (protege la VPS de abuso/spam en la demo) ──────────────────
 // Partición por IP: sin esto un solo cliente hambriento podía saturar el
