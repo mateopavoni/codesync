@@ -17,10 +17,13 @@ export class MonacoLoaderService {
       }
 
       const script = document.createElement('script');
-      script.src = 'assets/monaco/vs/loader.js';
+      script.src = '/assets/monaco/vs/loader.js';
       script.async = true;
       script.onload = () => {
-        window.require.config({ paths: { vs: 'assets/monaco/vs' } });
+        // Path absoluto (con "/" inicial): los web workers de Monaco resuelven
+        // sus propias URLs internas (p.ej. tsWorker.js) contra este valor, y una
+        // ruta relativa falla al parsear dentro del contexto del worker.
+        window.require.config({ paths: { vs: '/assets/monaco/vs' } });
         window.require(['vs/editor/editor.main'], () => resolve());
       };
       script.onerror = () => reject(new Error('No se pudo cargar Monaco Editor desde assets.'));
