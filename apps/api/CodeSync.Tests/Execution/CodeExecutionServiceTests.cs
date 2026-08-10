@@ -188,4 +188,53 @@ public sealed class CodeExecutionServiceTests
         Assert.NotNull(capturedImage);
         Assert.Contains("node", capturedImage, StringComparison.OrdinalIgnoreCase);
     }
+
+    [Theory]
+    [InlineData(ProgrammingLanguage.Ruby, "ruby")]
+    [InlineData(ProgrammingLanguage.Java, "eclipse-temurin")]
+    [InlineData(ProgrammingLanguage.CSharp, "dotnet")]
+    public async Task Execute_NewLanguages_UseExpectedImage(ProgrammingLanguage language, string expectedImageFragment)
+    {
+        string? capturedImage = null;
+        _dockerMock
+            .Setup(d => d.RunAsync(
+                It.IsAny<string>(), It.IsAny<IReadOnlyList<string>>(),
+                It.IsAny<string>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
+            .Callback<string, IReadOnlyList<string>, string, int, CancellationToken>(
+                (img, _, _, _, _) => capturedImage = img)
+            .ReturnsAsync(new DockerRunResult("[{\"passed\":true,\"actualOutput\":\"0\"}]", "", false));
+
+        await BuildService().ExecuteAsync(
+            "irrelevant for this test — only the image selection is under test",
+            "solution", language,
+            new[] { new TestCase { Args = "[0, 0]", ExpectedOutput = "0" } });
+
+        Assert.NotNull(capturedImage);
+        Assert.Contains(expectedImageFragment, capturedImage, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task Execute_JavaLanguage_ParsesPassFailFromRunnerOutput()
+    {
+        var runnerOutput = JsonSerializer.Serialize(new[]
+        {
+            new { passed = true, actualOutput = "3" },
+            new { passed = false, actualOutput = "99" }
+        });
+
+        _dockerMock
+            .Setup(d => d.RunAsync(
+                It.IsAny<string>(), It.IsAny<IReadOnlyList<string>>(),
+                It.IsAny<string>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new DockerRunResult(runnerOutput, "", false));
+
+        var result = await BuildService().ExecuteAsync(
+            "public static int solution(int a, int b) { return a + b; }",
+            "solution", ProgrammingLanguage.Java,
+            TwoTestCases());
+
+        Assert.False(result.AllTestsPassed);
+        Assert.True(result.TestResults[0].Passed);
+        Assert.False(result.TestResults[1].Passed);
+    }
 }

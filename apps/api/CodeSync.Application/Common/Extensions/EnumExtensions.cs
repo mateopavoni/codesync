@@ -22,6 +22,9 @@ public static class EnumExtensions
         ProgrammingLanguage.Python => "python",
         ProgrammingLanguage.JavaScript => "javascript",
         ProgrammingLanguage.Html => "html",
+        ProgrammingLanguage.Ruby => "ruby",
+        ProgrammingLanguage.Java => "java",
+        ProgrammingLanguage.CSharp => "csharp",
         _ => throw new ArgumentOutOfRangeException(nameof(language), language, null),
     };
 }
