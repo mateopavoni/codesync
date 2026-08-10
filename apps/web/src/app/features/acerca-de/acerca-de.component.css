@@ -55,23 +55,6 @@
   margin: 0;
 }
 
-.stack-list {
-  list-style: none;
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--cs-sp-sm);
-  margin: var(--cs-sp-md) 0 0;
-  padding: 0;
-}
-
-.stack-pill {
-  padding: 6px var(--cs-sp-md);
-  background: var(--cs-surface-container);
-  border: 1px solid var(--cs-outline-var);
-  border-radius: var(--cs-radius-xl);
-  font-size: var(--cs-text-label);
-  color: var(--cs-on-surface-var);
-}
 
 .page-cta {
   text-align: center;
