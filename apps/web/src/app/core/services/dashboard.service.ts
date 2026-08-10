@@ -2,15 +2,27 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import type { CoachFeedback } from '../models/feedback.model';
-import type { ChallengeSummary } from '../models/challenge.model';
+import type { DifficultyLevel } from '../models/challenge.model';
 import type { UserProfile } from '../models/user.model';
 
+export interface DashboardChallenge {
+  id: string;
+  title: string;
+  difficulty: DifficultyLevel;
+}
+
+export interface DashboardFeedback {
+  id: string;
+  challengeTitle: string;
+  message: string;
+  createdAt: string;
+}
+
 export interface DashboardData {
-  profile: UserProfile;
-  completedChallenges: ChallengeSummary[];
-  pendingChallenges: ChallengeSummary[];
-  recentFeedback: CoachFeedback[];
+  level: number;
+  completedChallenges: DashboardChallenge[];
+  pendingChallenges: DashboardChallenge[];
+  recentFeedback: DashboardFeedback[];
 }
 
 @Injectable({ providedIn: 'root' })
