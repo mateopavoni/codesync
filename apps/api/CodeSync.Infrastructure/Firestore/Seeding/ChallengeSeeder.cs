@@ -455,6 +455,107 @@ public sealed class ChallengeSeeder
             }
         },
 
+        // ─── JAVA ──────────────────────────────────────────────────────────
+        // Java es tipado estatico: las firmas ya declaran los tipos de los
+        // parametros/retorno, a diferencia de los stubs de Python/JS/Ruby.
+
+        new Challenge
+        {
+            Title = "Suma de dos numeros (Java)",
+            Description = "Escribe una funcion que recibe dos numeros enteros y retorna su suma.",
+            Difficulty = DifficultyLevel.Easy,
+            Language = ProgrammingLanguage.Java,
+            FunctionName = "solution",
+            SolutionTemplate = "public static int solution(int a, int b) {\n    \n}",
+            IsActive = true,
+            CreatedAt = DateTime.UtcNow,
+            TestCases = new List<TestCase>
+            {
+                new() { Args = "[1, 2]",     ExpectedOutput = "3",   IsVisible = true },
+                new() { Args = "[0, 0]",     ExpectedOutput = "0",   IsVisible = true },
+                new() { Args = "[-1, 1]",    ExpectedOutput = "0",   IsVisible = false },
+                new() { Args = "[100, 200]", ExpectedOutput = "300", IsVisible = false }
+            }
+        },
+
+        new Challenge
+        {
+            Title = "Revertir un string (Java)",
+            Description = "Dada una cadena de texto, retorna la cadena invertida.",
+            Difficulty = DifficultyLevel.Easy,
+            Language = ProgrammingLanguage.Java,
+            FunctionName = "solution",
+            SolutionTemplate = "public static String solution(String s) {\n    \n}",
+            IsActive = true,
+            CreatedAt = DateTime.UtcNow,
+            TestCases = new List<TestCase>
+            {
+                new() { Args = "[\"hello\"]",  ExpectedOutput = "\"olleh\"", IsVisible = true },
+                new() { Args = "[\"world\"]",  ExpectedOutput = "\"dlrow\"", IsVisible = true },
+                new() { Args = "[\"\"]",       ExpectedOutput = "\"\"",      IsVisible = false },
+                new() { Args = "[\"a\"]",      ExpectedOutput = "\"a\"",     IsVisible = false }
+            }
+        },
+
+        new Challenge
+        {
+            Title = "FizzBuzz (Java)",
+            Description = "Dado un numero n, retorna \"Fizz\" si es divisible por 3, \"Buzz\" si es divisible por 5, \"FizzBuzz\" si es divisible por ambos, o el numero como string si no lo es.",
+            Difficulty = DifficultyLevel.Medium,
+            Language = ProgrammingLanguage.Java,
+            FunctionName = "solution",
+            SolutionTemplate = "public static String solution(int n) {\n    \n}",
+            IsActive = true,
+            CreatedAt = DateTime.UtcNow,
+            TestCases = new List<TestCase>
+            {
+                new() { Args = "[3]",  ExpectedOutput = "\"Fizz\"",     IsVisible = true },
+                new() { Args = "[5]",  ExpectedOutput = "\"Buzz\"",     IsVisible = true },
+                new() { Args = "[15]", ExpectedOutput = "\"FizzBuzz\"", IsVisible = true },
+                new() { Args = "[7]",  ExpectedOutput = "\"7\"",        IsVisible = false },
+                new() { Args = "[1]",  ExpectedOutput = "\"1\"",        IsVisible = false }
+            }
+        },
+
+        new Challenge
+        {
+            Title = "Contar vocales (Java)",
+            Description = "Dada una cadena de texto, retorna la cantidad de vocales (a, e, i, o, u) que contiene, sin distinguir mayusculas de minusculas.",
+            Difficulty = DifficultyLevel.Easy,
+            Language = ProgrammingLanguage.Java,
+            FunctionName = "solution",
+            SolutionTemplate = "public static int solution(String s) {\n    \n}",
+            IsActive = true,
+            CreatedAt = DateTime.UtcNow,
+            TestCases = new List<TestCase>
+            {
+                new() { Args = "[\"hello\"]",       ExpectedOutput = "2",  IsVisible = true },
+                new() { Args = "[\"CodeSync\"]",    ExpectedOutput = "2",  IsVisible = true },
+                new() { Args = "[\"\"]",            ExpectedOutput = "0",  IsVisible = false },
+                new() { Args = "[\"aeiouAEIOU\"]",  ExpectedOutput = "10", IsVisible = false }
+            }
+        },
+
+        new Challenge
+        {
+            Title = "Es primo (Java)",
+            Description = "Dado un numero entero n, retorna true si es un numero primo, false en caso contrario.",
+            Difficulty = DifficultyLevel.Hard,
+            Language = ProgrammingLanguage.Java,
+            FunctionName = "solution",
+            SolutionTemplate = "public static boolean solution(int n) {\n    \n}",
+            IsActive = true,
+            CreatedAt = DateTime.UtcNow,
+            TestCases = new List<TestCase>
+            {
+                new() { Args = "[2]",  ExpectedOutput = "true",  IsVisible = true },
+                new() { Args = "[17]", ExpectedOutput = "true",  IsVisible = true },
+                new() { Args = "[1]",  ExpectedOutput = "false", IsVisible = false },
+                new() { Args = "[15]", ExpectedOutput = "false", IsVisible = false },
+                new() { Args = "[97]", ExpectedOutput = "true",  IsVisible = false }
+            }
+        },
+
         // ─── HTML (solo preview en vivo, sin calificación automática todavía) ────
 
         new Challenge
