@@ -3,13 +3,12 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ChallengeService } from '../../../core/services/challenge.service';
 import { LoadingSpinnerComponent } from '../../../shared/components/loading-spinner/loading-spinner.component';
 import { ErrorMessageComponent } from '../../../shared/components/error-message/error-message.component';
-import { LangIconComponent } from '../../../shared/components/lang-icon/lang-icon.component';
 import type { Challenge } from '../../../core/models/challenge.model';
 
 @Component({
   selector: 'app-challenge-detail',
   standalone: true,
-  imports: [RouterLink, LoadingSpinnerComponent, ErrorMessageComponent, LangIconComponent],
+  imports: [RouterLink, LoadingSpinnerComponent, ErrorMessageComponent],
   templateUrl: './challenge-detail.component.html',
   styleUrl: './challenge-detail.component.css',
 })

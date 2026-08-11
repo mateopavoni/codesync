@@ -3,16 +3,17 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
-import type { Challenge, ChallengeSummary, DifficultyLevel } from '../models/challenge.model';
+import type { Challenge, ChallengeSummary, DifficultyLevel, ProgrammingLanguage } from '../models/challenge.model';
 
 @Injectable({ providedIn: 'root' })
 export class ChallengeService {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = `${environment.apiUrl}/challenges`;
 
-  getChallenges(difficulty?: DifficultyLevel): Observable<ChallengeSummary[]> {
+  getChallenges(difficulty?: DifficultyLevel, language?: ProgrammingLanguage): Observable<ChallengeSummary[]> {
     let params = new HttpParams();
     if (difficulty) params = params.set('difficulty', difficulty);
+    if (language) params = params.set('language', language);
     return this.http.get<ChallengeSummary[]>(this.baseUrl, { params });
   }
 
