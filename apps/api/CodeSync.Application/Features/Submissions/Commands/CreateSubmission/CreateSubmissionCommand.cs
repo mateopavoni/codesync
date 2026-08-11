@@ -23,4 +23,8 @@ public sealed record TestResultDto(
     int TestCaseIndex,
     bool Passed,
     string ActualOutput,
-    string? Error = null);
+    string? Error = null,
+    // Blank for hidden test cases (TestCase.IsVisible == false) — see
+    // CreateSubmissionHandler, never leak a hidden test's expected answer.
+    string Args = "",
+    string ExpectedOutput = "");

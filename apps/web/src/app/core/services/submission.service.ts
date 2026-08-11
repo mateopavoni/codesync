@@ -9,7 +9,16 @@ import type { SubmissionRequest, SubmissionResult } from '../models/submission.m
 interface ApiSubmissionResult {
   submissionId: string;
   allTestsPassed: boolean;
-  testResults: Array<{ testCaseIndex: number; passed: boolean; actualOutput: string; error?: string }>;
+  // args/expectedOutput come back blank for hidden test cases (backend never
+  // leaks a hidden test's expected answer) — see CreateSubmissionHandler.
+  testResults: Array<{
+    testCaseIndex: number;
+    passed: boolean;
+    actualOutput: string;
+    error?: string;
+    args?: string;
+    expectedOutput?: string;
+  }>;
   timedOut: boolean;
   error?: string;
   // C# "AIFeedback" camelCases to "aiFeedback" — lowercase 'ai' prefix
@@ -50,8 +59,8 @@ export class SubmissionService {
       allPassed: dto.allTestsPassed,
       results: (dto.testResults ?? []).map((r) => ({
         testCaseId: String(r.testCaseIndex),
-        input: '',
-        expectedOutput: '',
+        input: r.args ?? '',
+        expectedOutput: r.expectedOutput ?? '',
         actualOutput: r.actualOutput ?? '',
         passed: r.passed,
         executionTimeMs: 0,
