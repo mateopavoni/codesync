@@ -23,10 +23,17 @@ import type { SubmissionResult } from '../../../core/models/submission.model';
             </svg>
           </span>
           <span class="summary-text">
-            {{ result.allPassed ? 'Todos los tests pasaron' : 'Algunos tests fallaron' }}
+            {{ result.allPassed ? 'Todos los tests pasaron' : (result.timedOut ? 'Tiempo de ejecución excedido' : (result.error ? 'No se pudo ejecutar el código' : 'Algunos tests fallaron')) }}
           </span>
           <span class="exec-time">{{ result.totalExecutionTimeMs }}ms</span>
         </div>
+
+        @if (result.error) {
+          <!-- Error de infraestructura/interprete (sandbox caido, etc), no un test
+               fallido: no hay nada que un test-por-test explique, así que se muestra
+               el motivo real en vez de dejar la lista de tests vacía y sin contexto. -->
+          <p class="infra-error">{{ result.error }}</p>
+        }
 
         <div class="test-results">
           @for (tc of result.results; track tc.testCaseId) {
@@ -110,6 +117,16 @@ import type { SubmissionResult } from '../../../core/models/submission.model';
     .summary.has-failures .summary-icon { color: var(--cs-error); }
     .summary-text { flex: 1; font-size: var(--cs-text-body-sm); }
     .exec-time { font-size: var(--cs-text-label); color: var(--cs-on-surface-var); }
+    .infra-error {
+      margin: 0;
+      padding: var(--cs-sp-sm);
+      border-radius: var(--cs-radius-md);
+      background: color-mix(in srgb, var(--cs-error) 12%, transparent);
+      color: var(--cs-error);
+      font-size: var(--cs-text-body-sm);
+      font-family: var(--cs-font-code);
+      white-space: pre-wrap;
+    }
     .test-results { display: flex; flex-direction: column; gap: 8px; }
     .tc-row {
       display: flex;

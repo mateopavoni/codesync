@@ -59,6 +59,8 @@ export class SubmissionService {
       totalExecutionTimeMs: dto.executionTimeMs,
       feedback: dto.aiFeedback ?? null,
       submittedAt: '',
+      error: dto.error ?? null,
+      timedOut: dto.timedOut,
     };
   }
 }
