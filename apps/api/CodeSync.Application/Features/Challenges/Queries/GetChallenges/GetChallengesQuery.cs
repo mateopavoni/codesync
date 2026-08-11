@@ -1,4 +1,3 @@
-using CodeSync.Domain.Enums;
 using MediatR;
 
 namespace CodeSync.Application.Features.Challenges.Queries.GetChallenges;
@@ -9,6 +8,6 @@ public sealed record ChallengeSummaryDto(
     string Id,
     string Title,
     string Description,
-    DifficultyLevel Difficulty,
-    ProgrammingLanguage Language,
+    string Difficulty,
+    string Language,
     int TestCaseCount);
