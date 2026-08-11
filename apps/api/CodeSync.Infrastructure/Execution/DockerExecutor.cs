@@ -19,6 +19,15 @@ namespace CodeSync.Infrastructure.Execution;
 /// </summary>
 public sealed class DockerExecutor : IDockerExecutor, IDisposable
 {
+    // ponytail: caps how much of a container's stdout/stderr we ever buffer in the
+    // API process's own RAM. The 256MB HostConfig.Memory limit only bounds the
+    // *container's* memory — a tight print-flood loop (e.g. `while(true) print(...)`)
+    // can still push megabytes/sec through the log stream, and without a cap we'd
+    // load all of it into a growing MemoryStream on the host before the 5s timeout
+    // ever kills the container. 1MB is far more than any legit test-runner payload
+    // needs.
+    private const int MaxCapturedOutputBytes = 1024 * 1024;
+
     private readonly DockerClient _client;
     private readonly ILogger<DockerExecutor> _logger;
 
@@ -121,8 +130,8 @@ public sealed class DockerExecutor : IDockerExecutor, IDisposable
             }
 
             // 4. Read logs (stdout + stderr) — use tty:false overload for proper demux
-            var stdoutBuf = new MemoryStream();
-            var stderrBuf = new MemoryStream();
+            var stdoutBuf = new BoundedMemoryStream(MaxCapturedOutputBytes);
+            var stderrBuf = new BoundedMemoryStream(MaxCapturedOutputBytes);
 
             using var logsStream = await _client.Containers.GetContainerLogsAsync(
                 containerId,
@@ -171,4 +180,28 @@ public sealed class DockerExecutor : IDockerExecutor, IDisposable
     }
 
     public void Dispose() => _client.Dispose();
+
+    /// <summary>
+    /// MemoryStream that silently drops writes past <see cref="MaxCapturedOutputBytes"/>
+    /// instead of growing unbounded — see the comment on that constant.
+    /// </summary>
+    private sealed class BoundedMemoryStream : MemoryStream
+    {
+        private readonly int _maxBytes;
+
+        public BoundedMemoryStream(int maxBytes) => _maxBytes = maxBytes;
+
+        public override void Write(byte[] buffer, int offset, int count)
+        {
+            var remaining = _maxBytes - (int)Length;
+            if (remaining <= 0) return;
+            base.Write(buffer, offset, Math.Min(count, remaining));
+        }
+
+        public override Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
+        {
+            Write(buffer, offset, count);
+            return Task.CompletedTask;
+        }
+    }
 }
