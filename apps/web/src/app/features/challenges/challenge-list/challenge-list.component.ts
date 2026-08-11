@@ -31,7 +31,15 @@ export class ChallengeListComponent implements OnInit {
   ];
 
   // undefined = "todos los lenguajes"; el resto son los ícono-botones del filtro.
-  readonly languageOptions: (ProgrammingLanguage | undefined)[] = [undefined, 'javascript', 'python'];
+  readonly languageOptions: (ProgrammingLanguage | undefined)[] = [
+    undefined,
+    'javascript',
+    'python',
+    'html',
+    'ruby',
+    'java',
+    'csharp',
+  ];
 
   readonly difficultyLabel = DIFFICULTY_LABEL;
 
