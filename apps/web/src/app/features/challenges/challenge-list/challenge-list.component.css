@@ -67,6 +67,14 @@
   color: var(--cs-primary);
 }
 
+.lang-filter-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  text-transform: none;
+  letter-spacing: normal;
+}
+
 /* Grid de desafíos */
 .challenge-grid {
   display: grid;

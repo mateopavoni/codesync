@@ -18,6 +18,25 @@
     }
   </div>
 
+  <div class="filters">
+    <span class="filter-label">Lenguaje:</span>
+    @for (lang of languageOptions; track lang) {
+      <button
+        type="button"
+        class="filter-btn lang-filter-btn"
+        [class.active]="selectedLanguage() === lang"
+        (click)="selectLanguage(lang)"
+        [attr.aria-label]="lang ?? 'Todos los lenguajes'"
+      >
+        @if (lang) {
+          <app-lang-icon [language]="lang" />
+        } @else {
+          Todos
+        }
+      </button>
+    }
+  </div>
+
   @if (loading()) {
     <app-loading-spinner message="Cargando desafíos..." />
   } @else if (error()) {
@@ -38,7 +57,6 @@
           </div>
 
           <div class="card-footer">
-            <app-lang-icon [language]="challenge.language" />
             @if (challenge.completedAt) {
               <span class="completed-badge">Completado</span>
             }

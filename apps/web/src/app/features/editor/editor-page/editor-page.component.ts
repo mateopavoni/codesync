@@ -17,7 +17,6 @@ import { ExecutionPanelComponent } from '../execution-panel/execution-panel.comp
 import { CoachPanelComponent } from '../coach-panel/coach-panel.component';
 import { LoadingSpinnerComponent } from '../../../shared/components/loading-spinner/loading-spinner.component';
 import { ErrorMessageComponent } from '../../../shared/components/error-message/error-message.component';
-import { LangIconComponent } from '../../../shared/components/lang-icon/lang-icon.component';
 import type { Challenge } from '../../../core/models/challenge.model';
 import type { SubmissionResult } from '../../../core/models/submission.model';
 import type { CursorPosition } from '../../../core/models/room.model';
@@ -35,7 +34,6 @@ type ActivePanel = 'resultado' | 'coach';
     CoachPanelComponent,
     LoadingSpinnerComponent,
     ErrorMessageComponent,
-    LangIconComponent,
   ],
   templateUrl: './editor-page.component.html',
   styleUrl: './editor-page.component.css',
