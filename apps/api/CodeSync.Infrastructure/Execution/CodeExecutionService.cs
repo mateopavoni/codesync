@@ -98,8 +98,18 @@ public sealed class CodeExecutionService : ICodeExecutionService
     {
         try
         {
+            // ponytail: student code (console.log/print) can write to the same stdout
+            // before the harness does. The harness always prints its JSON as the last
+            // line, so take the last non-empty line instead of the whole stream.
+            // Ceiling: breaks if student code schedules output *after* returning
+            // (e.g. a stray setTimeout) — not a case the sync harness produces today.
+            var jsonLine = stdout
+                .Split('\n')
+                .Select(line => line.Trim())
+                .LastOrDefault(line => line.Length > 0) ?? stdout;
+
             var runnerResults = JsonSerializer.Deserialize<List<RunnerResult>>(
-                stdout,
+                jsonLine,
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true })
                 ?? throw new InvalidOperationException("Empty runner output.");
 

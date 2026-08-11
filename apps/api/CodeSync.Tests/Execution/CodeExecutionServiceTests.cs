@@ -142,6 +142,33 @@ public sealed class CodeExecutionServiceTests
     }
 
     [Fact]
+    public async Task Execute_StudentStdoutBeforeJson_StillParses()
+    {
+        // Student code that does `console.log`/`print` writes to the same stdout
+        // stream as the harness's JSON result — it must not break parsing.
+        var runnerOutput = JsonSerializer.Serialize(new[]
+        {
+            new { passed = true, actualOutput = "3" },
+            new { passed = true, actualOutput = "0" }
+        });
+
+        _dockerMock
+            .Setup(d => d.RunAsync(
+                It.IsAny<string>(), It.IsAny<IReadOnlyList<string>>(),
+                It.IsAny<string>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new DockerRunResult($"hola\n{runnerOutput}", "", false));
+
+        var result = await BuildService().ExecuteAsync(
+            "function solution(a, b) { return console.log('hola'); }",
+            "solution", ProgrammingLanguage.JavaScript,
+            TwoTestCases());
+
+        Assert.Null(result.Error);
+        Assert.Equal(2, result.TestResults.Count);
+        Assert.All(result.TestResults, r => Assert.True(r.Passed));
+    }
+
+    [Fact]
     public async Task Execute_JavaScriptLanguage_UsesNodeImage()
     {
         string? capturedImage = null;
