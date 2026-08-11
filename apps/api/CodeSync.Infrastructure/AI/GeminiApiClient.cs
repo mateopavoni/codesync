@@ -54,7 +54,7 @@ public sealed class GeminiApiClient
             GenerationConfig = new GenerationConfig
             {
                 Temperature = 0.7f,
-                MaxOutputTokens = 600
+                MaxOutputTokens = 1024
             }
         };
 
@@ -70,8 +70,19 @@ public sealed class GeminiApiClient
             }
 
             var geminiResponse = await response.Content.ReadFromJsonAsync<GeminiResponse>(cancellationToken: ct);
+            var candidate = geminiResponse?.Candidates?.FirstOrDefault();
 
-            return geminiResponse?.Candidates?.FirstOrDefault()?.Content?.Parts?.FirstOrDefault()?.Text;
+            // Gemini hit MaxOutputTokens mid-sentence: the text is real but cut off.
+            // Showing that half-finished fragment to a student is worse than the
+            // canned fallback hint, so treat it the same as "no response" and let
+            // the caller (AICoachService) fall back.
+            if (candidate?.FinishReason == "MAX_TOKENS")
+            {
+                _logger.LogWarning("Gemini response truncated at MaxOutputTokens.");
+                return null;
+            }
+
+            return candidate?.Content?.Parts?.FirstOrDefault()?.Text;
         }
         catch (Exception ex)
         {
@@ -112,7 +123,7 @@ public sealed class GeminiApiClient
         public float Temperature { get; init; } = 0.7f;
 
         [JsonPropertyName("maxOutputTokens")]
-        public int MaxOutputTokens { get; init; } = 600;
+        public int MaxOutputTokens { get; init; } = 1024;
     }
 
     private sealed class GeminiResponse
@@ -125,5 +136,8 @@ public sealed class GeminiApiClient
     {
         [JsonPropertyName("content")]
         public Content? Content { get; init; }
+
+        [JsonPropertyName("finishReason")]
+        public string? FinishReason { get; init; }
     }
 }
