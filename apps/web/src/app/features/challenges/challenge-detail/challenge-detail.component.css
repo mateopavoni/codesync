@@ -42,16 +42,6 @@
   gap: var(--cs-sp-sm);
 }
 
-.lang-tag {
-  padding: 2px var(--cs-sp-sm);
-  background: var(--cs-surface-variant);
-  border: 1px solid var(--cs-outline-var);
-  border-radius: var(--cs-radius-md);
-  font-size: var(--cs-text-label);
-  font-family: var(--cs-font-code);
-  color: var(--cs-on-surface-var);
-}
-
 .btn-start {
   padding: var(--cs-sp-sm) var(--cs-sp-lg);
   background: var(--cs-primary);

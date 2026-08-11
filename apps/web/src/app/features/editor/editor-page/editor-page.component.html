@@ -18,7 +18,7 @@
         </a>
         @if (challenge()) {
           <h1 class="challenge-title">{{ challenge()!.title }}</h1>
-          <span class="lang-badge">{{ challenge()!.language }}</span>
+          <app-lang-icon [language]="challenge()!.language" />
         }
         @if (roomId()) {
           <span class="room-indicator">Sala activa</span>

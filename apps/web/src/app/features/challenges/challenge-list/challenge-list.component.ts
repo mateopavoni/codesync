@@ -3,13 +3,14 @@ import { RouterLink } from '@angular/router';
 import { ChallengeService } from '../../../core/services/challenge.service';
 import { LoadingSpinnerComponent } from '../../../shared/components/loading-spinner/loading-spinner.component';
 import { ErrorMessageComponent } from '../../../shared/components/error-message/error-message.component';
+import { LangIconComponent } from '../../../shared/components/lang-icon/lang-icon.component';
 import type { ChallengeSummary, DifficultyLevel } from '../../../core/models/challenge.model';
 import { DIFFICULTY_LABEL } from '../../../core/models/challenge.model';
 
 @Component({
   selector: 'app-challenge-list',
   standalone: true,
-  imports: [RouterLink, LoadingSpinnerComponent, ErrorMessageComponent],
+  imports: [RouterLink, LoadingSpinnerComponent, ErrorMessageComponent, LangIconComponent],
   templateUrl: './challenge-list.component.html',
   styleUrl: './challenge-list.component.css',
 })

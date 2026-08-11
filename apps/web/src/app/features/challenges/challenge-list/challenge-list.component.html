@@ -38,7 +38,7 @@
           </div>
 
           <div class="card-footer">
-            <span class="lang-tag">{{ challenge.language }}</span>
+            <app-lang-icon [language]="challenge.language" />
             @if (challenge.completedAt) {
               <span class="completed-badge">Completado</span>
             }

@@ -151,16 +151,6 @@
   margin-top: auto;
 }
 
-.lang-tag {
-  font-size: var(--cs-text-label);
-  font-weight: 600;
-  color: var(--cs-on-surface-var);
-  background: var(--cs-surface-variant);
-  padding: 2px var(--cs-sp-sm);
-  border-radius: var(--cs-radius-md);
-  font-family: var(--cs-font-code);
-}
-
 .completed-badge {
   font-size: var(--cs-text-label);
   font-weight: 600;
