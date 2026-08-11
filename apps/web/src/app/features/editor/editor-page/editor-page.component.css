@@ -5,7 +5,7 @@
 .editor-page {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  height: 100dvh;
   overflow: hidden;
   background: var(--cs-bg);
 }
@@ -22,8 +22,10 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--cs-sp-sm);
   padding: 0 var(--cs-sp-md);
-  height: 48px;
+  min-height: 48px;
   background: var(--cs-surface-container);
   border-bottom: 1px solid var(--cs-outline-var);
   flex-shrink: 0;
@@ -55,18 +57,6 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-
-/* Badges en topbar */
-.lang-badge {
-  padding: 2px var(--cs-sp-sm);
-  background: var(--cs-surface-variant);
-  border: 1px solid var(--cs-outline-var);
-  border-radius: var(--cs-radius-md);
-  font-size: var(--cs-text-label);
-  font-family: var(--cs-font-code);
-  color: var(--cs-on-surface-var);
-  flex-shrink: 0;
 }
 
 .room-indicator {
@@ -303,17 +293,27 @@
 }
 
 @media (max-width: 900px) {
+  /* Ya no entra todo en 100dvh sin cortar: dejamos scrollear la página
+     entera en vez de clipear el editor, y le garantizamos un alto mínimo
+     usable a Monaco (antes: filas fijas 200px/1fr/260px + overflow:hidden,
+     que en viewports bajos aplastaba el editor a casi 0). */
+  .editor-page {
+    height: auto;
+    min-height: 100dvh;
+    overflow-y: auto;
+  }
   .editor-layout {
     grid-template-columns: 1fr;
-    grid-template-rows: 200px 1fr 260px;
+    grid-template-rows: auto minmax(280px, 45vh) auto;
+    overflow: visible;
   }
   .problem-panel {
-    max-height: 200px;
+    max-height: 240px;
     border-right: none;
     border-bottom: 1px solid var(--cs-outline-var);
   }
   .output-panel {
-    max-height: 260px;
+    max-height: 320px;
     border-left: none;
     border-top: 1px solid var(--cs-outline-var);
   }
