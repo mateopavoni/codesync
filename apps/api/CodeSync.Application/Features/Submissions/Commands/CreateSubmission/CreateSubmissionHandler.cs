@@ -127,7 +127,18 @@ internal sealed class CreateSubmissionHandler : IRequestHandler<CreateSubmission
             submissionId,
             execution.AllTestsPassed,
             execution.TestResults
-                .Select(r => new TestResultDto(r.TestCaseIndex, r.Passed, r.ActualOutput, r.Error))
+                .Select(r =>
+                {
+                    var testCase = challenge.TestCases.ElementAtOrDefault(r.TestCaseIndex);
+                    var showInputOutput = testCase is { IsVisible: true };
+                    return new TestResultDto(
+                        r.TestCaseIndex,
+                        r.Passed,
+                        r.ActualOutput,
+                        r.Error,
+                        Args: showInputOutput ? testCase!.Args : "",
+                        ExpectedOutput: showInputOutput ? testCase!.ExpectedOutput : "");
+                })
                 .ToList(),
             execution.TimedOut,
             execution.Error,
