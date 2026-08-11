@@ -18,11 +18,12 @@ export class LoginComponent {
 
   readonly form = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required, Validators.minLength(6)]],
+    password: ['', [Validators.required]],
   });
 
   readonly loading = signal(false);
   readonly error = signal<string | null>(null);
+  readonly lastProvider = this.authService.getLastAuthProvider();
 
   async onEmailLogin(): Promise<void> {
     if (this.form.invalid) return;

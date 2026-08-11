@@ -122,6 +122,7 @@ form {
 }
 
 .btn-oauth {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -144,6 +145,21 @@ form {
 }
 
 .btn-oauth:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.oauth-recent-badge {
+  position: absolute;
+  top: -9px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 2px 8px;
+  background: var(--cs-primary);
+  color: var(--cs-on-primary);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  border-radius: var(--cs-radius-xl);
+}
 
 /* Link */
 .auth-link {
