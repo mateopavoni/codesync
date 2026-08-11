@@ -17,6 +17,9 @@ export interface SubmissionResult {
   totalExecutionTimeMs: number;
   feedback: string | null;
   submittedAt: string;
+  /** Error de infraestructura/interprete (no un test fallido) — p.ej. sandbox caido. */
+  error: string | null;
+  timedOut: boolean;
 }
 
 export interface SubmissionRequest {

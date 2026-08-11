@@ -47,35 +47,54 @@ public sealed class DockerExecutor : IDockerExecutor, IDisposable
             var shellCmd = $"printf '%s' '{codeB64}' | base64 -d | {interpreterCmd}";
 
             // 1. Create container — no stdin needed
-            var createResponse = await _client.Containers.CreateContainerAsync(
-                new CreateContainerParameters
+            CreateContainerParameters BuildCreateParams() => new()
+            {
+                Image = image,
+                Cmd = new List<string> { "sh", "-c", shellCmd },
+                AttachStdin = false,
+                AttachStdout = true,
+                AttachStderr = true,
+                OpenStdin = false,
+                StdinOnce = false,
+                User = "nobody",
+                HostConfig = new HostConfig
                 {
-                    Image = image,
-                    Cmd = new List<string> { "sh", "-c", shellCmd },
-                    AttachStdin = false,
-                    AttachStdout = true,
-                    AttachStderr = true,
-                    OpenStdin = false,
-                    StdinOnce = false,
-                    User = "nobody",
-                    HostConfig = new HostConfig
+                    NetworkMode = "none",
+                    Memory = 256 * 1024 * 1024L,
+                    MemorySwap = 256 * 1024 * 1024L,
+                    ReadonlyRootfs = true,
+                    PidsLimit = 50,
+                    Tmpfs = new Dictionary<string, string>
                     {
-                        NetworkMode = "none",
-                        Memory = 256 * 1024 * 1024L,
-                        MemorySwap = 256 * 1024 * 1024L,
-                        ReadonlyRootfs = true,
-                        PidsLimit = 50,
-                        Tmpfs = new Dictionary<string, string>
-                        {
-                            { "/tmp", "noexec,nosuid,size=8m" }
-                        }
+                        { "/tmp", "noexec,nosuid,size=8m" }
                     }
-                }, ct);
+                }
+            };
 
-            containerId = createResponse.ID;
+            try
+            {
+                var createResponse = await _client.Containers.CreateContainerAsync(BuildCreateParams(), ct);
+                containerId = createResponse.ID;
 
-            // 2. Start the container
-            await _client.Containers.StartContainerAsync(containerId, new ContainerStartParameters(), ct);
+                // 2. Start the container
+                await _client.Containers.StartContainerAsync(containerId, new ContainerStartParameters(), ct);
+            }
+            catch (DockerImageNotFoundException)
+            {
+                // Image missing on this host (fresh box, pruned cache, host migration).
+                // Pull it once and retry instead of failing every submission with a
+                // misleading "tests fallaron" until someone notices and pulls it by hand.
+                _logger.LogWarning("Image {Image} not found locally, pulling before retrying.", image);
+                await _client.Images.CreateImageAsync(
+                    new ImagesCreateParameters { FromImage = image },
+                    null,
+                    new Progress<JSONMessage>(),
+                    ct);
+
+                var createResponse = await _client.Containers.CreateContainerAsync(BuildCreateParams(), ct);
+                containerId = createResponse.ID;
+                await _client.Containers.StartContainerAsync(containerId, new ContainerStartParameters(), ct);
+            }
 
             // 3. Wait for the container to exit (with hard timeout)
             using var timeoutCts = CancellationTokenSource.CreateLinkedTokenSource(ct);
