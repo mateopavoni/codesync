@@ -1,3 +1,4 @@
+using CodeSync.Application.Common.Extensions;
 using CodeSync.Application.Common.Interfaces;
 using MediatR;
 
@@ -22,8 +23,8 @@ internal sealed class GetChallengesHandler : IRequestHandler<GetChallengesQuery,
                 c.Id,
                 c.Title,
                 c.Description,
-                c.Difficulty,
-                c.Language,
+                c.Difficulty.ToApiString(),
+                c.Language.ToApiString(),
                 c.TestCases.Count(tc => tc.IsVisible)))
             .ToList();
     }
