@@ -16,6 +16,10 @@ import {
 } from 'firebase/auth';
 import { environment } from '../../../environments/environment';
 
+export type AuthProvider = 'google' | 'github';
+
+const LAST_PROVIDER_KEY = 'cs_last_auth_provider';
+
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly router = inject(Router);
@@ -60,6 +64,7 @@ export class AuthService {
     const provider = new GoogleAuthProvider();
     await signInWithPopup(this.auth, provider);
     await this.syncProfile();
+    localStorage.setItem(LAST_PROVIDER_KEY, 'google');
     await this.router.navigate(['/dashboard']);
   }
 
@@ -67,7 +72,14 @@ export class AuthService {
     const provider = new GithubAuthProvider();
     await signInWithPopup(this.auth, provider);
     await this.syncProfile();
+    localStorage.setItem(LAST_PROVIDER_KEY, 'github');
     await this.router.navigate(['/dashboard']);
+  }
+
+  /** Último proveedor OAuth usado con éxito, para mostrar el badge "Usado recientemente". */
+  getLastAuthProvider(): AuthProvider | null {
+    const value = localStorage.getItem(LAST_PROVIDER_KEY);
+    return value === 'google' || value === 'github' ? value : null;
   }
 
   async loginWithEmail(email: string, password: string): Promise<void> {
