@@ -4,6 +4,7 @@ import { ProgrammingLanguage } from '../../../core/models/challenge.model';
 const LANGUAGE_LABEL: Record<ProgrammingLanguage, string> = {
   javascript: 'JavaScript',
   python: 'Python',
+  html: 'HTML',
 };
 
 @Component({

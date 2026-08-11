@@ -24,25 +24,27 @@
         }
       </div>
 
-      <div class="topbar-right">
-        <button
-          type="button"
-          class="btn-run"
-          (click)="onRunCode()"
-          [disabled]="submitting()"
-          aria-label="Ejecutar código"
-        >
-          @if (submitting()) {
-            <span class="run-spinner" aria-hidden="true"></span>
-            Ejecutando...
-          } @else {
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-              <polygon points="5 3 19 12 5 21 5 3"/>
-            </svg>
-            Ejecutar
-          }
-        </button>
-      </div>
+      @if (challenge()?.language !== 'html') {
+        <div class="topbar-right">
+          <button
+            type="button"
+            class="btn-run"
+            (click)="onRunCode()"
+            [disabled]="submitting()"
+            aria-label="Ejecutar código"
+          >
+            @if (submitting()) {
+              <span class="run-spinner" aria-hidden="true"></span>
+              Ejecutando...
+            } @else {
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <polygon points="5 3 19 12 5 21 5 3"/>
+              </svg>
+              Ejecutar
+            }
+          </button>
+        </div>
+      }
     </header>
 
     <!-- Layout principal -->
@@ -93,37 +95,43 @@
         />
       </main>
 
-      <!-- Panel derecho: resultado / coach -->
+      <!-- Panel derecho: resultado / coach, o preview en vivo para HTML -->
       <aside class="output-panel">
-        <div class="panel-tabs">
-          <button
-            type="button"
-            class="tab-btn"
-            [class.active]="activePanel() === 'resultado'"
-            (click)="setActivePanel('resultado')"
-          >
-            Resultado
-          </button>
-          <button
-            type="button"
-            class="tab-btn"
-            [class.active]="activePanel() === 'coach'"
-            (click)="setActivePanel('coach')"
-          >
-            IA Coach
-            @if (coachFeedback()) {
-              <span class="tab-badge" aria-label="Feedback disponible"></span>
-            }
-          </button>
-        </div>
+        @if (challenge()?.language === 'html') {
+          <div class="tab-content">
+            <app-live-preview [code]="previewCode()" />
+          </div>
+        } @else {
+          <div class="panel-tabs">
+            <button
+              type="button"
+              class="tab-btn"
+              [class.active]="activePanel() === 'resultado'"
+              (click)="setActivePanel('resultado')"
+            >
+              Resultado
+            </button>
+            <button
+              type="button"
+              class="tab-btn"
+              [class.active]="activePanel() === 'coach'"
+              (click)="setActivePanel('coach')"
+            >
+              IA Coach
+              @if (coachFeedback()) {
+                <span class="tab-badge" aria-label="Feedback disponible"></span>
+              }
+            </button>
+          </div>
 
-        <div class="tab-content">
-          @if (activePanel() === 'resultado') {
-            <app-execution-panel [result]="submissionResult()" />
-          } @else {
-            <app-coach-panel [feedback]="coachFeedback()" [hints]="coachHints()" />
-          }
-        </div>
+          <div class="tab-content">
+            @if (activePanel() === 'resultado') {
+              <app-execution-panel [result]="submissionResult()" />
+            } @else {
+              <app-coach-panel [feedback]="coachFeedback()" [hints]="coachHints()" />
+            }
+          </div>
+        }
       </aside>
     </div>
   }

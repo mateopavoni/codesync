@@ -17,6 +17,7 @@ import { MonacoLoaderService } from '../../../core/services/monaco-loader.servic
 import { LoadingSpinnerComponent } from '../../../shared/components/loading-spinner/loading-spinner.component';
 import { ErrorMessageComponent } from '../../../shared/components/error-message/error-message.component';
 import type { CursorPosition } from '../../../core/models/room.model';
+import type { ProgrammingLanguage } from '../../../core/models/challenge.model';
 
 @Component({
   selector: 'app-monaco-editor',
@@ -29,7 +30,7 @@ export class MonacoEditorComponent implements AfterViewInit, OnChanges, OnDestro
   @ViewChild('container', { static: true }) containerRef!: ElementRef<HTMLDivElement>;
 
   @Input() value = '';
-  @Input() language: 'python' | 'javascript' = 'javascript';
+  @Input() language: ProgrammingLanguage = 'javascript';
   @Input() readonly = false;
   @Input() remoteCursors: CursorPosition[] = [];
 

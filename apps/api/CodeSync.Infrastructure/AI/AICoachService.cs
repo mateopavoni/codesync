@@ -77,7 +77,13 @@ public sealed class AICoachService : IAICoachService
         string code,
         IReadOnlyList<TestCaseResult> failedTests)
     {
-        var langName = language == ProgrammingLanguage.Python ? "Python" : "JavaScript";
+        var langName = language switch
+        {
+            ProgrammingLanguage.Python => "Python",
+            ProgrammingLanguage.JavaScript => "JavaScript",
+            ProgrammingLanguage.Html => "HTML",
+            _ => language.ToString()
+        };
         var diffName = difficulty switch
         {
             DifficultyLevel.Easy => "facil",

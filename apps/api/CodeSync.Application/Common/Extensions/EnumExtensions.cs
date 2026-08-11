@@ -21,6 +21,7 @@ public static class EnumExtensions
     {
         ProgrammingLanguage.Python => "python",
         ProgrammingLanguage.JavaScript => "javascript",
+        ProgrammingLanguage.Html => "html",
         _ => throw new ArgumentOutOfRangeException(nameof(language), language, null),
     };
 }
