@@ -23,7 +23,8 @@
     @for (lang of languageOptions; track lang) {
       <button
         type="button"
-        class="filter-btn lang-filter-btn"
+        class="filter-btn"
+        [class.lang-filter-btn]="lang"
         [class.active]="selectedLanguage() === lang"
         (click)="selectLanguage(lang)"
         [attr.aria-label]="lang ?? 'Todos los lenguajes'"
@@ -57,6 +58,7 @@
           </div>
 
           <div class="card-footer">
+            <app-lang-icon class="card-lang-icon" [language]="challenge.language" />
             @if (challenge.completedAt) {
               <span class="completed-badge">Completado</span>
             }
