@@ -23,6 +23,9 @@ export interface DashboardData {
   completedChallenges: DashboardChallenge[];
   pendingChallenges: DashboardChallenge[];
   recentFeedback: DashboardFeedback[];
+  // null when already at the max level (5) — nothing left to reach.
+  nextLevelThreshold: number | null;
+  currentLevelFloor: number;
 }
 
 @Injectable({ providedIn: 'root' })

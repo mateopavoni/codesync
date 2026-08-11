@@ -1,4 +1,5 @@
 using CodeSync.Application.Common.Interfaces;
+using CodeSync.Domain;
 using CodeSync.Domain.Entities;
 using CodeSync.Domain.Enums;
 using MediatR;
@@ -162,19 +163,9 @@ internal sealed class CreateSubmissionHandler : IRequestHandler<CreateSubmission
         if (!user.CompletedChallengeIds.Contains(challengeId))
         {
             user.CompletedChallengeIds.Add(challengeId);
-            user.Level = CalculateLevel(user.CompletedChallengeIds.Count);
+            user.Level = LevelCalculator.CalculateLevel(user.CompletedChallengeIds.Count);
             user.UpdatedAt = DateTime.UtcNow;
             await _users.UpsertAsync(user, ct);
         }
     }
-
-    private static int CalculateLevel(int completedCount) =>
-        completedCount switch
-        {
-            < 3 => 1,
-            < 7 => 2,
-            < 15 => 3,
-            < 25 => 4,
-            _ => 5
-        };
 }

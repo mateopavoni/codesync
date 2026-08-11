@@ -1,5 +1,6 @@
 using CodeSync.Application.Common.Extensions;
 using CodeSync.Application.Common.Interfaces;
+using CodeSync.Domain;
 using MediatR;
 
 namespace CodeSync.Application.Features.Dashboard.Queries.GetDashboard;
@@ -33,7 +34,9 @@ internal sealed class GetDashboardHandler : IRequestHandler<GetDashboardQuery, D
         var feedbacks = await feedbackTask;
 
         if (user == null)
-            return new DashboardDto(1, Array.Empty<DashboardChallengeDto>(), Array.Empty<DashboardChallengeDto>(), Array.Empty<DashboardFeedbackDto>());
+            return new DashboardDto(
+                1, Array.Empty<DashboardChallengeDto>(), Array.Empty<DashboardChallengeDto>(), Array.Empty<DashboardFeedbackDto>(),
+                LevelCalculator.NextLevelThreshold(0), LevelCalculator.CurrentLevelFloor(0));
 
         var completedIds = new HashSet<string>(user.CompletedChallengeIds);
         var challengesById = challenges.ToDictionary(c => c.Id);
@@ -57,6 +60,9 @@ internal sealed class GetDashboardHandler : IRequestHandler<GetDashboardQuery, D
                 f.CreatedAt))
             .ToList();
 
-        return new DashboardDto(user.Level, completedChallenges, pendingChallenges, recentFeedback);
+        var completedCount = user.CompletedChallengeIds.Count;
+        return new DashboardDto(
+            user.Level, completedChallenges, pendingChallenges, recentFeedback,
+            LevelCalculator.NextLevelThreshold(completedCount), LevelCalculator.CurrentLevelFloor(completedCount));
     }
 }

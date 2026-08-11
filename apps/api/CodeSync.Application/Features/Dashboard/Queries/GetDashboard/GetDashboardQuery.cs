@@ -8,7 +8,10 @@ public sealed record DashboardDto(
     int Level,
     IReadOnlyList<DashboardChallengeDto> CompletedChallenges,
     IReadOnlyList<DashboardChallengeDto> PendingChallenges,
-    IReadOnlyList<DashboardFeedbackDto> RecentFeedback);
+    IReadOnlyList<DashboardFeedbackDto> RecentFeedback,
+    // Null when already at the max level — nothing left to reach.
+    int? NextLevelThreshold,
+    int CurrentLevelFloor);
 
 public sealed record DashboardChallengeDto(string Id, string Title, string Difficulty);
 

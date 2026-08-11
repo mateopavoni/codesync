@@ -121,6 +121,49 @@
   white-space: nowrap;
 }
 
+/* Level progress */
+.level-progress-card {
+  background: var(--cs-surface-low);
+  border: 1px solid var(--cs-outline-var);
+  border-radius: var(--cs-radius-lg);
+  padding: var(--cs-sp-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--cs-sp-xs);
+  animation: fade-in-up 0.4s ease-out both;
+  animation-delay: 200ms;
+}
+
+.level-progress-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--cs-sp-sm);
+  font-size: var(--cs-text-body-sm);
+  font-weight: 600;
+  color: var(--cs-on-surface);
+}
+
+.level-progress-hint {
+  font-weight: 500;
+  color: var(--cs-on-surface-var);
+}
+
+.level-progress-bar {
+  height: 8px;
+  border-radius: var(--cs-radius-xl);
+  background: var(--cs-surface-container);
+  border: 1px solid var(--cs-outline-var);
+  overflow: hidden;
+}
+
+.level-progress-fill {
+  height: 100%;
+  background: var(--cs-primary);
+  border-radius: var(--cs-radius-xl);
+  transition: width 0.4s ease-out;
+}
+
 /* Content grid */
 .content-grid {
   display: grid;
