@@ -52,12 +52,25 @@ import { DomSanitizer, type SafeHtml } from '@angular/platform-browser';
 export class LivePreviewComponent {
   private readonly sanitizer = inject(DomSanitizer);
 
+  // Si el código del estudiante hace crecer un elemento (ej. `body { height: 300vh }`)
+  // más allá del alto visible del iframe, sin esto el contenido igual crece pero
+  // no se nota: muchos navegadores usan scrollbars "overlay" invisibles hasta que
+  // el mouse entra al iframe, y el alumno interpreta "no cambió nada" como bug.
+  // Va primero en el cascade así el CSS del alumno lo puede pisar sin problema.
+  private static readonly SCROLLBAR_RESET = `<style>
+    html { scrollbar-width: thin; scrollbar-color: #94a3b8 transparent; }
+    html::-webkit-scrollbar { width: 10px; }
+    html::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 6px; }
+  </style>`;
+
   private readonly rawCode = signal('');
   @Input() set code(value: string) {
     this.rawCode.set(value ?? '');
   }
 
   readonly safeCode = computed<SafeHtml>(() =>
-    this.sanitizer.bypassSecurityTrustHtml(this.rawCode())
+    this.sanitizer.bypassSecurityTrustHtml(
+      LivePreviewComponent.SCROLLBAR_RESET + this.rawCode()
+    )
   );
 }

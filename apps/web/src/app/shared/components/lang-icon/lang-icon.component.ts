@@ -13,7 +13,7 @@ const LANGUAGE_LABEL: Record<ProgrammingLanguage, string> = {
 @Component({
   selector: 'app-lang-icon',
   standalone: true,
-  template: `<img class="lang-icon" [src]="'icons/' + language + '.svg'" [alt]="LANGUAGE_LABEL[language]" />`,
+  template: `<img class="lang-icon" [src]="'icons/' + language + '.svg'" [alt]="LANGUAGE_LABEL[language]" [title]="LANGUAGE_LABEL[language]" />`,
   styles: [`
     /* inline-flex + align-items:center para que el host quede centrado
        verticalmente sea cual sea el texto/elemento que tenga al lado */
@@ -23,8 +23,8 @@ const LANGUAGE_LABEL: Record<ProgrammingLanguage, string> = {
     }
     .lang-icon {
       display: block;
-      width: 20px;
-      height: 20px;
+      width: 28px;
+      height: 28px;
       flex-shrink: 0;
     }
   `],
