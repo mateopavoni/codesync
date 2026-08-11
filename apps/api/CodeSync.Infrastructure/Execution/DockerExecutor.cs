@@ -11,6 +11,7 @@ namespace CodeSync.Infrastructure.Execution;
 /// Security controls applied to every container:
 ///   - NetworkMode = "none"       — no outbound or inbound network
 ///   - Memory = 256MB             — hard RAM cap (MemorySwap = Memory, so no swap)
+///   - NanoCPUs = 1 core          — hard CPU cap, protects the host under concurrent load
 ///   - ReadonlyRootfs = true      — filesystem is read-only
 ///   - PidsLimit = 50             — prevents fork bombs
 ///   - Tmpfs /tmp                 — writable scratch space for interpreters, no exec bit
@@ -71,6 +72,12 @@ public sealed class DockerExecutor : IDockerExecutor, IDisposable
                     NetworkMode = "none",
                     Memory = 256 * 1024 * 1024L,
                     MemorySwap = 256 * 1024 * 1024L,
+                    // ponytail: caps this container at 1 CPU core so a CPU-bound
+                    // submission (busy loop, crypto mining attempt, etc.) can't starve
+                    // other concurrent submissions or the host itself. Combined with the
+                    // 5s wall-clock timeout, worst case is ~1 core-second per submission.
+                    // Tune down (e.g. 500_000_000 = 0.5 core) if host capacity is tight.
+                    NanoCPUs = 1_000_000_000,
                     ReadonlyRootfs = true,
                     PidsLimit = 50,
                     Tmpfs = new Dictionary<string, string>
