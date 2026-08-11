@@ -37,6 +37,21 @@
       </div>
     </div>
 
+    <!-- Level progress -->
+    @if (levelProgress(); as progress) {
+      <div class="level-progress-card">
+        <div class="level-progress-header">
+          <span>Nivel {{ data()!.level }}</span>
+          <span class="level-progress-hint">
+            {{ progress.maxed ? '¡Nivel máximo alcanzado!' : progress.remaining + ' desafío(s) para subir de nivel' }}
+          </span>
+        </div>
+        <div class="level-progress-bar" role="progressbar" [attr.aria-valuenow]="progress.percent" aria-valuemin="0" aria-valuemax="100">
+          <div class="level-progress-fill" [style.width.%]="progress.percent"></div>
+        </div>
+      </div>
+    }
+
     <div class="content-grid">
       <!-- Desafíos pendientes -->
       <section class="section-card">

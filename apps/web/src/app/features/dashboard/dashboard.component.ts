@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { SlicePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
@@ -25,6 +25,21 @@ export class DashboardComponent implements OnInit {
   readonly difficultyLabel = DIFFICULTY_LABEL;
 
   readonly currentUser = this.authService.currentUser;
+
+  /** Fill percent + remaining-count for the level progress bar. null while loading. */
+  readonly levelProgress = computed(() => {
+    const d = this.data();
+    if (!d) return null;
+
+    if (d.nextLevelThreshold == null) {
+      return { percent: 100, remaining: 0, maxed: true };
+    }
+
+    const completed = d.completedChallenges.length;
+    const span = d.nextLevelThreshold - d.currentLevelFloor;
+    const percent = span > 0 ? Math.min(100, Math.max(0, ((completed - d.currentLevelFloor) / span) * 100)) : 100;
+    return { percent, remaining: d.nextLevelThreshold - completed, maxed: false };
+  });
 
   ngOnInit(): void {
     this.loadDashboard();
