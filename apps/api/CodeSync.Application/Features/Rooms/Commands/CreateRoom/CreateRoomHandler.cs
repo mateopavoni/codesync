@@ -21,6 +21,13 @@ internal sealed class CreateRoomHandler : IRequestHandler<CreateRoomCommand, Cre
         var challenge = await _challenges.GetByIdAsync(request.ChallengeId, cancellationToken)
             ?? throw new KeyNotFoundException($"Challenge '{request.ChallengeId}' not found.");
 
+        var activeRoomCount = await _rooms.CountActiveByHostUserIdAsync(request.HostUserId, cancellationToken);
+        if (activeRoomCount >= Room.MaxActiveRoomsPerHost)
+        {
+            throw new InvalidOperationException(
+                $"Ya tenés {Room.MaxActiveRoomsPerHost} salas activas. Cerrá una antes de crear otra.");
+        }
+
         var inviteCode = GenerateInviteCode();
 
         var room = new Room
