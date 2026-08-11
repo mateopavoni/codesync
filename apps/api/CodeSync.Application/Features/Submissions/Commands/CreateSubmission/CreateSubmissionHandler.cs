@@ -37,6 +37,14 @@ internal sealed class CreateSubmissionHandler : IRequestHandler<CreateSubmission
         var challenge = await _challenges.GetByIdAsync(request.ChallengeId, cancellationToken)
             ?? throw new KeyNotFoundException($"Challenge '{request.ChallengeId}' not found.");
 
+        // HTML challenges are live-preview only (rendered client-side in an iframe) —
+        // there's no Docker execution path for them yet (no return value to grade).
+        if (challenge.Language == ProgrammingLanguage.Html)
+        {
+            throw new InvalidOperationException(
+                "Los desafíos de HTML todavía no tienen calificación automática — es un espacio de práctica libre.");
+        }
+
         // 2. Execute code in the sandbox
         var execution = await _executor.ExecuteAsync(
             request.Code,

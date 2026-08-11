@@ -1,5 +1,6 @@
 export type DifficultyLevel = 'facil' | 'medio' | 'dificil';
-export type ProgrammingLanguage = 'python' | 'javascript';
+// 'html' es solo preview en vivo (iframe) — sin calificación automática todavía.
+export type ProgrammingLanguage = 'python' | 'javascript' | 'html';
 
 export interface TestCase {
   id: string;

@@ -93,4 +93,26 @@ public sealed class CreateSubmissionHandlerTests
         Assert.Equal("", hidden.Args);
         Assert.Equal("", hidden.ExpectedOutput);
     }
+
+    [Fact]
+    public async Task Handle_HtmlChallenge_ThrowsInsteadOfCallingDockerExecutor()
+    {
+        _challenges.Setup(c => c.GetByIdAsync("ch-html", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new Challenge
+            {
+                Id = "ch-html",
+                Title = "Tarjeta de perfil",
+                Language = ProgrammingLanguage.Html,
+                TestCases = []
+            });
+
+        await Assert.ThrowsAsync<InvalidOperationException>(
+            () => BuildHandler().Handle(
+                new CreateSubmissionCommand("ch-html", "u-1", "<div>hola</div>", ProgrammingLanguage.Html),
+                CancellationToken.None));
+
+        _executor.Verify(e => e.ExecuteAsync(
+            It.IsAny<string>(), It.IsAny<string>(), It.IsAny<ProgrammingLanguage>(),
+            It.IsAny<IReadOnlyList<TestCase>>(), It.IsAny<CancellationToken>()), Times.Never);
+    }
 }

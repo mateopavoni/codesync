@@ -353,6 +353,47 @@ public sealed class ChallengeSeeder
                 new() { Args = "[15]", ExpectedOutput = "false", IsVisible = false },
                 new() { Args = "[97]", ExpectedOutput = "true",  IsVisible = false }
             }
+        },
+
+        // ─── HTML (solo preview en vivo, sin calificación automática todavía) ────
+
+        new Challenge
+        {
+            Title = "Tarjeta de perfil",
+            Description = "Armá una tarjeta simple con una imagen, un nombre y una descripción. Es un espacio de práctica libre: no hay tests automáticos, solo mirá cómo se ve en el preview en vivo.",
+            Difficulty = DifficultyLevel.Easy,
+            Language = ProgrammingLanguage.Html,
+            FunctionName = "",
+            SolutionTemplate = "<div class=\"card\">\n  <h2>Tu nombre</h2>\n  <p>Una breve descripción acá.</p>\n</div>\n\n<style>\n  .card {\n    font-family: sans-serif;\n    padding: 16px;\n    border: 1px solid #ccc;\n    border-radius: 8px;\n  }\n</style>",
+            IsActive = true,
+            CreatedAt = DateTime.UtcNow,
+            TestCases = new List<TestCase>()
+        },
+
+        new Challenge
+        {
+            Title = "Centrar un div",
+            Description = "Centrá el cuadro azul vertical y horizontalmente dentro de la pantalla usando CSS. Espacio de práctica libre: no hay tests automáticos.",
+            Difficulty = DifficultyLevel.Easy,
+            Language = ProgrammingLanguage.Html,
+            FunctionName = "",
+            SolutionTemplate = "<div class=\"box\"></div>\n\n<style>\n  body {\n    height: 100vh;\n    margin: 0;\n  }\n  .box {\n    width: 80px;\n    height: 80px;\n    background: steelblue;\n  }\n</style>",
+            IsActive = true,
+            CreatedAt = DateTime.UtcNow,
+            TestCases = new List<TestCase>()
+        },
+
+        new Challenge
+        {
+            Title = "Formulario de contacto",
+            Description = "Armá un formulario con campos de nombre, email y mensaje, más un botón de enviar. Espacio de práctica libre: no hay tests automáticos.",
+            Difficulty = DifficultyLevel.Medium,
+            Language = ProgrammingLanguage.Html,
+            FunctionName = "",
+            SolutionTemplate = "<form>\n  <label>Nombre</label>\n  <input type=\"text\" name=\"nombre\" />\n\n  <label>Email</label>\n  <input type=\"email\" name=\"email\" />\n\n  <label>Mensaje</label>\n  <textarea name=\"mensaje\"></textarea>\n\n  <button type=\"submit\">Enviar</button>\n</form>",
+            IsActive = true,
+            CreatedAt = DateTime.UtcNow,
+            TestCases = new List<TestCase>()
         }
     };
 }

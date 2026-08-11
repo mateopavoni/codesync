@@ -15,6 +15,7 @@ import { CollaborationService } from '../../../core/services/collaboration.servi
 import { MonacoEditorComponent } from '../monaco-editor/monaco-editor.component';
 import { ExecutionPanelComponent } from '../execution-panel/execution-panel.component';
 import { CoachPanelComponent } from '../coach-panel/coach-panel.component';
+import { LivePreviewComponent } from '../live-preview/live-preview.component';
 import { LoadingSpinnerComponent } from '../../../shared/components/loading-spinner/loading-spinner.component';
 import { ErrorMessageComponent } from '../../../shared/components/error-message/error-message.component';
 import type { Challenge } from '../../../core/models/challenge.model';
@@ -22,7 +23,7 @@ import type { SubmissionResult } from '../../../core/models/submission.model';
 import type { CursorPosition } from '../../../core/models/room.model';
 import { CURSOR_COLORS } from '../../../core/models/room.model';
 
-type ActivePanel = 'resultado' | 'coach';
+type ActivePanel = 'resultado' | 'coach' | 'preview';
 
 @Component({
   selector: 'app-editor-page',
@@ -32,6 +33,7 @@ type ActivePanel = 'resultado' | 'coach';
     MonacoEditorComponent,
     ExecutionPanelComponent,
     CoachPanelComponent,
+    LivePreviewComponent,
     LoadingSpinnerComponent,
     ErrorMessageComponent,
   ],
@@ -68,6 +70,11 @@ export class EditorPageComponent implements OnInit, OnDestroy {
   readonly remoteCursors = signal<CursorPosition[]>([]);
   readonly currentCode = signal('');
 
+  // Desafíos HTML: preview en vivo (iframe), sin submission — se actualiza con
+  // más frecuencia que el auto-save pero sin recargar el iframe en cada tecla.
+  readonly previewCode = signal('');
+  private readonly PREVIEW_DEBOUNCE_MS = 400;
+
   // Auto-save periódico via debounce sobre los cambios del editor
   private readonly AUTO_SAVE_DEBOUNCE_MS = 2000;
 
@@ -80,6 +87,12 @@ export class EditorPageComponent implements OnInit, OnDestroy {
       this.roomId.set(roomId);
       this.setupCollaboration(roomId);
     }
+
+    // Preview en vivo (solo desafíos HTML) — debounce corto, distinto del
+    // auto-save, para que el iframe no se recargue en cada tecla.
+    this.codeChange$
+      .pipe(debounceTime(this.PREVIEW_DEBOUNCE_MS), takeUntil(this.destroy$))
+      .subscribe((code) => this.previewCode.set(code));
 
     // Auto-save: sincroniza con Firebase Realtime DB si hay sala activa
     this.codeChange$
@@ -131,6 +144,10 @@ export class EditorPageComponent implements OnInit, OnDestroy {
     const code = this.editorRef?.getCurrentValue() ?? '';
     const ch = this.challenge();
     if (!ch || !code.trim()) return;
+    // Los desafíos HTML son solo preview en vivo — no hay backend que califique
+    // todavía (ver CreateSubmissionHandler). El botón ya está oculto para este
+    // caso, esto es solo un guard defensivo.
+    if (ch.language === 'html') return;
 
     this.submitting.set(true);
     this.submissionError.set(null);
@@ -181,6 +198,8 @@ export class EditorPageComponent implements OnInit, OnDestroy {
         next: (c) => {
           this.challenge.set(c);
           this.currentCode.set(c.starterCode);
+          this.previewCode.set(c.starterCode);
+          if (c.language === 'html') this.activePanel.set('preview');
           this.challengeLoading.set(false);
         },
         error: () => {
