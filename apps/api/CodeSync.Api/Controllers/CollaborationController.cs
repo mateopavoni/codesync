@@ -27,6 +27,7 @@ public sealed class CollaborationController : ControllerBase
     [HttpPost]
     [ProducesResponseType(typeof(CreateRoomDto), 201)]
     [ProducesResponseType(404)]
+    [ProducesResponseType(422)]
     public async Task<IActionResult> CreateRoom([FromBody] CreateRoomRequest request, CancellationToken ct)
     {
         var hostUserId = User.GetFirebaseUid();

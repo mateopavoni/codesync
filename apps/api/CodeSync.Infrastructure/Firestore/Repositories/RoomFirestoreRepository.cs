@@ -36,6 +36,16 @@ internal sealed class RoomFirestoreRepository : IRoomRepository
         return reference.Id;
     }
 
+    public async Task<int> CountActiveByHostUserIdAsync(string hostUserId, CancellationToken ct = default)
+    {
+        var snap = await Col
+            .WhereEqualTo("hostUserId", hostUserId)
+            .WhereEqualTo("isActive", true)
+            .GetSnapshotAsync(ct);
+
+        return snap.Documents.Count;
+    }
+
     public Task<Room> JoinAsync(string inviteCode, string userId, int maxMembers, CancellationToken ct = default)
     {
         var query = Col.WhereEqualTo("inviteCode", inviteCode).WhereEqualTo("isActive", true).Limit(1);

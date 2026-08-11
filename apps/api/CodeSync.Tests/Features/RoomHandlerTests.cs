@@ -18,6 +18,8 @@ public sealed class CreateRoomHandlerTests
         _challenges.Setup(r => r.GetByIdAsync("ch_001", It.IsAny<CancellationToken>()))
                    .ReturnsAsync(challenge);
 
+        _rooms.Setup(r => r.CountActiveByHostUserIdAsync("user_host", It.IsAny<CancellationToken>()))
+              .ReturnsAsync(0);
         _rooms.Setup(r => r.CreateAsync(It.IsAny<Room>(), It.IsAny<CancellationToken>()))
               .ReturnsAsync("room_001");
 
@@ -47,6 +49,23 @@ public sealed class CreateRoomHandlerTests
 
         await Assert.ThrowsAsync<KeyNotFoundException>(
             () => handler.Handle(new CreateRoomCommand("bad_id", "user_host"), CancellationToken.None));
+    }
+
+    [Fact]
+    public async Task Handle_HostAtActiveRoomCap_ThrowsInvalidOperationException()
+    {
+        var challenge = new Challenge { Id = "ch_001", Title = "Test" };
+        _challenges.Setup(r => r.GetByIdAsync("ch_001", It.IsAny<CancellationToken>()))
+                   .ReturnsAsync(challenge);
+        _rooms.Setup(r => r.CountActiveByHostUserIdAsync("user_host", It.IsAny<CancellationToken>()))
+              .ReturnsAsync(Room.MaxActiveRoomsPerHost);
+
+        var handler = new CreateRoomHandler(_rooms.Object, _challenges.Object);
+
+        await Assert.ThrowsAsync<InvalidOperationException>(
+            () => handler.Handle(new CreateRoomCommand("ch_001", "user_host"), CancellationToken.None));
+
+        _rooms.Verify(r => r.CreateAsync(It.IsAny<Room>(), It.IsAny<CancellationToken>()), Times.Never);
     }
 }
 

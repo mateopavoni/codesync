@@ -1,4 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Router, RouterLink } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CollaborationService } from '../../../core/services/collaboration.service';
@@ -39,8 +40,8 @@ export class RoomComponent {
         this.creating.set(false);
         this.router.navigate(['/editor', room.challengeId, 'sala', room.roomId]);
       },
-      error: () => {
-        this.createError.set('No se pudo crear la sala. Intentá de nuevo.');
+      error: (err: HttpErrorResponse) => {
+        this.createError.set(err.error?.error ?? 'No se pudo crear la sala. Intentá de nuevo.');
         this.creating.set(false);
       },
     });
