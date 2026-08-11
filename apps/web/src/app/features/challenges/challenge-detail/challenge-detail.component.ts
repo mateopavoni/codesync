@@ -5,7 +5,6 @@ import { LoadingSpinnerComponent } from '../../../shared/components/loading-spin
 import { ErrorMessageComponent } from '../../../shared/components/error-message/error-message.component';
 import { LangIconComponent } from '../../../shared/components/lang-icon/lang-icon.component';
 import type { Challenge } from '../../../core/models/challenge.model';
-import { DIFFICULTY_LABEL } from '../../../core/models/challenge.model';
 
 @Component({
   selector: 'app-challenge-detail',
@@ -21,8 +20,6 @@ export class ChallengeDetailComponent implements OnInit {
   readonly challenge = signal<Challenge | null>(null);
   readonly loading = signal(true);
   readonly error = signal<string | null>(null);
-
-  readonly difficultyLabel = DIFFICULTY_LABEL;
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');

@@ -12,9 +12,6 @@
           <span>{{ challenge()!.title }}</span>
         </div>
         <div class="header-actions">
-          <span class="badge" [class]="'badge-' + challenge()!.difficulty">
-            {{ difficultyLabel[challenge()!.difficulty] }}
-          </span>
           <app-lang-icon [language]="challenge()!.language" />
           <a [routerLink]="['/editor', challenge()!.id]" class="btn-start">
             Resolver desafío
