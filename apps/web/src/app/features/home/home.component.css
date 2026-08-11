@@ -185,8 +185,6 @@
   border-color: var(--cs-primary);
   color: var(--cs-primary);
 }
-.features-more-link .material-symbols-outlined { font-size: 18px !important; }
-
 /* --- CTA section --- */
 .cta-section {
   padding: 96px var(--cs-sp-lg);
