@@ -17,6 +17,26 @@
     <a routerLink="/login" class="topbar-login">Iniciar sesión</a>
     <a routerLink="/registro" class="topbar-cta">Empezar gratis</a>
   </div>
+
+  <button type="button"
+          class="topbar-menu-btn"
+          (click)="toggleMobileNav()"
+          [attr.aria-expanded]="mobileNavOpen()"
+          aria-haspopup="true"
+          aria-label="Abrir menú">
+    <span class="material-symbols-outlined" aria-hidden="true">
+      {{ mobileNavOpen() ? 'close' : 'menu' }}
+    </span>
+  </button>
+
+  @if (mobileNavOpen()) {
+    <nav class="topbar-mobile-panel" aria-label="Navegación móvil">
+      <a href="#features" class="topbar-mobile-link" (click)="closeMobileNav()">Funcionalidades</a>
+      <a href="#about" class="topbar-mobile-link" (click)="closeMobileNav()">Acerca de</a>
+      <a routerLink="/login" class="topbar-mobile-link" (click)="closeMobileNav()">Iniciar sesión</a>
+      <a routerLink="/registro" class="topbar-mobile-link topbar-mobile-link--cta" (click)="closeMobileNav()">Empezar gratis</a>
+    </nav>
+  }
 </header>
 
 <!-- Contenido principal -->
@@ -68,11 +88,8 @@
 
       <div class="features-grid" role="list">
         <!-- Feature 1 -->
-        <article class="feature-card" role="listitem">
-          <div class="feature-icon-wrap feature-icon--secondary" aria-hidden="true">
-            <span class="material-symbols-outlined"
-                  style="font-variation-settings: 'FILL' 1;">play_arrow</span>
-          </div>
+        <article class="feature-card feature-card--a" role="listitem">
+          <span class="feature-index" aria-hidden="true">01</span>
           <h3 class="feature-title">Ejecución instantánea</h3>
           <p class="feature-desc">
             Escribí código y mirá los resultados al instante sin configuraciones complejas.
@@ -81,11 +98,8 @@
         </article>
 
         <!-- Feature 2 -->
-        <article class="feature-card" role="listitem">
-          <div class="feature-icon-wrap feature-icon--primary" aria-hidden="true">
-            <span class="material-symbols-outlined"
-                  style="font-variation-settings: 'FILL' 1;">group</span>
-          </div>
+        <article class="feature-card feature-card--b" role="listitem">
+          <span class="feature-index" aria-hidden="true">02</span>
           <h3 class="feature-title">Colaboración en tiempo real</h3>
           <p class="feature-desc">
             Programá junto a tus compañeros en el mismo editor. Cursores en tiempo
@@ -94,11 +108,8 @@
         </article>
 
         <!-- Feature 3 -->
-        <article class="feature-card" role="listitem">
-          <div class="feature-icon-wrap feature-icon--tertiary" aria-hidden="true">
-            <span class="material-symbols-outlined"
-                  style="font-variation-settings: 'FILL' 1;">psychology</span>
-          </div>
+        <article class="feature-card feature-card--c" role="listitem">
+          <span class="feature-index" aria-hidden="true">03</span>
           <h3 class="feature-title">IA Coach (Gemini)</h3>
           <p class="feature-desc">
             Un asistente inteligente que te guía cuando te atascás, explica conceptos
@@ -107,15 +118,12 @@
         </article>
 
         <!-- Feature 4 -->
-        <article class="feature-card" role="listitem">
-          <div class="feature-icon-wrap feature-icon--warning" aria-hidden="true">
-            <span class="material-symbols-outlined"
-                  style="font-variation-settings: 'FILL' 1;">trophy</span>
-          </div>
+        <article class="feature-card feature-card--d" role="listitem">
+          <span class="feature-index" aria-hidden="true">04</span>
           <h3 class="feature-title">Desafíos progresivos</h3>
           <p class="feature-desc">
-            Resolvé problemas reales con test cases automatizados. Niveles Easy, Medium y Hard
-            con feedback inmediato del Coach cuando fallás.
+            Resolvé problemas reales con test cases automatizados. Niveles fácil, medio
+            y difícil, con feedback inmediato del Coach cuando fallás.
           </p>
         </article>
       </div>
@@ -147,6 +155,6 @@
     <a routerLink="/registro" class="footer-link">Registrarse</a>
   </nav>
   <p class="footer-copy">
-    <span aria-hidden="true">&copy;</span> 2024 CodeSync. Proyecto de portfolio de Mateo Pavoni.
+    <span aria-hidden="true">&copy;</span> 2026 CodeSync. Proyecto de portfolio de Mateo Pavoni.
   </p>
 </footer>
