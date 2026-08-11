@@ -4,12 +4,14 @@ using CodeSync.Application.Features.Rooms.Commands.JoinRoom;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace CodeSync.Api.Controllers;
 
 [ApiController]
 [Route("api/rooms")]
 [Authorize]
+[EnableRateLimiting("heavy")]
 public sealed class CollaborationController : ControllerBase
 {
     private readonly IMediator _mediator;
