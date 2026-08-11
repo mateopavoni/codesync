@@ -1,5 +1,6 @@
 using CodeSync.Application.Common.Interfaces;
 using CodeSync.Infrastructure.AI;
+using CodeSync.Infrastructure.Cleanup;
 using CodeSync.Infrastructure.Execution;
 using CodeSync.Infrastructure.Firebase;
 using CodeSync.Infrastructure.Firestore.Repositories;
@@ -11,6 +12,7 @@ using Google.Apis.Auth.OAuth2;
 using Google.Cloud.Firestore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace CodeSync.Infrastructure;
 
@@ -92,6 +94,9 @@ public static class DependencyInjection
         // ── Rate limiter ──────────────────────────────────────────────────────
         // In-process singleton: one state per instance. Acceptable for MVP.
         services.AddSingleton<IRateLimiterService, InMemoryRateLimiter>();
+
+        // ── Auto-borrado de datos demo (submissions/salas viejas) ──────────────
+        services.AddHostedService<DemoDataCleanupService>();
 
         return services;
     }

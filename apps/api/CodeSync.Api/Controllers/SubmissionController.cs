@@ -3,12 +3,14 @@ using CodeSync.Application.Features.Submissions.Commands.CreateSubmission;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace CodeSync.Api.Controllers;
 
 [ApiController]
 [Route("api/submissions")]
 [Authorize]
+[EnableRateLimiting("heavy")]
 public sealed class SubmissionController : ControllerBase
 {
     private readonly IMediator _mediator;

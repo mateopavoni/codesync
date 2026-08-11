@@ -1,9 +1,11 @@
+using System.Threading.RateLimiting;
 using CodeSync.Api.Auth;
 using CodeSync.Application;
 using CodeSync.Infrastructure;
 using CodeSync.Infrastructure.Firestore.Seeding;
 using FluentValidation;
 using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.OpenApi.Models;
 using Serilog;
 
@@ -74,6 +76,45 @@ builder.Services.AddSwaggerGen(c =>
 
 builder.Services.AddControllers();
 
+// ── Rate limiting (protege la VPS de abuso/spam en la demo) ──────────────────
+// Partición por IP: sin esto un solo cliente hambriento podía saturar el
+// sandbox de Docker o Firestore. Límite global generoso + política "heavy"
+// más estricta para los endpoints caros (ejecutar código, crear/unirse a sala).
+builder.Services.AddRateLimiter(options =>
+{
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+
+    options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(ctx =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            ctx.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+            _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 100,
+                Window = TimeSpan.FromMinutes(1),
+                QueueLimit = 0,
+            }));
+
+    options.AddPolicy("heavy", ctx =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            ctx.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+            _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 10,
+                Window = TimeSpan.FromMinutes(1),
+                QueueLimit = 0,
+            }));
+
+    options.OnRejected = async (ctx, ct) =>
+    {
+        ctx.HttpContext.Response.ContentType = "application/problem+json";
+        await ctx.HttpContext.Response.WriteAsJsonAsync(new
+        {
+            status = 429,
+            error = "Demasiadas solicitudes. Esperá un momento y volvé a intentar.",
+        }, ct);
+    };
+});
+
 // ─────────────────────────────────────────────────────────────────────────────
 var app = builder.Build();
 
@@ -122,6 +163,7 @@ app.UseHttpsRedirection();
 app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseRateLimiter();
 app.MapControllers();
 
 app.Run();
