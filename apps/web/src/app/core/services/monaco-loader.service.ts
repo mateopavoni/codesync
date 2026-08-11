@@ -24,6 +24,15 @@ export class MonacoLoaderService {
         // sus propias URLs internas (p.ej. tsWorker.js) contra este valor, y una
         // ruta relativa falla al parsear dentro del contexto del worker.
         window.require.config({ paths: { vs: '/assets/monaco/vs' } });
+        // El paths.vs de arriba solo lo conoce el AMD loader del hilo principal.
+        // Cada worker (workerMain.js) arranca con su propio loader interno, sin
+        // ese config, y al resolver módulos como tsWorker.js contra una URL base
+        // inválida tira "Failed to parse URL". getWorkerUrl le da a Monaco la URL
+        // absoluta de workerMain.js para instanciar el worker con self.location
+        // ya seteado, y desde ahí resuelve sus propios submódulos relativos bien.
+        window.MonacoEnvironment = {
+          getWorkerUrl: () => '/assets/monaco/vs/base/worker/workerMain.js',
+        };
         window.require(['vs/editor/editor.main'], () => resolve());
       };
       script.onerror = () => reject(new Error('No se pudo cargar Monaco Editor desde assets.'));
