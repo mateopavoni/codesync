@@ -1,4 +1,5 @@
 using CodeSync.Api.Extensions;
+using CodeSync.Application.Features.Dashboard.Commands.ClearFeedbackHistory;
 using CodeSync.Application.Features.Dashboard.Queries.GetDashboard;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -27,5 +28,17 @@ public sealed class DashboardController : ControllerBase
         var userId = User.GetFirebaseUid();
         var result = await _mediator.Send(new GetDashboardQuery(userId), ct);
         return Ok(result);
+    }
+
+    /// <summary>
+    /// Deletes all of the authenticated user's saved AI Coach feedback history.
+    /// </summary>
+    [HttpDelete("feedback")]
+    [ProducesResponseType(204)]
+    public async Task<IActionResult> ClearFeedbackHistory(CancellationToken ct)
+    {
+        var userId = User.GetFirebaseUid();
+        await _mediator.Send(new ClearFeedbackHistoryCommand(userId), ct);
+        return NoContent();
     }
 }
