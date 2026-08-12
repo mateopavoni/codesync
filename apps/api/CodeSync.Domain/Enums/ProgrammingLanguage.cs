@@ -5,8 +5,10 @@ public enum ProgrammingLanguage
     Python = 1,
     JavaScript = 2,
 
-    /// <summary>Live-preview only (iframe render) — no Docker execution, no
-    /// automated grading yet. See CreateSubmissionHandler's guard.</summary>
+    /// <summary>Graded in a headless-Chromium Docker sandbox (Playwright): the
+    /// student's markup is loaded via page.setContent and checked against DOM
+    /// assertions (element exists / text contains / attribute / count / centered).
+    /// See CodeExecutionService.BuildHtmlRunner.</summary>
     Html = 3,
 
     Ruby = 4,

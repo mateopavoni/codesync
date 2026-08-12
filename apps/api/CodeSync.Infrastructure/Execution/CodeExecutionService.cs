@@ -38,7 +38,13 @@ public sealed class CodeExecutionService : ICodeExecutionService
         var sw = Stopwatch.StartNew();
 
         var (image, command) = GetContainerSpec(language);
-        int timeout = _config.GetValue("Docker:ExecutionTimeoutSeconds", 5);
+        // ponytail: HTML cold-starts a full Chromium inside the container on top of
+        // the container-start cost every other language already pays — 5s is too
+        // tight for that, 12s leaves headroom without letting a stuck submission
+        // hold the sandbox much longer than the others.
+        int timeout = language == ProgrammingLanguage.Html
+            ? _config.GetValue("Docker:HtmlExecutionTimeoutSeconds", 12)
+            : _config.GetValue("Docker:ExecutionTimeoutSeconds", 5);
 
         var testCasesJson = JsonSerializer.Serialize(
             testCases.Select((tc, i) => new
@@ -53,14 +59,26 @@ public sealed class CodeExecutionService : ICodeExecutionService
         _logger.LogDebug("Running {Language} submission — image={Image}, testCases={Count}",
             language, image, testCases.Count);
 
-        var result = await _docker.RunAsync(image, command, fullProgram, timeout, ct);
+        // Chromium alone eats ~150-300MB RSS just to launch a single tab — the
+        // 256MB default other languages use risks a silent OOM-kill for HTML.
+        // PidsLimit also needs headroom: cgroups counts *threads*, not just
+        // processes, and a single headless Chromium instance easily spins up
+        // 100+ threads across its browser/GPU/renderer processes — confirmed by
+        // hand (50 reliably hit "pthread_create: Resource temporarily
+        // unavailable"; 300 leaves real headroom while still being nowhere near
+        // what an actual fork bomb would attempt).
+        var (memoryBytes, tmpfsSize, pidsLimit) = language == ProgrammingLanguage.Html
+            ? (512 * 1024 * 1024L, "64m", 300L)
+            : (256 * 1024 * 1024L, "8m", 50L);
+
+        var result = await _docker.RunAsync(image, command, fullProgram, timeout, memoryBytes, tmpfsSize, pidsLimit, ct);
         sw.Stop();
 
         if (result.TimedOut)
         {
             return new CodeExecutionResult(
                 AllTestsPassed: false,
-                TestResults: BuildTimeoutResults(testCases.Count),
+                TestResults: BuildTimeoutResults(testCases.Count, timeout),
                 TimedOut: true,
                 Error: null,
                 ExecutionTimeMs: (int)sw.ElapsedMilliseconds);
@@ -150,6 +168,16 @@ public sealed class CodeExecutionService : ICodeExecutionService
             ProgrammingLanguage.JavaScript => (
                 "node:22-alpine",
                 new[] { "node", "--input-type=commonjs" }),
+            // ponytail: the *official* Playwright image ships Chromium preinstalled
+            // but not the npm package itself (it's meant as a base you `npm ci` your
+            // own project onto) — with NetworkMode=none inside the execution
+            // container, a bare `require('playwright')` would fail with "Cannot find
+            // module". `docker/html-runner.Dockerfile` layers playwright-core on top
+            // at build time (when network is available) — build it once per host,
+            // see that file's header comment.
+            ProgrammingLanguage.Html => (
+                "codesync-html-runner:1.48.0",
+                new[] { "node", "--input-type=commonjs" }),
             ProgrammingLanguage.Ruby => (
                 "ruby:3.3-alpine",
                 new[] { "ruby", "-" }),
@@ -193,6 +221,9 @@ public sealed class CodeExecutionService : ICodeExecutionService
         {
             ProgrammingLanguage.Python => BuildPythonRunner(functionName, studentCode, testCasesJson),
             ProgrammingLanguage.JavaScript => BuildJavaScriptRunner(functionName, studentCode, testCasesJson),
+            // HTML has no target function to call — testCasesJson carries DOM
+            // assertions instead of args/expectedOutput pairs to diff.
+            ProgrammingLanguage.Html => BuildHtmlRunner(studentCode, testCasesJson),
             ProgrammingLanguage.Ruby => BuildRubyRunner(functionName, studentCode, testCasesJson),
             ProgrammingLanguage.Java => BuildJavaRunner(functionName, studentCode, testCasesJson),
             ProgrammingLanguage.CSharp => BuildCSharpRunner(functionName, studentCode, testCasesJson),
@@ -243,6 +274,93 @@ public sealed class CodeExecutionService : ICodeExecutionService
             }
         });
         process.stdout.write(JSON.stringify(_results) + '\n');
+        """;
+
+    // HTML has no function to call, so unlike the runners above it treats the
+    // student's markup as *data*, not code: it's loaded into a real (sandboxed,
+    // network-less) Chromium tab via page.setContent, and each TestCase.ExpectedOutput
+    // is one DOM assertion (see ProgrammingLanguage.Html's doc comment for the
+    // supported types) evaluated against the rendered page — never an exact-string
+    // diff, so formatting/order differences in the student's HTML don't fail them.
+    private static string BuildHtmlRunner(string code, string testCasesJson) =>
+        $$"""
+        const { chromium } = require('playwright-core');
+
+        // Serialized server-side with JsonSerializer so this is always a valid,
+        // safely-escaped JS string literal no matter what the student's HTML
+        // contains (backticks, ${...}, </script>, etc).
+        const _studentHtml = {{JsonSerializer.Serialize(code)}};
+        const _testCases = {{testCasesJson}};
+
+        (async () => {
+          const browser = await chromium.launch({ args: ['--no-sandbox', '--disable-dev-shm-usage'] });
+          const page = await browser.newPage();
+          page.on('dialog', d => d.dismiss());
+          // Segunda capa de defensa (la primera es NetworkMode=none del container):
+          // corta cualquier fetch/recurso externo a nivel de Playwright en vez de
+          // dejar que el propio timeout HTTP de una request sin red se coma tiempo.
+          await page.route('**/*', route => route.abort());
+
+          try {
+            await page.setContent(_studentHtml, { waitUntil: 'domcontentloaded', timeout: 3000 });
+          } catch (e) {
+            console.log(JSON.stringify(_testCases.map(() => ({ passed: false, actualOutput: '', error: 'setup_timeout: ' + e.message }))));
+            await browser.close();
+            process.exit(0);
+          }
+
+          const results = [];
+          for (const tc of _testCases) {
+            try {
+              const assertion = JSON.parse(tc.expectedOutput);
+              const evalPromise = page.evaluate((a) => {
+                const els = Array.from(document.querySelectorAll(a.selector));
+                switch (a.type) {
+                  case 'exists':
+                    return { ok: els.length > 0, actual: els.length + ' elemento(s)' };
+                  case 'textContains': {
+                    const ok = els.some((el) => (el.textContent || '').includes(a.value));
+                    return { ok, actual: els.map((el) => el.textContent).join(' | ').slice(0, 200) };
+                  }
+                  case 'attribute': {
+                    const ok = els.some((el) => el.getAttribute(a.attr) === a.value);
+                    return { ok, actual: els.map((el) => el.getAttribute(a.attr)).join(', ') };
+                  }
+                  case 'count': {
+                    const n = els.length;
+                    const cmp = a.comparator || 'eq';
+                    const ok = cmp === 'eq' ? n === a.value : cmp === 'gte' ? n >= a.value : cmp === 'lte' ? n <= a.value : false;
+                    return { ok, actual: String(n) };
+                  }
+                  case 'centered': {
+                    if (els.length === 0) return { ok: false, actual: 'no existe' };
+                    const r = els[0].getBoundingClientRect();
+                    const cx = r.left + r.width / 2;
+                    const cy = r.top + r.height / 2;
+                    const dx = Math.abs(cx - window.innerWidth / 2);
+                    const dy = Math.abs(cy - window.innerHeight / 2);
+                    const tolerance = a.tolerance || 20;
+                    return { ok: dx <= tolerance && dy <= tolerance, actual: 'centro en (' + Math.round(cx) + ',' + Math.round(cy) + ')' };
+                  }
+                  default:
+                    return { ok: false, actual: '' };
+                }
+              }, assertion);
+              const timeoutGuard = new Promise((_, rej) => setTimeout(() => rej(new Error('assertion_timeout')), 2000));
+              const r = await Promise.race([evalPromise, timeoutGuard]);
+              results.push({ passed: r.ok, actualOutput: r.actual, error: null });
+            } catch (e) {
+              results.push({ passed: false, actualOutput: '', error: e.message });
+            }
+          }
+
+          console.log(JSON.stringify(results));
+          await browser.close();
+          process.exit(0);
+        })().catch((e) => {
+          console.log(JSON.stringify([{ passed: false, actualOutput: '', error: 'harness_error: ' + e.message }]));
+          process.exit(0);
+        });
         """;
 
     private static string BuildRubyRunner(string functionName, string code, string testCasesJson) =>
@@ -609,9 +727,9 @@ public sealed class CodeExecutionService : ICodeExecutionService
     private static string EscapeForCLikeStringLiteral(string s) =>
         s.Replace("\\", "\\\\").Replace("\"", "\\\"");
 
-    private static IReadOnlyList<TestCaseResult> BuildTimeoutResults(int count) =>
+    private static IReadOnlyList<TestCaseResult> BuildTimeoutResults(int count, int timeoutSeconds) =>
         Enumerable.Range(0, count)
-            .Select(i => new TestCaseResult(i, false, "", "Tiempo de ejecucion excedido (5s)."))
+            .Select(i => new TestCaseResult(i, false, "", $"Tiempo de ejecucion excedido ({timeoutSeconds}s)."))
             .ToList();
 
     private static IReadOnlyList<TestCaseResult> BuildErrorResults(int count, string error) =>
