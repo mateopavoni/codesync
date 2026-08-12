@@ -95,24 +95,35 @@ public sealed class CreateSubmissionHandlerTests
     }
 
     [Fact]
-    public async Task Handle_HtmlChallenge_ThrowsInsteadOfCallingDockerExecutor()
+    public async Task Handle_HtmlChallenge_CallsExecutorLikeAnyOtherLanguage()
     {
+        // HTML used to throw before ever reaching the executor (practice-only,
+        // no grading). Now it's graded via the same Docker sandbox path as every
+        // other language — CodeExecutionService just picks a different runner/image
+        // for it (headless Chromium + DOM assertions instead of a function call).
         _challenges.Setup(c => c.GetByIdAsync("ch-html", It.IsAny<CancellationToken>()))
             .ReturnsAsync(new Challenge
             {
                 Id = "ch-html",
                 Title = "Tarjeta de perfil",
                 Language = ProgrammingLanguage.Html,
-                TestCases = []
+                TestCases = [new TestCase { ExpectedOutput = """{"type":"exists","selector":"h2"}""", IsVisible = true }]
             });
+        _executor.Setup(e => e.ExecuteAsync(
+                It.IsAny<string>(), It.IsAny<string>(), ProgrammingLanguage.Html,
+                It.IsAny<IReadOnlyList<TestCase>>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new CodeExecutionResult(
+                AllTestsPassed: true,
+                TestResults: [new TestCaseResult(0, Passed: true, ActualOutput: "1 elemento(s)")],
+                TimedOut: false, Error: null, ExecutionTimeMs: 900));
 
-        await Assert.ThrowsAsync<InvalidOperationException>(
-            () => BuildHandler().Handle(
-                new CreateSubmissionCommand("ch-html", "u-1", "<div>hola</div>", ProgrammingLanguage.Html),
-                CancellationToken.None));
+        var result = await BuildHandler().Handle(
+            new CreateSubmissionCommand("ch-html", "u-1", "<div><h2>hola</h2></div>", ProgrammingLanguage.Html),
+            CancellationToken.None);
 
+        Assert.True(result.AllTestsPassed);
         _executor.Verify(e => e.ExecuteAsync(
-            It.IsAny<string>(), It.IsAny<string>(), It.IsAny<ProgrammingLanguage>(),
-            It.IsAny<IReadOnlyList<TestCase>>(), It.IsAny<CancellationToken>()), Times.Never);
+            It.IsAny<string>(), It.IsAny<string>(), ProgrammingLanguage.Html,
+            It.IsAny<IReadOnlyList<TestCase>>(), It.IsAny<CancellationToken>()), Times.Once);
     }
 }
