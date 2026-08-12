@@ -1,6 +1,7 @@
 export type DifficultyLevel = 'facil' | 'medio' | 'dificil';
-// 'html' es solo preview en vivo (iframe) — sin calificación automática todavía.
-export type ProgrammingLanguage = 'python' | 'javascript' | 'html' | 'ruby' | 'java' | 'csharp';
+// 'html' y 'css' se califican en un sandbox Chromium headless (aserciones DOM),
+// no comparando output de una función — ver CodeExecutionService.BuildHtmlRunner.
+export type ProgrammingLanguage = 'python' | 'javascript' | 'html' | 'css' | 'ruby' | 'java' | 'csharp';
 
 export interface TestCase {
   id: string;
@@ -40,6 +41,7 @@ export const LANGUAGE_LABEL: Record<ProgrammingLanguage, string> = {
   javascript: 'JavaScript',
   python: 'Python',
   html: 'HTML',
+  css: 'CSS',
   ruby: 'Ruby',
   java: 'Java',
   csharp: 'C#',
@@ -50,6 +52,7 @@ export const PROGRAMMING_LANGUAGES: ProgrammingLanguage[] = [
   'python',
   'javascript',
   'html',
+  'css',
   'ruby',
   'java',
   'csharp',

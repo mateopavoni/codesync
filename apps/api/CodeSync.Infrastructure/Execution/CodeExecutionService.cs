@@ -42,7 +42,7 @@ public sealed class CodeExecutionService : ICodeExecutionService
         // the container-start cost every other language already pays — 5s is too
         // tight for that, 12s leaves headroom without letting a stuck submission
         // hold the sandbox much longer than the others.
-        int timeout = language == ProgrammingLanguage.Html
+        int timeout = language is ProgrammingLanguage.Html or ProgrammingLanguage.Css
             ? _config.GetValue("Docker:HtmlExecutionTimeoutSeconds", 12)
             : _config.GetValue("Docker:ExecutionTimeoutSeconds", 5);
 
@@ -67,7 +67,7 @@ public sealed class CodeExecutionService : ICodeExecutionService
         // hand (50 reliably hit "pthread_create: Resource temporarily
         // unavailable"; 300 leaves real headroom while still being nowhere near
         // what an actual fork bomb would attempt).
-        var (memoryBytes, tmpfsSize, pidsLimit) = language == ProgrammingLanguage.Html
+        var (memoryBytes, tmpfsSize, pidsLimit) = language is ProgrammingLanguage.Html or ProgrammingLanguage.Css
             ? (512 * 1024 * 1024L, "64m", 300L)
             : (256 * 1024 * 1024L, "8m", 50L);
 
@@ -175,7 +175,9 @@ public sealed class CodeExecutionService : ICodeExecutionService
             // module". `docker/html-runner.Dockerfile` layers playwright-core on top
             // at build time (when network is available) — build it once per host,
             // see that file's header comment.
-            ProgrammingLanguage.Html => (
+            // Css shares the same runner/image as Html — see ProgrammingLanguage.Css's
+            // doc comment.
+            ProgrammingLanguage.Html or ProgrammingLanguage.Css => (
                 "codesync-html-runner:1.48.0",
                 new[] { "node", "--input-type=commonjs" }),
             ProgrammingLanguage.Ruby => (
@@ -221,9 +223,9 @@ public sealed class CodeExecutionService : ICodeExecutionService
         {
             ProgrammingLanguage.Python => BuildPythonRunner(functionName, studentCode, testCasesJson),
             ProgrammingLanguage.JavaScript => BuildJavaScriptRunner(functionName, studentCode, testCasesJson),
-            // HTML has no target function to call — testCasesJson carries DOM
+            // HTML/CSS have no target function to call — testCasesJson carries DOM
             // assertions instead of args/expectedOutput pairs to diff.
-            ProgrammingLanguage.Html => BuildHtmlRunner(studentCode, testCasesJson),
+            ProgrammingLanguage.Html or ProgrammingLanguage.Css => BuildHtmlRunner(studentCode, testCasesJson),
             ProgrammingLanguage.Ruby => BuildRubyRunner(functionName, studentCode, testCasesJson),
             ProgrammingLanguage.Java => BuildJavaRunner(functionName, studentCode, testCasesJson),
             ProgrammingLanguage.CSharp => BuildCSharpRunner(functionName, studentCode, testCasesJson),
