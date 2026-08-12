@@ -58,6 +58,10 @@ public sealed class GetChallengeHandlerTests
 public sealed class GetChallengesHandlerTests
 {
     private readonly Mock<IChallengeRepository> _repo = new();
+    private readonly Mock<IUserRepository> _users = new();
+    private readonly Mock<ISubmissionRepository> _submissions = new();
+
+    private GetChallengesHandler CreateHandler() => new(_repo.Object, _users.Object, _submissions.Object);
 
     [Fact]
     public async Task Handle_ReturnsChallengesOrderedByDifficultyThenTitle()
@@ -72,12 +76,35 @@ public sealed class GetChallengesHandlerTests
         _repo.Setup(r => r.GetAllActiveAsync(It.IsAny<CancellationToken>()))
              .ReturnsAsync(challenges);
 
-        var handler = new GetChallengesHandler(_repo.Object);
-        var result = await handler.Handle(new GetChallengesQuery(), CancellationToken.None);
+        var result = await CreateHandler().Handle(new GetChallengesQuery(), CancellationToken.None);
 
         Assert.Equal(3, result.Count);
         Assert.Equal("Apple", result[0].Title);   // Easy A
         Assert.Equal("Cherry", result[1].Title);  // Easy C
         Assert.Equal("Banana", result[2].Title);  // Medium
+        Assert.All(result, c => Assert.Equal("not_started", c.Status)); // sin UserId, no hay estado por-usuario
+    }
+
+    [Fact]
+    public async Task Handle_UserWithSubmissionButNotCompleted_ReturnsInProgress()
+    {
+        var challenges = new List<Challenge>
+        {
+            new() { Id = "a", Title = "Apple", Difficulty = DifficultyLevel.Easy, Language = ProgrammingLanguage.Python, TestCases = new() },
+            new() { Id = "b", Title = "Banana", Difficulty = DifficultyLevel.Easy, Language = ProgrammingLanguage.Python, TestCases = new() },
+            new() { Id = "c", Title = "Cherry", Difficulty = DifficultyLevel.Easy, Language = ProgrammingLanguage.Python, TestCases = new() }
+        };
+        _repo.Setup(r => r.GetAllActiveAsync(It.IsAny<CancellationToken>())).ReturnsAsync(challenges);
+
+        _users.Setup(u => u.GetByIdAsync("user1", It.IsAny<CancellationToken>()))
+              .ReturnsAsync(new User { Uid = "user1", CompletedChallengeIds = new List<string> { "a" } });
+        _submissions.Setup(s => s.GetByUserIdAsync("user1", It.IsAny<CancellationToken>()))
+              .ReturnsAsync(new List<Submission> { new() { ChallengeId = "b", UserId = "user1" } });
+
+        var result = await CreateHandler().Handle(new GetChallengesQuery(UserId: "user1"), CancellationToken.None);
+
+        Assert.Equal("completed", result.Single(c => c.Id == "a").Status);
+        Assert.Equal("in_progress", result.Single(c => c.Id == "b").Status);
+        Assert.Equal("not_started", result.Single(c => c.Id == "c").Status);
     }
 }

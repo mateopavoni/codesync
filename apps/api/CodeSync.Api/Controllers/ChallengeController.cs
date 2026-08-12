@@ -1,3 +1,4 @@
+using CodeSync.Api.Extensions;
 using CodeSync.Application.Features.Challenges.Commands.CreateChallenge;
 using CodeSync.Application.Features.Challenges.Queries.GetChallenge;
 using CodeSync.Application.Features.Challenges.Queries.GetChallenges;
@@ -21,7 +22,10 @@ public sealed class ChallengeController : ControllerBase
     [ProducesResponseType(typeof(IReadOnlyList<ChallengeSummaryDto>), 200)]
     public async Task<IActionResult> GetAll([FromQuery] string? difficulty, [FromQuery] string? language, CancellationToken ct)
     {
-        var result = await _mediator.Send(new GetChallengesQuery(difficulty, language), ct);
+        // Endpoint anónimo, pero si vino un token válido el middleware de auth ya
+        // completó User igual — lo usamos para calcular el estado por usuario.
+        var userId = User.Identity?.IsAuthenticated == true ? User.GetFirebaseUid() : null;
+        var result = await _mediator.Send(new GetChallengesQuery(difficulty, language, userId), ct);
         return Ok(result);
     }
 

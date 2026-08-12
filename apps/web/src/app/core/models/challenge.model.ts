@@ -1,4 +1,5 @@
 export type DifficultyLevel = 'facil' | 'medio' | 'dificil';
+export type ChallengeStatus = 'not_started' | 'in_progress' | 'completed';
 // 'html' y 'css' se califican en un sandbox Chromium headless (aserciones DOM),
 // no comparando output de una función — ver CodeExecutionService.BuildHtmlRunner.
 export type ProgrammingLanguage = 'python' | 'javascript' | 'html' | 'css' | 'ruby' | 'java' | 'csharp';
@@ -28,7 +29,7 @@ export interface ChallengeSummary {
   difficulty: DifficultyLevel;
   language: ProgrammingLanguage;
   tags?: string[];
-  completedAt: string | null;
+  status: ChallengeStatus;
 }
 
 export const DIFFICULTY_LABEL: Record<DifficultyLevel, string> = {
