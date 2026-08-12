@@ -41,6 +41,23 @@ public sealed class ChallengeSeeder
             }
         }
 
+        // ponytail: los 3 seeds de HTML se crearon con TestCases vacío (antes de que
+        // hubiera calificación automática para ese lenguaje). El upsert de más abajo
+        // es por (Title, Language) y nunca toca un challenge que ya existe, así que
+        // agregarles TestCases en SeedData no alcanza en ningún ambiente donde el
+        // seeder ya corrió — hace falta este backfill explícito. Nunca pisa tests
+        // que alguien ya haya cargado por otra vía (solo actúa si TestCases.Count == 0).
+        foreach (var seed in SeedData.Where(c => c.Language == ProgrammingLanguage.Html && c.TestCases.Count > 0))
+        {
+            var current = existing.FirstOrDefault(c => c.Title == seed.Title && c.Language == seed.Language);
+            if (current is not null && current.TestCases.Count == 0)
+            {
+                current.TestCases = seed.TestCases;
+                current.Description = seed.Description;
+                await _repo.UpdateAsync(current, ct);
+            }
+        }
+
         var existingKeys = existing
             .Select(c => (c.Title, c.Language))
             .ToHashSet();
@@ -655,45 +672,61 @@ public sealed class ChallengeSeeder
             }
         },
 
-        // ─── HTML (solo preview en vivo, sin calificación automática todavía) ────
+        // ─── HTML (calificado en un sandbox Docker con Chromium headless — ver
+        // CodeExecutionService.BuildHtmlRunner. Cada TestCase.ExpectedOutput es una
+        // aserción DOM en JSON, no un diff de HTML exacto) ─────────────────────────
 
         new Challenge
         {
             Title = "Tarjeta de perfil",
-            Description = "Armá una tarjeta simple con una imagen, un nombre y una descripción. Es un espacio de práctica libre: no hay tests automáticos, solo mirá cómo se ve en el preview en vivo.",
+            Description = "Armá una tarjeta simple con una imagen, un nombre y una descripción. Se corrobora que existan los elementos clave — el resto de la maquetación es libre.",
             Difficulty = DifficultyLevel.Easy,
             Language = ProgrammingLanguage.Html,
             FunctionName = "",
             SolutionTemplate = "<div class=\"card\">\n  <h2>Tu nombre</h2>\n  <p>Una breve descripción acá.</p>\n</div>\n\n<style>\n  .card {\n    font-family: sans-serif;\n    padding: 16px;\n    border: 1px solid #ccc;\n    border-radius: 8px;\n  }\n</style>",
             IsActive = true,
             CreatedAt = DateTime.UtcNow,
-            TestCases = new List<TestCase>()
+            TestCases = new List<TestCase>
+            {
+                new() { ExpectedOutput = """{"type":"exists","selector":".card"}""" },
+                new() { ExpectedOutput = """{"type":"exists","selector":"h2"}""" },
+                new() { ExpectedOutput = """{"type":"exists","selector":"p"}""" },
+            }
         },
 
         new Challenge
         {
             Title = "Centrar un div",
-            Description = "Centrá el cuadro azul vertical y horizontalmente dentro de la pantalla usando CSS. Espacio de práctica libre: no hay tests automáticos.",
+            Description = "Centrá el cuadro azul vertical y horizontalmente dentro de la pantalla usando CSS. No importa la técnica (flex, grid, position+transform, margin auto) — se corrobora la posición final del elemento.",
             Difficulty = DifficultyLevel.Easy,
             Language = ProgrammingLanguage.Html,
             FunctionName = "",
             SolutionTemplate = "<div class=\"box\"></div>\n\n<style>\n  body {\n    height: 100vh;\n    margin: 0;\n  }\n  .box {\n    width: 80px;\n    height: 80px;\n    background: steelblue;\n  }\n</style>",
             IsActive = true,
             CreatedAt = DateTime.UtcNow,
-            TestCases = new List<TestCase>()
+            TestCases = new List<TestCase>
+            {
+                new() { ExpectedOutput = """{"type":"exists","selector":".box"}""" },
+                new() { ExpectedOutput = """{"type":"centered","selector":".box","tolerance":20}""" },
+            }
         },
 
         new Challenge
         {
             Title = "Formulario de contacto",
-            Description = "Armá un formulario con campos de nombre, email y mensaje, más un botón de enviar. Espacio de práctica libre: no hay tests automáticos.",
+            Description = "Armá un formulario con campos de nombre, email y mensaje, más un botón de enviar. Se corrobora que existan los campos correctos, no el estilo.",
             Difficulty = DifficultyLevel.Medium,
             Language = ProgrammingLanguage.Html,
             FunctionName = "",
             SolutionTemplate = "<form>\n  <label>Nombre</label>\n  <input type=\"text\" name=\"nombre\" />\n\n  <label>Email</label>\n  <input type=\"email\" name=\"email\" />\n\n  <label>Mensaje</label>\n  <textarea name=\"mensaje\"></textarea>\n\n  <button type=\"submit\">Enviar</button>\n</form>",
             IsActive = true,
             CreatedAt = DateTime.UtcNow,
-            TestCases = new List<TestCase>()
+            TestCases = new List<TestCase>
+            {
+                new() { ExpectedOutput = """{"type":"exists","selector":"input[type=email]"}""" },
+                new() { ExpectedOutput = """{"type":"exists","selector":"textarea"}""" },
+                new() { ExpectedOutput = """{"type":"exists","selector":"button[type=submit]"}""" },
+            }
         }
     };
 }
