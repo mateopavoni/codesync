@@ -52,6 +52,21 @@
       </div>
     }
 
+    <!-- Desafíos completados -->
+    @if (data()!.completedChallenges.length > 0) {
+      <section class="section-card">
+        <h2>Completados</h2>
+        <div class="challenge-list">
+          @for (ch of data()!.completedChallenges; track ch.id) {
+            <div class="challenge-row completed">
+              <span class="ch-title">{{ ch.title }}</span>
+              <span class="badge badge-facil">Completado</span>
+            </div>
+          }
+        </div>
+      </section>
+    }
+
     <div class="content-grid">
       <!-- Desafíos pendientes -->
       <section class="section-card">
@@ -110,21 +125,6 @@
         (confirm)="onConfirmClearHistory()"
         (cancel)="showClearHistoryConfirm.set(false)"
       />
-    }
-
-    <!-- Desafíos completados -->
-    @if (data()!.completedChallenges.length > 0) {
-      <section class="section-card">
-        <h2>Completados</h2>
-        <div class="challenge-list">
-          @for (ch of data()!.completedChallenges; track ch.id) {
-            <div class="challenge-row completed">
-              <span class="ch-title">{{ ch.title }}</span>
-              <span class="badge badge-facil">Completado</span>
-            </div>
-          }
-        </div>
-      </section>
     }
   }
 </div>
