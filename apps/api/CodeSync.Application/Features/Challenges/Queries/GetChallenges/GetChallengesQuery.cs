@@ -2,7 +2,7 @@ using MediatR;
 
 namespace CodeSync.Application.Features.Challenges.Queries.GetChallenges;
 
-public sealed record GetChallengesQuery(string? Difficulty = null, string? Language = null) : IRequest<IReadOnlyList<ChallengeSummaryDto>>;
+public sealed record GetChallengesQuery(string? Difficulty = null, string? Language = null, string? UserId = null) : IRequest<IReadOnlyList<ChallengeSummaryDto>>;
 
 public sealed record ChallengeSummaryDto(
     string Id,
@@ -10,4 +10,6 @@ public sealed record ChallengeSummaryDto(
     string Description,
     string Difficulty,
     string Language,
-    int TestCaseCount);
+    int TestCaseCount,
+    // "not_started" | "in_progress" | "completed"
+    string Status);

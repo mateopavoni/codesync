@@ -43,9 +43,11 @@
             </span>
           </div>
 
-          @if (challenge.completedAt) {
+          @if (challenge.status !== 'not_started') {
             <div class="card-footer">
-              <span class="completed-badge">Completado</span>
+              <span class="status-badge" [class]="'status-' + challenge.status">
+                {{ challenge.status === 'completed' ? 'Completado' : 'En curso' }}
+              </span>
             </div>
           }
 

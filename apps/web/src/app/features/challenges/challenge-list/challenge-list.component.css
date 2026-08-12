@@ -165,13 +165,15 @@
   margin-top: auto;
 }
 
-.completed-badge {
+.status-badge {
   font-size: var(--cs-text-label);
   font-weight: 600;
-  color: var(--cs-secondary);
   letter-spacing: var(--cs-ls-label);
   text-transform: uppercase;
 }
+
+.status-completed { color: var(--cs-secondary); }
+.status-in_progress { color: var(--cs-warning); }
 
 .tag-list {
   display: flex;
