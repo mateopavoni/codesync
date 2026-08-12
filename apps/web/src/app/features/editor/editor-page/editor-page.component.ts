@@ -144,10 +144,6 @@ export class EditorPageComponent implements OnInit, OnDestroy {
     const code = this.editorRef?.getCurrentValue() ?? '';
     const ch = this.challenge();
     if (!ch || !code.trim()) return;
-    // Los desafíos HTML son solo preview en vivo — no hay backend que califique
-    // todavía (ver CreateSubmissionHandler). El botón ya está oculto para este
-    // caso, esto es solo un guard defensivo.
-    if (ch.language === 'html') return;
 
     this.submitting.set(true);
     this.submissionError.set(null);
