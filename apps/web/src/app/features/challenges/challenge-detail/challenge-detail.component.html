@@ -9,6 +9,8 @@
         <div class="breadcrumb">
           <a routerLink="/desafios">Desafíos</a>
           <span aria-hidden="true">/</span>
+          <a [routerLink]="['/desafios/lenguaje', challenge()!.language]">{{ languageLabel[challenge()!.language] }}</a>
+          <span aria-hidden="true">/</span>
           <span>{{ challenge()!.title }}</span>
         </div>
         <div class="header-actions">

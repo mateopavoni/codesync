@@ -11,6 +11,20 @@
   gap: var(--cs-sp-lg);
 }
 
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: var(--cs-sp-sm);
+  font-size: var(--cs-text-body-sm);
+  color: var(--cs-on-surface-var);
+}
+
+.breadcrumb a {
+  color: var(--cs-primary);
+  text-decoration: none;
+}
+.breadcrumb a:hover { text-decoration: underline; }
+
 /* Header */
 .page-header { display: flex; flex-direction: column; gap: 4px; }
 
@@ -65,33 +79,6 @@
   background: rgba(173, 198, 255, 0.12);
   border-color: var(--cs-primary);
   color: var(--cs-primary);
-}
-
-/* Íconos de lenguaje: sin la píldora del filter-btn, más grandes, el estado
-   activo se marca con un aro suave en vez de un cuadro con borde. */
-.lang-filter-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 6px;
-  background: transparent;
-  border: 1px solid transparent;
-  border-radius: 50%;
-  opacity: 0.55;
-  transition: opacity 0.15s, background 0.15s, transform 0.15s;
-}
-
-.lang-filter-btn:hover {
-  opacity: 1;
-  border-color: transparent;
-  background: var(--cs-surface-container);
-  transform: translateY(-2px);
-}
-
-.lang-filter-btn.active {
-  opacity: 1;
-  background: rgba(173, 198, 255, 0.12);
-  border-color: var(--cs-primary);
 }
 
 /* Grid de desafíos */
@@ -174,7 +161,7 @@
 .card-footer {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   margin-top: auto;
 }
 
