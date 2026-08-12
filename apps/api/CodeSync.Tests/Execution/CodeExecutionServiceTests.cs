@@ -46,7 +46,7 @@ public sealed class CodeExecutionServiceTests
         _dockerMock
             .Setup(d => d.RunAsync(
                 It.IsAny<string>(), It.IsAny<IReadOnlyList<string>>(),
-                It.IsAny<string>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
+                It.IsAny<string>(), It.IsAny<int>(), It.IsAny<long>(), It.IsAny<string>(), It.IsAny<long>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new DockerRunResult(runnerOutput, "", false));
 
         var result = await BuildService().ExecuteAsync(
@@ -71,7 +71,7 @@ public sealed class CodeExecutionServiceTests
         _dockerMock
             .Setup(d => d.RunAsync(
                 It.IsAny<string>(), It.IsAny<IReadOnlyList<string>>(),
-                It.IsAny<string>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
+                It.IsAny<string>(), It.IsAny<int>(), It.IsAny<long>(), It.IsAny<string>(), It.IsAny<long>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new DockerRunResult(runnerOutput, "", false));
 
         var result = await BuildService().ExecuteAsync(
@@ -90,7 +90,7 @@ public sealed class CodeExecutionServiceTests
         _dockerMock
             .Setup(d => d.RunAsync(
                 It.IsAny<string>(), It.IsAny<IReadOnlyList<string>>(),
-                It.IsAny<string>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
+                It.IsAny<string>(), It.IsAny<int>(), It.IsAny<long>(), It.IsAny<string>(), It.IsAny<long>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new DockerRunResult("", "", TimedOut: true));
 
         var result = await BuildService().ExecuteAsync(
@@ -110,7 +110,7 @@ public sealed class CodeExecutionServiceTests
         _dockerMock
             .Setup(d => d.RunAsync(
                 It.IsAny<string>(), It.IsAny<IReadOnlyList<string>>(),
-                It.IsAny<string>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
+                It.IsAny<string>(), It.IsAny<int>(), It.IsAny<long>(), It.IsAny<string>(), It.IsAny<long>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new DockerRunResult("", "SyntaxError: invalid syntax", false));
 
         var result = await BuildService().ExecuteAsync(
@@ -129,7 +129,7 @@ public sealed class CodeExecutionServiceTests
         _dockerMock
             .Setup(d => d.RunAsync(
                 It.IsAny<string>(), It.IsAny<IReadOnlyList<string>>(),
-                It.IsAny<string>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
+                It.IsAny<string>(), It.IsAny<int>(), It.IsAny<long>(), It.IsAny<string>(), It.IsAny<long>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new DockerRunResult("", "", false, Error: "Docker daemon not running."));
 
         var result = await BuildService().ExecuteAsync(
@@ -155,7 +155,7 @@ public sealed class CodeExecutionServiceTests
         _dockerMock
             .Setup(d => d.RunAsync(
                 It.IsAny<string>(), It.IsAny<IReadOnlyList<string>>(),
-                It.IsAny<string>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
+                It.IsAny<string>(), It.IsAny<int>(), It.IsAny<long>(), It.IsAny<string>(), It.IsAny<long>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new DockerRunResult($"hola\n{runnerOutput}", "", false));
 
         var result = await BuildService().ExecuteAsync(
@@ -175,9 +175,9 @@ public sealed class CodeExecutionServiceTests
         _dockerMock
             .Setup(d => d.RunAsync(
                 It.IsAny<string>(), It.IsAny<IReadOnlyList<string>>(),
-                It.IsAny<string>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
-            .Callback<string, IReadOnlyList<string>, string, int, CancellationToken>(
-                (img, _, _, _, _) => capturedImage = img)
+                It.IsAny<string>(), It.IsAny<int>(), It.IsAny<long>(), It.IsAny<string>(), It.IsAny<long>(), It.IsAny<CancellationToken>()))
+            .Callback<string, IReadOnlyList<string>, string, int, long, string, long, CancellationToken>(
+                (img, _, _, _, _, _, _, _) => capturedImage = img)
             .ReturnsAsync(new DockerRunResult("[{\"passed\":true,\"actualOutput\":\"0\"}]", "", false));
 
         await BuildService().ExecuteAsync(
@@ -199,9 +199,9 @@ public sealed class CodeExecutionServiceTests
         _dockerMock
             .Setup(d => d.RunAsync(
                 It.IsAny<string>(), It.IsAny<IReadOnlyList<string>>(),
-                It.IsAny<string>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
-            .Callback<string, IReadOnlyList<string>, string, int, CancellationToken>(
-                (img, _, _, _, _) => capturedImage = img)
+                It.IsAny<string>(), It.IsAny<int>(), It.IsAny<long>(), It.IsAny<string>(), It.IsAny<long>(), It.IsAny<CancellationToken>()))
+            .Callback<string, IReadOnlyList<string>, string, int, long, string, long, CancellationToken>(
+                (img, _, _, _, _, _, _, _) => capturedImage = img)
             .ReturnsAsync(new DockerRunResult("[{\"passed\":true,\"actualOutput\":\"0\"}]", "", false));
 
         await BuildService().ExecuteAsync(
@@ -225,7 +225,7 @@ public sealed class CodeExecutionServiceTests
         _dockerMock
             .Setup(d => d.RunAsync(
                 It.IsAny<string>(), It.IsAny<IReadOnlyList<string>>(),
-                It.IsAny<string>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
+                It.IsAny<string>(), It.IsAny<int>(), It.IsAny<long>(), It.IsAny<string>(), It.IsAny<long>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new DockerRunResult(runnerOutput, "", false));
 
         var result = await BuildService().ExecuteAsync(
