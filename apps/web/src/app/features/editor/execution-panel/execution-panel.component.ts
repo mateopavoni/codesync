@@ -35,8 +35,15 @@ import type { SubmissionResult } from '../../../core/models/submission.model';
           <p class="infra-error">{{ result.error }}</p>
         }
 
+        @if (result.consoleOutput) {
+          <div class="console-output">
+            <span class="tc-label">Salida:</span>
+            <pre>{{ result.consoleOutput }}</pre>
+          </div>
+        }
+
         <div class="test-results">
-          @for (tc of result.results; track tc.testCaseId) {
+          @for (tc of visibleResults(result); track tc.testCaseId) {
             <div class="tc-row"
                  [class.passed]="tc.passed"
                  [class.failed]="!tc.passed">
@@ -70,6 +77,15 @@ import type { SubmissionResult } from '../../../core/models/submission.model';
             </div>
           }
         </div>
+
+        @if (hiddenSummary(result); as hidden) {
+          <!-- Tests ocultos (TestCase.IsVisible == false): no tienen input/esperado
+               que mostrar, así que se resumen acá en vez de listarse con campos en
+               blanco (confuso — parece un test roto en vez de uno oculto). -->
+          <p class="hidden-summary">
+            +{{ hidden.total }} test{{ hidden.total === 1 ? '' : 's' }} oculto{{ hidden.total === 1 ? '' : 's' }} adicional{{ hidden.total === 1 ? '' : 'es' }} · {{ hidden.passed }} pasado{{ hidden.passed === 1 ? '' : 's' }}
+          </p>
+        }
       } @else {
         <p class="empty-hint">Ejecutá tu código para ver los resultados aquí.</p>
       }
@@ -126,6 +142,28 @@ import type { SubmissionResult } from '../../../core/models/submission.model';
       font-size: var(--cs-text-body-sm);
       font-family: var(--cs-font-code);
       white-space: pre-wrap;
+    }
+    .console-output {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding: var(--cs-sp-sm);
+      border-radius: var(--cs-radius-md);
+      background: var(--cs-surface-container);
+      border: 1px solid var(--cs-outline-var);
+    }
+    .console-output pre {
+      margin: 0;
+      font-size: var(--cs-text-code-sm);
+      font-family: var(--cs-font-code);
+      white-space: pre-wrap;
+      word-break: break-word;
+      color: var(--cs-on-surface);
+    }
+    .hidden-summary {
+      margin: 0;
+      font-size: var(--cs-text-body-sm);
+      color: var(--cs-on-surface-var);
     }
     .test-results { display: flex; flex-direction: column; gap: 8px; }
     .tc-row {
@@ -194,4 +232,16 @@ import type { SubmissionResult } from '../../../core/models/submission.model';
 })
 export class ExecutionPanelComponent {
   @Input() result: SubmissionResult | null = null;
+
+  /** Solo los tests públicos: los ocultos no traen input/esperado para listar. */
+  visibleResults(result: SubmissionResult) {
+    return result.results.filter((tc) => !tc.isHidden);
+  }
+
+  /** Resumen de tests ocultos, o null si no hay ninguno. */
+  hiddenSummary(result: SubmissionResult): { total: number; passed: number } | null {
+    const hidden = result.results.filter((tc) => tc.isHidden);
+    if (hidden.length === 0) return null;
+    return { total: hidden.length, passed: hidden.filter((tc) => tc.passed).length };
+  }
 }

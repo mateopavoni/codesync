@@ -61,6 +61,7 @@ public sealed class CreateSubmissionHandlerTests
         var visible = result.TestResults.Single(r => r.TestCaseIndex == 0);
         Assert.Equal("[1, 2]", visible.Args);
         Assert.Equal("3", visible.ExpectedOutput);
+        Assert.False(visible.IsHidden);
     }
 
     [Fact]
@@ -92,6 +93,7 @@ public sealed class CreateSubmissionHandlerTests
         var hidden = result.TestResults.Single(r => r.TestCaseIndex == 1);
         Assert.Equal("", hidden.Args);
         Assert.Equal("", hidden.ExpectedOutput);
+        Assert.True(hidden.IsHidden);
     }
 
     [Fact]

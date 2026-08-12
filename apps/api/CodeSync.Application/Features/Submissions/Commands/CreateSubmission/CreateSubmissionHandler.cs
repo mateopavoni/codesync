@@ -138,14 +138,16 @@ internal sealed class CreateSubmissionHandler : IRequestHandler<CreateSubmission
                         r.ActualOutput,
                         r.Error,
                         Args: showInputOutput ? testCase!.Args : "",
-                        ExpectedOutput: showInputOutput ? testCase!.ExpectedOutput : "");
+                        ExpectedOutput: showInputOutput ? testCase!.ExpectedOutput : "",
+                        IsHidden: !showInputOutput);
                 })
                 .ToList(),
             execution.TimedOut,
             execution.Error,
             aiFeedback,
             feedbackIsFallback,
-            execution.ExecutionTimeMs);
+            execution.ExecutionTimeMs,
+            execution.ConsoleOutput);
     }
 
     private static SubmissionStatus DetermineStatus(CodeExecutionResult result)

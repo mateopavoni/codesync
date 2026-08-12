@@ -18,6 +18,7 @@ interface ApiSubmissionResult {
     error?: string;
     args?: string;
     expectedOutput?: string;
+    isHidden?: boolean;
   }>;
   timedOut: boolean;
   error?: string;
@@ -25,6 +26,7 @@ interface ApiSubmissionResult {
   aiFeedback?: string;
   feedbackIsFallback: boolean;
   executionTimeMs: number;
+  consoleOutput?: string;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -64,12 +66,14 @@ export class SubmissionService {
         actualOutput: r.actualOutput ?? '',
         passed: r.passed,
         executionTimeMs: 0,
+        isHidden: r.isHidden ?? false,
       })),
       totalExecutionTimeMs: dto.executionTimeMs,
       feedback: dto.aiFeedback ?? null,
       submittedAt: '',
       error: dto.error ?? null,
       timedOut: dto.timedOut,
+      consoleOutput: dto.consoleOutput ?? null,
     };
   }
 }
