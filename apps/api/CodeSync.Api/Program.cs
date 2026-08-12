@@ -167,6 +167,31 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
+// ── Warm-up: verifica que la imagen de calificación de HTML exista ────────────
+// A diferencia de las imágenes de los otros lenguajes (públicas, pulleables),
+// "codesync-html-runner" es una imagen local (ver docker/html-runner.Dockerfile)
+// — no hay de dónde pullearla. Solo avisamos si falta, en vez de intentar un pull
+// condenado a fallar. Fire-and-forget, no bloquea el arranque de la API.
+_ = Task.Run(async () =>
+{
+    const string htmlRunnerImage = "codesync-html-runner:1.48.0";
+    try
+    {
+        var docker = app.Services.GetRequiredService<Docker.DotNet.DockerClient>();
+        await docker.Images.InspectImageAsync(htmlRunnerImage);
+    }
+    catch (Docker.DotNet.DockerImageNotFoundException)
+    {
+        Log.Warning(
+            "Imagen {Image} no encontrada — los desafíos de HTML no van a poder calificarse hasta " +
+            "buildearla localmente (ver docker/html-runner.Dockerfile).", htmlRunnerImage);
+    }
+    catch (Exception ex)
+    {
+        Log.Warning(ex, "No se pudo verificar la imagen {Image} (Docker puede no estar disponible en este entorno).", htmlRunnerImage);
+    }
+});
+
 app.UseHttpsRedirection();
 app.UseCors();
 app.UseAuthentication();

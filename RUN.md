@@ -4,6 +4,12 @@
 - .NET 8 SDK
 - Node 20+ y Angular CLI (`npm i -g @angular/cli`)
 - Docker (para el sandbox de ejecución de código)
+  - Los lenguajes con función a testear (Python/JS/Ruby/Java/C#) usan imágenes públicas — se pullean solas.
+  - HTML se califica en un sandbox con Chromium headless — requiere buildear una imagen local una sola vez:
+    ```bash
+    cd apps/api/CodeSync.Infrastructure/Execution/docker
+    docker build -t codesync-html-runner:1.48.0 -f html-runner.Dockerfile .
+    ```
 - Proyecto de Firebase (Realtime DB + Firestore + Auth + Storage habilitados)
 - API key de Gemini (IA Coach)
 
