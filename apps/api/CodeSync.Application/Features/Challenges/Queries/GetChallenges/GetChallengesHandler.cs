@@ -27,7 +27,8 @@ internal sealed class GetChallengesHandler : IRequestHandler<GetChallengesQuery,
         return challenges
             .Where(c => string.IsNullOrEmpty(request.Difficulty) || c.Difficulty.ToApiString() == request.Difficulty)
             .Where(c => string.IsNullOrEmpty(request.Language) || c.Language.ToApiString() == request.Language)
-            .OrderBy(c => c.Difficulty)
+            .OrderBy(c => completedIds.Contains(c.Id) ? 0 : 1)
+            .ThenBy(c => c.Difficulty)
             .ThenBy(c => c.Title)
             .Select(c => new ChallengeSummaryDto(
                 c.Id,

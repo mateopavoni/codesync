@@ -102,6 +102,16 @@
       </section>
     </div>
 
+    @if (showClearHistoryConfirm()) {
+      <app-confirm-dialog
+        title="Borrar historial"
+        message="¿Borrar todo el historial de feedback del IA Coach? Esta acción no se puede deshacer."
+        confirmLabel="Borrar"
+        (confirm)="onConfirmClearHistory()"
+        (cancel)="showClearHistoryConfirm.set(false)"
+      />
+    }
+
     <!-- Desafíos completados -->
     @if (data()!.completedChallenges.length > 0) {
       <section class="section-card">
