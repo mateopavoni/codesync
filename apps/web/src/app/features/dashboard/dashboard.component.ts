@@ -5,12 +5,13 @@ import { AuthService } from '../../core/services/auth.service';
 import { DashboardService, type DashboardData } from '../../core/services/dashboard.service';
 import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner/loading-spinner.component';
 import { ErrorMessageComponent } from '../../shared/components/error-message/error-message.component';
+import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
 import { DIFFICULTY_LABEL } from '../../core/models/challenge.model';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [SlicePipe, RouterLink, LoadingSpinnerComponent, ErrorMessageComponent],
+  imports: [SlicePipe, RouterLink, LoadingSpinnerComponent, ErrorMessageComponent, ConfirmDialogComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css',
 })
@@ -27,6 +28,7 @@ export class DashboardComponent implements OnInit {
   readonly currentUser = this.authService.currentUser;
 
   readonly clearingHistory = signal(false);
+  readonly showClearHistoryConfirm = signal(false);
 
   /** Fill percent + remaining-count for the level progress bar. null while loading. */
   readonly levelProgress = computed(() => {
@@ -63,8 +65,11 @@ export class DashboardComponent implements OnInit {
   }
 
   clearFeedbackHistory(): void {
-    if (!confirm('¿Borrar todo el historial de feedback del IA Coach? Esta acción no se puede deshacer.')) return;
+    this.showClearHistoryConfirm.set(true);
+  }
 
+  onConfirmClearHistory(): void {
+    this.showClearHistoryConfirm.set(false);
     this.clearingHistory.set(true);
     this.dashboardService.clearFeedbackHistory().subscribe({
       next: () => {

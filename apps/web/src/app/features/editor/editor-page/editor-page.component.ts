@@ -78,9 +78,12 @@ export class EditorPageComponent implements OnInit, OnDestroy {
   // Auto-save periódico via debounce sobre los cambios del editor
   private readonly AUTO_SAVE_DEBOUNCE_MS = 2000;
 
+  private challengeId: string | null = null;
+
   ngOnInit(): void {
     const challengeId = this.route.snapshot.paramMap.get('challengeId');
     const roomId = this.route.snapshot.paramMap.get('roomId');
+    this.challengeId = challengeId;
 
     if (challengeId) this.loadChallenge(challengeId);
     if (roomId) {
@@ -103,6 +106,10 @@ export class EditorPageComponent implements OnInit, OnDestroy {
           this.collaborationService.setCode(rId, code).catch(() => {
             // Auto-save silencioso — no interrumpir al usuario
           });
+        } else {
+          // Sin sala: no hay backend de borrador, guardamos en sessionStorage
+          // para no perder el código al recargar la página.
+          this.saveDraft(code);
         }
       });
   }
@@ -162,6 +169,10 @@ export class EditorPageComponent implements OnInit, OnDestroy {
           this.submissionResult.set(result);
           this.submitting.set(false);
 
+          if (result.allPassed) {
+            this.clearDraft(ch.id);
+          }
+
           if (!result.allPassed && result.feedback) {
             this.coachFeedback.set(result.feedback);
             this.coachHints.set([]);
@@ -193,7 +204,8 @@ export class EditorPageComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (c) => {
           this.challenge.set(c);
-          this.currentCode.set(c.starterCode);
+          const draft = !this.roomId() ? this.readDraft(id) : null;
+          this.currentCode.set(draft ?? c.starterCode);
           this.previewCode.set(c.starterCode);
           if (c.language === 'html' || c.language === 'css') this.activePanel.set('preview');
           this.challengeLoading.set(false);
@@ -238,5 +250,37 @@ export class EditorPageComponent implements OnInit, OnDestroy {
       hash = (hash * 31 + uid.charCodeAt(i)) | 0;
     }
     return Math.abs(hash) % CURSOR_COLORS.length;
+  }
+
+  // ponytail: borrador en sessionStorage para desafíos sin sala — se pierde al
+  // cerrar la pestaña, no entre dispositivos. Si hace falta cross-device, escalar
+  // a un endpoint de borrador en el backend.
+  private draftKey(challengeId: string): string {
+    return `editor-draft:${challengeId}`;
+  }
+
+  private saveDraft(code: string): void {
+    if (!this.challengeId) return;
+    try {
+      sessionStorage.setItem(this.draftKey(this.challengeId), code);
+    } catch {
+      // sessionStorage puede no estar disponible (navegación privada, etc.) — ignorar
+    }
+  }
+
+  private readDraft(challengeId: string): string | null {
+    try {
+      return sessionStorage.getItem(this.draftKey(challengeId));
+    } catch {
+      return null;
+    }
+  }
+
+  private clearDraft(challengeId: string): void {
+    try {
+      sessionStorage.removeItem(this.draftKey(challengeId));
+    } catch {
+      // ignorar
+    }
   }
 }
