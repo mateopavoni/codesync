@@ -35,3 +35,22 @@ export const DIFFICULTY_LABEL: Record<DifficultyLevel, string> = {
   medio: 'Medio',
   dificil: 'Difícil',
 };
+
+export const LANGUAGE_LABEL: Record<ProgrammingLanguage, string> = {
+  javascript: 'JavaScript',
+  python: 'Python',
+  html: 'HTML',
+  ruby: 'Ruby',
+  java: 'Java',
+  csharp: 'C#',
+};
+
+// Orden de visualización en el grid de /desafios
+export const PROGRAMMING_LANGUAGES: ProgrammingLanguage[] = [
+  'python',
+  'javascript',
+  'html',
+  'ruby',
+  'java',
+  'csharp',
+];

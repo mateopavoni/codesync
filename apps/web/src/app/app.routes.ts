@@ -46,6 +46,14 @@ export const routes: Routes = [
     path: 'desafios',
     canActivate: [authGuard],
     loadComponent: () =>
+      import('./features/challenges/challenge-language-grid/challenge-language-grid.component').then(
+        (m) => m.ChallengeLanguageGridComponent,
+      ),
+  },
+  {
+    path: 'desafios/lenguaje/:language',
+    canActivate: [authGuard],
+    loadComponent: () =>
       import('./features/challenges/challenge-list/challenge-list.component').then(
         (m) => m.ChallengeListComponent,
       ),
