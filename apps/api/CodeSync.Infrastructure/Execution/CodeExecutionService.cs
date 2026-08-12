@@ -118,13 +118,18 @@ public sealed class CodeExecutionService : ICodeExecutionService
         {
             // ponytail: student code (console.log/print) can write to the same stdout
             // before the harness does. The harness always prints its JSON as the last
-            // line, so take the last non-empty line instead of the whole stream.
+            // line, so take the last non-empty line instead of the whole stream —
+            // everything before it is the student's own output, surfaced separately
+            // as ConsoleOutput instead of being discarded.
             // Ceiling: breaks if student code schedules output *after* returning
             // (e.g. a stray setTimeout) — not a case the sync harness produces today.
-            var jsonLine = stdout
-                .Split('\n')
-                .Select(line => line.Trim())
-                .LastOrDefault(line => line.Length > 0) ?? stdout;
+            var lines = stdout.Split('\n').Select(line => line.TrimEnd('\r')).ToList();
+            var lastNonEmptyIndex = lines.FindLastIndex(line => line.Trim().Length > 0);
+            var jsonLine = lastNonEmptyIndex >= 0 ? lines[lastNonEmptyIndex].Trim() : stdout;
+            var consoleOutput = lastNonEmptyIndex > 0
+                ? string.Join('\n', lines.Take(lastNonEmptyIndex)).Trim()
+                : null;
+            if (string.IsNullOrEmpty(consoleOutput)) consoleOutput = null;
 
             var runnerResults = JsonSerializer.Deserialize<List<RunnerResult>>(
                 jsonLine,
@@ -142,7 +147,8 @@ public sealed class CodeExecutionService : ICodeExecutionService
                 TestResults: testResults,
                 TimedOut: false,
                 Error: null,
-                ExecutionTimeMs: (int)elapsedMs);
+                ExecutionTimeMs: (int)elapsedMs,
+                ConsoleOutput: consoleOutput);
         }
         catch (Exception ex)
         {

@@ -22,7 +22,8 @@ public sealed record CodeExecutionResult(
     IReadOnlyList<TestCaseResult> TestResults,
     bool TimedOut,
     string? Error,
-    int ExecutionTimeMs);
+    int ExecutionTimeMs,
+    string? ConsoleOutput = null);
 
 public sealed record TestCaseResult(
     int TestCaseIndex,

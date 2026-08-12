@@ -17,7 +17,8 @@ public sealed record SubmissionResultDto(
     string? Error,
     string? AIFeedback,
     bool FeedbackIsFallback,
-    int ExecutionTimeMs);
+    int ExecutionTimeMs,
+    string? ConsoleOutput = null);
 
 public sealed record TestResultDto(
     int TestCaseIndex,
@@ -27,4 +28,7 @@ public sealed record TestResultDto(
     // Blank for hidden test cases (TestCase.IsVisible == false) — see
     // CreateSubmissionHandler, never leak a hidden test's expected answer.
     string Args = "",
-    string ExpectedOutput = "");
+    string ExpectedOutput = "",
+    // True when the underlying TestCase.IsVisible == false — lets the frontend
+    // group these separately instead of rendering blank Entrada/Esperado.
+    bool IsHidden = false);
