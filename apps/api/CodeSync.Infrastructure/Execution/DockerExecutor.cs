@@ -43,6 +43,9 @@ public sealed class DockerExecutor : IDockerExecutor, IDisposable
         IReadOnlyList<string> command,
         string stdinInput,
         int timeoutSeconds,
+        long memoryBytes = 256 * 1024 * 1024L,
+        string tmpfsSize = "8m",
+        long pidsLimit = 50,
         CancellationToken ct = default)
     {
         string? containerId = null;
@@ -70,8 +73,8 @@ public sealed class DockerExecutor : IDockerExecutor, IDisposable
                 HostConfig = new HostConfig
                 {
                     NetworkMode = "none",
-                    Memory = 256 * 1024 * 1024L,
-                    MemorySwap = 256 * 1024 * 1024L,
+                    Memory = memoryBytes,
+                    MemorySwap = memoryBytes,
                     // ponytail: caps this container at 1 CPU core so a CPU-bound
                     // submission (busy loop, crypto mining attempt, etc.) can't starve
                     // other concurrent submissions or the host itself. Combined with the
@@ -79,10 +82,10 @@ public sealed class DockerExecutor : IDockerExecutor, IDisposable
                     // Tune down (e.g. 500_000_000 = 0.5 core) if host capacity is tight.
                     NanoCPUs = 1_000_000_000,
                     ReadonlyRootfs = true,
-                    PidsLimit = 50,
+                    PidsLimit = pidsLimit,
                     Tmpfs = new Dictionary<string, string>
                     {
-                        { "/tmp", "noexec,nosuid,size=8m" }
+                        { "/tmp", $"noexec,nosuid,size={tmpfsSize}" }
                     }
                 }
             };

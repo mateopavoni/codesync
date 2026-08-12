@@ -12,6 +12,9 @@ public interface IDockerExecutor
         IReadOnlyList<string> command,
         string stdinInput,
         int timeoutSeconds,
+        long memoryBytes = 256 * 1024 * 1024L,
+        string tmpfsSize = "8m",
+        long pidsLimit = 50,
         CancellationToken ct = default);
 }
 
