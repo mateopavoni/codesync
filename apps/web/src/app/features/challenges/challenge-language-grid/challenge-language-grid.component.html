@@ -1,0 +1,15 @@
+<div class="lang-landing-page">
+  <div class="page-header">
+    <h1>Desafíos</h1>
+    <p class="page-subtitle">Elegí un lenguaje para empezar</p>
+  </div>
+
+  <div class="lang-grid">
+    @for (lang of languages; track lang) {
+      <a [routerLink]="['/desafios/lenguaje', lang]" class="lang-card">
+        <app-lang-icon [language]="lang" [size]="56" />
+        <span class="lang-card-label">{{ languageLabel[lang] }}</span>
+      </a>
+    }
+  </div>
+</div>

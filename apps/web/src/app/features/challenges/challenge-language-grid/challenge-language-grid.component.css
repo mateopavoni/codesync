@@ -1,0 +1,72 @@
+/* ==========================================================================
+   Challenge language grid — landing de /desafios
+   ========================================================================== */
+
+.lang-landing-page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: var(--cs-sp-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--cs-sp-xl);
+}
+
+.page-header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.page-header h1 {
+  font-size: var(--cs-text-display);
+  font-weight: 700;
+  letter-spacing: var(--cs-ls-display);
+  color: var(--cs-on-surface);
+  margin: 0;
+}
+
+.page-subtitle {
+  color: var(--cs-on-surface-var);
+  margin: 0;
+  font-size: var(--cs-text-body);
+}
+
+.lang-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: var(--cs-sp-lg);
+}
+
+.lang-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--cs-sp-md);
+  padding: var(--cs-sp-xl) var(--cs-sp-md);
+  border-radius: var(--cs-radius-xl);
+  border: 1px solid transparent;
+  text-decoration: none;
+  color: var(--cs-on-surface-var);
+  background: var(--cs-surface-low);
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, color 0.2s ease;
+  animation: fade-in-up 0.35s ease-out both;
+}
+
+.lang-grid > .lang-card:nth-child(1) { animation-delay: 0ms; }
+.lang-grid > .lang-card:nth-child(2) { animation-delay: 40ms; }
+.lang-grid > .lang-card:nth-child(3) { animation-delay: 80ms; }
+.lang-grid > .lang-card:nth-child(4) { animation-delay: 120ms; }
+.lang-grid > .lang-card:nth-child(5) { animation-delay: 160ms; }
+.lang-grid > .lang-card:nth-child(6) { animation-delay: 200ms; }
+
+.lang-card:hover {
+  transform: scale(1.06) translateY(-4px);
+  border-color: var(--cs-primary);
+  color: var(--cs-on-surface);
+  box-shadow: 0 8px 24px -8px rgba(173, 198, 255, 0.35);
+}
+
+.lang-card-label {
+  font-size: var(--cs-text-body);
+  font-weight: 600;
+}
