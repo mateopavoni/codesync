@@ -41,13 +41,24 @@ public sealed class ChallengeSeeder
             }
         }
 
+        // ponytail: "Centrar un div" se sembró como Html antes de separar CSS en su
+        // propia categoría (mismo motivo/mecánica que LegacyTitleRenames arriba, pero
+        // cambiando Language en vez de Title). Se puede borrar una vez confirmado que
+        // corrió contra el ambiente real.
+        var centrarDiv = existing.FirstOrDefault(c => c.Title == "Centrar un div" && c.Language == ProgrammingLanguage.Html);
+        if (centrarDiv is not null)
+        {
+            centrarDiv.Language = ProgrammingLanguage.Css;
+            await _repo.UpdateAsync(centrarDiv, ct);
+        }
+
         // ponytail: los 3 seeds de HTML se crearon con TestCases vacío (antes de que
         // hubiera calificación automática para ese lenguaje). El upsert de más abajo
         // es por (Title, Language) y nunca toca un challenge que ya existe, así que
         // agregarles TestCases en SeedData no alcanza en ningún ambiente donde el
         // seeder ya corrió — hace falta este backfill explícito. Nunca pisa tests
         // que alguien ya haya cargado por otra vía (solo actúa si TestCases.Count == 0).
-        foreach (var seed in SeedData.Where(c => c.Language == ProgrammingLanguage.Html && c.TestCases.Count > 0))
+        foreach (var seed in SeedData.Where(c => c.Language is ProgrammingLanguage.Html or ProgrammingLanguage.Css && c.TestCases.Count > 0))
         {
             var current = existing.FirstOrDefault(c => c.Title == seed.Title && c.Language == seed.Language);
             if (current is not null && current.TestCases.Count == 0)
@@ -672,9 +683,9 @@ public sealed class ChallengeSeeder
             }
         },
 
-        // ─── HTML (calificado en un sandbox Docker con Chromium headless — ver
-        // CodeExecutionService.BuildHtmlRunner. Cada TestCase.ExpectedOutput es una
-        // aserción DOM en JSON, no un diff de HTML exacto) ─────────────────────────
+        // ─── HTML y CSS (calificados en un sandbox Docker con Chromium headless —
+        // ver CodeExecutionService.BuildHtmlRunner. Cada TestCase.ExpectedOutput es
+        // una aserción DOM en JSON, no un diff de HTML/CSS exacto) ─────────────────
 
         new Challenge
         {
@@ -699,7 +710,7 @@ public sealed class ChallengeSeeder
             Title = "Centrar un div",
             Description = "Centrá el cuadro azul vertical y horizontalmente dentro de la pantalla usando CSS. No importa la técnica (flex, grid, position+transform, margin auto) — se corrobora la posición final del elemento.",
             Difficulty = DifficultyLevel.Easy,
-            Language = ProgrammingLanguage.Html,
+            Language = ProgrammingLanguage.Css,
             FunctionName = "",
             SolutionTemplate = "<div class=\"box\"></div>\n\n<style>\n  body {\n    height: 100vh;\n    margin: 0;\n  }\n  .box {\n    width: 80px;\n    height: 80px;\n    background: steelblue;\n  }\n</style>",
             IsActive = true,
@@ -726,6 +737,46 @@ public sealed class ChallengeSeeder
                 new() { ExpectedOutput = """{"type":"exists","selector":"input[type=email]"}""" },
                 new() { ExpectedOutput = """{"type":"exists","selector":"textarea"}""" },
                 new() { ExpectedOutput = """{"type":"exists","selector":"button[type=submit]"}""" },
+            }
+        },
+
+        // ─── JavaScript aplicado a HTML/CSS (siguen corriendo en el runner de Node
+        // normal — sin DOM real: la función arma el string de markup/estilos y se
+        // compara por igualdad, igual que cualquier otro desafío de JavaScript) ────
+
+        new Challenge
+        {
+            Title = "Lista HTML desde un array",
+            Description = "Escribí una función que reciba un array de strings y devuelva un string con una lista <ul> con un <li> por cada elemento (sin espacios ni saltos de línea extra entre tags).",
+            Difficulty = DifficultyLevel.Easy,
+            Language = ProgrammingLanguage.JavaScript,
+            FunctionName = "solution",
+            SolutionTemplate = "function solution(items) {\n  \n}",
+            IsActive = true,
+            CreatedAt = DateTime.UtcNow,
+            TestCases = new List<TestCase>
+            {
+                new() { Args = "[[\"Pan\", \"Leche\"]]", ExpectedOutput = "\"<ul><li>Pan</li><li>Leche</li></ul>\"", IsVisible = true },
+                new() { Args = "[[]]", ExpectedOutput = "\"<ul></ul>\"", IsVisible = true },
+                new() { Args = "[[\"Café\"]]", ExpectedOutput = "\"<ul><li>Café</li></ul>\"", IsVisible = false },
+            }
+        },
+
+        new Challenge
+        {
+            Title = "Estilo inline para una caja",
+            Description = "Escribí una función que reciba un ancho y un alto (en píxeles) y devuelva el string de estilo inline \"width: Xpx; height: Ypx;\" para esa caja.",
+            Difficulty = DifficultyLevel.Medium,
+            Language = ProgrammingLanguage.JavaScript,
+            FunctionName = "solution",
+            SolutionTemplate = "function solution(ancho, alto) {\n  \n}",
+            IsActive = true,
+            CreatedAt = DateTime.UtcNow,
+            TestCases = new List<TestCase>
+            {
+                new() { Args = "[100, 50]", ExpectedOutput = "\"width: 100px; height: 50px;\"", IsVisible = true },
+                new() { Args = "[0, 0]", ExpectedOutput = "\"width: 0px; height: 0px;\"", IsVisible = true },
+                new() { Args = "[320, 240]", ExpectedOutput = "\"width: 320px; height: 240px;\"", IsVisible = false },
             }
         }
     };

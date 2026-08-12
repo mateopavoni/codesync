@@ -22,6 +22,7 @@ public static class EnumExtensions
         ProgrammingLanguage.Python => "python",
         ProgrammingLanguage.JavaScript => "javascript",
         ProgrammingLanguage.Html => "html",
+        ProgrammingLanguage.Css => "css",
         ProgrammingLanguage.Ruby => "ruby",
         ProgrammingLanguage.Java => "java",
         ProgrammingLanguage.CSharp => "csharp",

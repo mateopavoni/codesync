@@ -13,7 +13,12 @@ public enum ProgrammingLanguage
 
     Ruby = 4,
     Java = 5,
-    CSharp = 6
+    CSharp = 6,
+
+    /// <summary>Same grading path as <see cref="Html"/> (same Docker image and
+    /// BuildHtmlRunner) — split into its own value only so /desafios can list
+    /// HTML and CSS as separate categories with separate icons.</summary>
+    Css = 7
 
     // ponytail: Go was evaluated and dropped for now — `go run` compiles a real
     // ELF binary and execve()s it, which needs an executable tmpfs. The other

@@ -93,10 +93,10 @@
         />
       </main>
 
-      <!-- Panel derecho: preview en vivo (solo HTML) + resultado + coach -->
+      <!-- Panel derecho: preview en vivo (solo HTML/CSS) + resultado + coach -->
       <aside class="output-panel">
         <div class="panel-tabs">
-          @if (challenge()?.language === 'html') {
+          @if (challenge()?.language === 'html' || challenge()?.language === 'css') {
             <button
               type="button"
               class="tab-btn"

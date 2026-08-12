@@ -81,7 +81,7 @@ public static class FallbackHintProvider
                 return hint;
         }
 
-        if (language == ProgrammingLanguage.Html)
+        if (language is ProgrammingLanguage.Html or ProgrammingLanguage.Css)
             return HtmlFallback;
 
         return _levelHints.TryGetValue(difficulty, out var levelHint)

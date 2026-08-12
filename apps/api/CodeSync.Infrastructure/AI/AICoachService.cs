@@ -82,6 +82,7 @@ public sealed class AICoachService : IAICoachService
             ProgrammingLanguage.Python => "Python",
             ProgrammingLanguage.JavaScript => "JavaScript",
             ProgrammingLanguage.Html => "HTML",
+            ProgrammingLanguage.Css => "CSS",
             ProgrammingLanguage.Ruby => "Ruby",
             ProgrammingLanguage.Java => "Java",
             ProgrammingLanguage.CSharp => "C#",

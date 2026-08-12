@@ -195,7 +195,7 @@ export class EditorPageComponent implements OnInit, OnDestroy {
           this.challenge.set(c);
           this.currentCode.set(c.starterCode);
           this.previewCode.set(c.starterCode);
-          if (c.language === 'html') this.activePanel.set('preview');
+          if (c.language === 'html' || c.language === 'css') this.activePanel.set('preview');
           this.challengeLoading.set(false);
         },
         error: () => {
