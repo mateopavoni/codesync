@@ -37,6 +37,10 @@ export class DashboardService {
     return this.http.get<DashboardData>(`${this.baseUrl}/dashboard`);
   }
 
+  clearFeedbackHistory(): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/dashboard/feedback`);
+  }
+
   getUserProfile(): Observable<UserProfile> {
     return this.http.get<UserProfile>(`${this.baseUrl}/users/me`);
   }

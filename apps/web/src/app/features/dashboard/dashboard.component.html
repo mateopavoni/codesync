@@ -74,7 +74,14 @@
 
       <!-- Feedback reciente del IA Coach -->
       <section class="section-card">
-        <h2>Feedback reciente del Coach</h2>
+        <div class="section-header">
+          <h2>Feedback reciente del Coach</h2>
+          @if (data()!.recentFeedback.length > 0) {
+            <button type="button" class="btn-ghost" (click)="clearFeedbackHistory()" [disabled]="clearingHistory()">
+              {{ clearingHistory() ? 'Borrando…' : 'Borrar historial' }}
+            </button>
+          }
+        </div>
         @if (data()!.recentFeedback.length === 0) {
           <p class="empty-text">
             El IA Coach deja feedback cuando un test falla. ¡Empezá a resolver desafíos!

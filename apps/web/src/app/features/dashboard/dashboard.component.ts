@@ -26,6 +26,8 @@ export class DashboardComponent implements OnInit {
 
   readonly currentUser = this.authService.currentUser;
 
+  readonly clearingHistory = signal(false);
+
   /** Fill percent + remaining-count for the level progress bar. null while loading. */
   readonly levelProgress = computed(() => {
     const d = this.data();
@@ -57,6 +59,20 @@ export class DashboardComponent implements OnInit {
         this.error.set('No se pudo cargar el dashboard.');
         this.loading.set(false);
       },
+    });
+  }
+
+  clearFeedbackHistory(): void {
+    if (!confirm('¿Borrar todo el historial de feedback del IA Coach? Esta acción no se puede deshacer.')) return;
+
+    this.clearingHistory.set(true);
+    this.dashboardService.clearFeedbackHistory().subscribe({
+      next: () => {
+        const d = this.data();
+        if (d) this.data.set({ ...d, recentFeedback: [] });
+        this.clearingHistory.set(false);
+      },
+      error: () => this.clearingHistory.set(false),
     });
   }
 }
