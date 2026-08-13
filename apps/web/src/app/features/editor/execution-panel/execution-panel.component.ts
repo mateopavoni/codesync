@@ -159,7 +159,7 @@ import type { SubmissionResult } from '../../../core/models/submission.model';
     }
     .tc-row.passed .tc-status { color: var(--cs-secondary); }
     .tc-row.failed .tc-status { color: var(--cs-error); }
-    .tc-detail { flex: 1; display: flex; flex-direction: column; gap: 4px; }
+    .tc-detail { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
     .tc-meta { display: flex; align-items: baseline; gap: 8px; }
     .tc-label {
       font-size: var(--cs-text-label);
@@ -168,11 +168,15 @@ import type { SubmissionResult } from '../../../core/models/submission.model';
       letter-spacing: var(--cs-ls-label);
       color: var(--cs-on-surface-var);
       min-width: 80px;
+      flex-shrink: 0;
     }
     code {
       font-size: var(--cs-text-code-sm);
       font-family: var(--cs-font-code);
       color: var(--cs-on-surface);
+      flex: 1;
+      min-width: 0;
+      overflow-wrap: anywhere;
     }
     .actual-wrong { color: var(--cs-error); }
     .tc-time {

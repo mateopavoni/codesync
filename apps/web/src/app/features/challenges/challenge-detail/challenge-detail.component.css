@@ -133,6 +133,9 @@
   padding: 3px var(--cs-sp-sm);
   border-radius: var(--cs-radius-md);
   color: var(--cs-on-surface);
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .empty-text {
