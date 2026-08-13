@@ -32,6 +32,12 @@ public static class FallbackHintProvider
 
         ["aplanar"] = "Usá recursión o Array.flat() en JavaScript. En Python, podés iterar y verificar si cada elemento es una lista.",
 
+        ["primo"] = "Un número es primo si no tiene divisores entre 2 y el mismo (exclusive). "
+            + "Recordá los casos borde: 0 y 1 no son primos, y 2 sí lo es.",
+
+        ["vocales"] = "Recorré la cadena caracter por caracter y comparalo contra el conjunto de vocales (a, e, i, o, u). "
+            + "Prestá atención a mayúsculas y a vocales acentuadas si el enunciado las contempla.",
+
         // HTML/CSS: se corrobora contra el DOM renderizado, no contra el resultado de una función.
         ["centrar"] = "Pensá en el contenedor padre (el body), no en el elemento en sí: display: flex "
             + "junto con justify-content y align-items es la forma más directa de centrar algo en ambos ejes.",
