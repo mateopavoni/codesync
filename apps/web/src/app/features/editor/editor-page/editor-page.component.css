@@ -209,6 +209,9 @@
   font-family: var(--cs-font-code);
   font-size: var(--cs-text-code);
   color: var(--cs-on-surface);
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 /* Panel central: editor Monaco */

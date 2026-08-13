@@ -22,7 +22,7 @@ public static class FallbackHintProvider
             + "Considerá un caso base explícito para n <= 1.",
 
         ["palindromo"] = "Un palíndromo es una cadena que se lee igual al derecho y al revés. "
-            + "Compará la cadena con su versión invertida. En Python: s == s[::-1]. En JavaScript: s === s.split('').reverse().join('').",
+            + "Comparó la cadena con su versión invertida. En Python: s == s[::-1]. En JavaScript: s === s.split('').reverse().join('').",
 
         ["revertir"] = "Para invertir un string en Python podés usar slicing: s[::-1]. "
             + "En JavaScript: s.split('').reverse().join('').",
@@ -31,6 +31,16 @@ public static class FallbackHintProvider
             + "En Python podés usar max(nums) directamente si no te piden implementarlo desde cero.",
 
         ["aplanar"] = "Usá recursión o Array.flat() en JavaScript. En Python, podés iterar y verificar si cada elemento es una lista.",
+
+        // HTML/CSS: se corrobora contra el DOM renderizado, no contra el resultado de una función.
+        ["centrar"] = "Pensá en el contenedor padre (el body), no en el elemento en sí: display: flex "
+            + "junto con justify-content y align-items es la forma más directa de centrar algo en ambos ejes.",
+
+        ["tarjeta"] = "Revisá que los selectores que pide el enunciado existan tal cual en tu HTML "
+            + "(la clase del contenedor y las etiquetas de cada elemento).",
+
+        ["formulario"] = "Cada campo necesita el atributo correcto para que el selector lo encuentre: "
+            + "el input de email debe ser type=\"email\" y el botón de enviar type=\"submit\".",
     };
 
     private static readonly Dictionary<DifficultyLevel, string> _levelHints = new()
@@ -51,7 +61,11 @@ public static class FallbackHintProvider
             + "Revisá si tu caso base está bien definido (especialmente en recursión).",
     };
 
-    public static string GetHint(string challengeTitle, DifficultyLevel difficulty)
+    private const string HtmlFallback =
+        "Revisá el enunciado y fijate qué selectores CSS y atributos pide (clases, etiquetas, tipos de input). "
+        + "El test corrobora el DOM final, no tu código, así que probá tu HTML en el navegador y comparalo a ojo.";
+
+    public static string GetHint(string challengeTitle, DifficultyLevel difficulty, ProgrammingLanguage language)
     {
         var titleLower = challengeTitle.ToLowerInvariant();
 
@@ -60,6 +74,9 @@ public static class FallbackHintProvider
             if (titleLower.Contains(keyword))
                 return hint;
         }
+
+        if (language == ProgrammingLanguage.Html)
+            return HtmlFallback;
 
         return _levelHints.TryGetValue(difficulty, out var levelHint)
             ? levelHint

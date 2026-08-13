@@ -47,7 +47,7 @@ public sealed class AICoachService : IAICoachService
         {
             _logger.LogInformation("AI Coach rate-limited for user {UserId}.", userId);
             return new AICoachResponse(
-                Feedback: FallbackHintProvider.GetHint(challengeTitle, difficulty),
+                Feedback: FallbackHintProvider.GetHint(challengeTitle, difficulty, language),
                 IsFallback: true,
                 WasRateLimited: true);
         }
@@ -59,7 +59,7 @@ public sealed class AICoachService : IAICoachService
         {
             _logger.LogWarning("Gemini returned null for challenge {ChallengeId}. Using fallback hint.", challengeId);
             return new AICoachResponse(
-                Feedback: FallbackHintProvider.GetHint(challengeTitle, difficulty),
+                Feedback: FallbackHintProvider.GetHint(challengeTitle, difficulty, language),
                 IsFallback: true,
                 WasRateLimited: false);
         }
@@ -115,11 +115,10 @@ public sealed class AICoachService : IAICoachService
         sb.AppendLine("```");
         sb.AppendLine();
 
-        sb.AppendLine("Proporcioná retroalimentacion concisa en español (maximo 3 parrafos cortos) que:");
+        sb.AppendLine("Proporcioná retroalimentacion en español, en un unico parrafo corto (maximo 3-4 oraciones), que:");
         sb.AppendLine("1. Explique brevemente por que fallaron los tests.");
-        sb.AppendLine("2. Sugiera como corregir el codigo SIN dar la solucion completa.");
-        sb.AppendLine("3. Incluya un consejo de buenas practicas relevante.");
-        sb.AppendLine("No uses markdown. Escribi en tono amigable y alentador.");
+        sb.AppendLine("2. De una pista conceptual sobre que revisar, SIN dar la solucion completa: no escribas el codigo corregido ni el operador/valor exacto que hace falta.");
+        sb.AppendLine("No uses markdown, saludos ni cierres motivacionales largos. Anda directo al grano, tono amigable.");
 
         return sb.ToString();
     }
