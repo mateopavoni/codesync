@@ -7,13 +7,18 @@ import {
   getAuth,
   GoogleAuthProvider,
   GithubAuthProvider,
+  EmailAuthProvider,
   signInWithPopup,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
+  reauthenticateWithCredential,
+  updatePassword,
+  updateProfile,
   signOut,
   onAuthStateChanged,
   type User as FirebaseUser,
 } from 'firebase/auth';
+import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { environment } from '../../../environments/environment';
 
 export type AuthProvider = 'google' | 'github';
@@ -52,6 +57,11 @@ export class AuthService {
 
   get isAuthenticated(): boolean {
     return this._currentUser.value !== null && this._currentUser.value !== undefined;
+  }
+
+  /** false para usuarios que entraron con Google/GitHub — no tienen contraseña que cambiar. */
+  get isPasswordUser(): boolean {
+    return this.currentUser?.providerData.some((p) => p.providerId === 'password') ?? false;
   }
 
   async getIdToken(): Promise<string | null> {
@@ -103,6 +113,35 @@ export class AuthService {
         displayName: user.displayName ?? user.email ?? 'Usuario',
         email: user.email ?? '',
         photoUrl: user.photoURL,
+      }),
+    );
+  }
+
+  /** Solo para usuarios de email/password — requiere reautenticarse por seguridad. */
+  async changePassword(currentPassword: string, newPassword: string): Promise<void> {
+    const user = this.auth.currentUser;
+    if (!user?.email) throw new Error('no-current-user');
+    const credential = EmailAuthProvider.credential(user.email, currentPassword);
+    await reauthenticateWithCredential(user, credential);
+    await updatePassword(user, newPassword);
+  }
+
+  /** Sube el archivo a Storage, actualiza el perfil de Firebase Auth y sincroniza el backend. */
+  async changeAvatar(file: File): Promise<void> {
+    const user = this.auth.currentUser;
+    if (!user) throw new Error('no-current-user');
+
+    const storage = getStorage();
+    const avatarRef = ref(storage, `avatars/${user.uid}`);
+    await uploadBytes(avatarRef, file);
+    const photoUrl = await getDownloadURL(avatarRef);
+
+    await updateProfile(user, { photoURL: photoUrl });
+    await firstValueFrom(
+      this.http.post<void>(`${environment.apiUrl}/users/me`, {
+        displayName: user.displayName ?? user.email ?? 'Usuario',
+        email: user.email ?? '',
+        photoUrl,
       }),
     );
   }

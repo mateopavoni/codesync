@@ -147,3 +147,67 @@
 @media (max-width: 480px) {
   .avatar-section { flex-direction: column; text-align: center; }
 }
+
+.avatar-upload {
+  position: relative;
+  display: block;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.sr-only-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.avatar-overlay {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: 10px;
+  font-weight: 600;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.55);
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.avatar-upload:hover .avatar-overlay,
+.avatar-upload.uploading .avatar-overlay {
+  opacity: 1;
+}
+
+.password-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--cs-sp-md);
+  padding-top: var(--cs-sp-md);
+  border-top: 1px solid var(--cs-outline-var);
+}
+
+.password-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--cs-sp-md);
+  max-width: 360px;
+}
+
+.field-success {
+  color: var(--cs-primary);
+  font-size: var(--cs-text-body-sm);
+  margin: 0;
+}

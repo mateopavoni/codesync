@@ -8,6 +8,7 @@ import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { initializeApp } from 'firebase/app';
 import { getAuth, connectAuthEmulator } from 'firebase/auth';
 import { getDatabase, connectDatabaseEmulator } from 'firebase/database';
+import { getStorage, connectStorageEmulator } from 'firebase/storage';
 import { environment } from '../environments/environment';
 import { routes } from './app.routes';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
@@ -23,6 +24,7 @@ initializeApp(environment.firebase);
 if (environment.useEmulators) {
   connectAuthEmulator(getAuth(), environment.emulatorAuthUrl, { disableWarnings: true });
   connectDatabaseEmulator(getDatabase(), '127.0.0.1', 9000);
+  connectStorageEmulator(getStorage(), '127.0.0.1', 9199);
 }
 
 export const appConfig: ApplicationConfig = {
