@@ -11,18 +11,31 @@
   } @else if (profile()) {
     <div class="profile-card">
       <div class="avatar-section">
-        @if (profile()!.photoUrl) {
-          <img [src]="profile()!.photoUrl" [alt]="profile()!.displayName ?? 'Avatar'" class="avatar" />
-        } @else {
-          <div class="avatar-placeholder" aria-hidden="true">
-            {{ (profile()!.displayName ?? profile()!.email ?? 'U')[0].toUpperCase() }}
-          </div>
-        }
+        <label class="avatar-upload" [class.uploading]="avatarUploading()">
+          @if (profile()!.photoUrl) {
+            <img [src]="profile()!.photoUrl" [alt]="profile()!.displayName ?? 'Avatar'" class="avatar" />
+          } @else {
+            <div class="avatar-placeholder" aria-hidden="true">
+              {{ (profile()!.displayName ?? profile()!.email ?? 'U')[0].toUpperCase() }}
+            </div>
+          }
+          <span class="avatar-overlay">{{ avatarUploading() ? 'Subiendo...' : 'Cambiar' }}</span>
+          <input
+            type="file"
+            accept="image/*"
+            class="sr-only-input"
+            [disabled]="avatarUploading()"
+            (change)="onAvatarSelected($event)"
+          />
+        </label>
         <div class="user-info">
           <h2>{{ profile()!.displayName ?? 'Sin nombre' }}</h2>
           <p class="user-email">{{ profile()!.email }}</p>
         </div>
       </div>
+      @if (avatarError()) {
+        <app-error-message [message]="avatarError()!" />
+      }
 
       <div class="stats-grid">
         <div class="stat-item">
@@ -38,6 +51,64 @@
           <span class="stat-label">Miembro desde</span>
         </div>
       </div>
+
+      @if (isPasswordUser()) {
+        <div class="password-section">
+          <button type="button" class="btn-secondary" (click)="togglePasswordForm()">
+            {{ showPasswordForm() ? 'Cancelar' : 'Cambiar contraseña' }}
+          </button>
+
+          @if (showPasswordForm()) {
+            <form [formGroup]="passwordForm" (ngSubmit)="onChangePassword()" novalidate class="password-form">
+              @if (passwordError()) {
+                <app-error-message [message]="passwordError()!" />
+              }
+              @if (passwordSuccess()) {
+                <p class="field-success">Contraseña actualizada.</p>
+              }
+
+              <div class="field">
+                <label for="currentPassword">Contraseña actual</label>
+                <input
+                  id="currentPassword"
+                  type="password"
+                  formControlName="currentPassword"
+                  autocomplete="current-password"
+                />
+              </div>
+
+              <div class="field">
+                <label for="newPassword">Contraseña nueva</label>
+                <input
+                  id="newPassword"
+                  type="password"
+                  formControlName="newPassword"
+                  autocomplete="new-password"
+                  placeholder="Mínimo 8 caracteres, con un número"
+                />
+                @if (passwordForm.get('newPassword')?.invalid && passwordForm.get('newPassword')?.touched) {
+                  <span class="field-error">Mínimo 8 caracteres, con al menos un número</span>
+                }
+                <app-password-strength [value]="passwordForm.controls.newPassword.value ?? ''" />
+              </div>
+
+              <div class="field">
+                <label for="confirmNewPassword">Repetir contraseña nueva</label>
+                <input
+                  id="confirmNewPassword"
+                  type="password"
+                  formControlName="confirmNewPassword"
+                  autocomplete="new-password"
+                />
+              </div>
+
+              <button type="submit" class="btn-primary" [disabled]="passwordLoading()">
+                {{ passwordLoading() ? 'Guardando...' : 'Guardar contraseña' }}
+              </button>
+            </form>
+          }
+        </div>
+      }
     </div>
   }
 </div>
