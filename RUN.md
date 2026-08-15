@@ -31,7 +31,7 @@ npm start
 ```
 
 - Web: http://localhost:4200
-- API: http://localhost:5000 (Swagger en `/swagger` una vez agregado en FASE 5)
+- API: http://localhost:5117 (Swagger en `/swagger`)
 
 ## Tests
 

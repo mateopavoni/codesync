@@ -1,6 +1,6 @@
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:5000/api',
+  apiUrl: 'http://localhost:5117/api',
   // Emulator support (off by default — activated in environment.e2e.ts)
   useEmulators: false,
   emulatorAuthUrl: '',
