@@ -23,7 +23,9 @@ internal sealed class ChallengeFirestoreRepository : IChallengeRepository
     {
         var query = Col.WhereEqualTo("isActive", true);
         var snap = await query.GetSnapshotAsync(ct);
-        return snap.Documents.Select(ToEntity).ToList();
+        // ponytail: un doc con difficulty/language fuera de rango (dato viejo o corrupto)
+        // no debe tumbar el listado entero para todos los usuarios — se descarta ese doc.
+        return snap.Documents.Select(ToEntity).OfType<Challenge>().ToList();
     }
 
     public async Task<string> CreateAsync(Challenge challenge, CancellationToken ct = default)
@@ -66,9 +68,14 @@ internal sealed class ChallengeFirestoreRepository : IChallengeRepository
         IsActive = c.IsActive
     };
 
-    private static Challenge ToEntity(DocumentSnapshot snap)
+    private static Challenge? ToEntity(DocumentSnapshot snap)
     {
         var d = snap.ConvertTo<ChallengeDocument>();
+        if (!Enum.IsDefined(typeof(DifficultyLevel), d.Difficulty) || !Enum.IsDefined(typeof(ProgrammingLanguage), d.Language))
+        {
+            return null;
+        }
+
         return new Challenge
         {
             Id = snap.Id,
