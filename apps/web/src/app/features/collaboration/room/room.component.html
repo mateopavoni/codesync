@@ -9,36 +9,20 @@
     <div class="card">
       <h2>Crear sala</h2>
       <p class="card-description">
-        Ingresá el ID de un desafío para iniciar una nueva sala. Se generará un código de invitación.
+        Se genera un código de invitación al toque. El desafío se elige después, adentro de la sala.
       </p>
 
       @if (createError()) {
         <app-error-message [message]="createError()!" />
       }
 
-      <form [formGroup]="createForm" (ngSubmit)="onCreate()" novalidate>
-        <div class="field">
-          <label for="challengeId">ID del desafío</label>
-          <input
-            id="challengeId"
-            type="text"
-            formControlName="challengeId"
-            placeholder="Ej: challenge_abc123"
-            autocomplete="off"
-          />
-        </div>
-        <button type="submit" class="btn-primary" [disabled]="creating() || createForm.invalid">
-          @if (creating()) {
-            <span class="btn-spinner" aria-hidden="true"></span>
-          } @else {
-            Crear sala
-          }
-        </button>
-      </form>
-
-      <p class="hint-text">
-        O elegí un desafío desde <a routerLink="/desafios">la lista</a> y usá el botón "Resolver desafío".
-      </p>
+      <button type="button" class="btn-primary" [disabled]="creating()" (click)="onCreate()">
+        @if (creating()) {
+          <span class="btn-spinner" aria-hidden="true"></span>
+        } @else {
+          Crear sala
+        }
+      </button>
     </div>
 
     <!-- Unirse a sala -->

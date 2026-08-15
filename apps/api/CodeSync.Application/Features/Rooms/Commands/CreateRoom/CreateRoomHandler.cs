@@ -7,20 +7,11 @@ namespace CodeSync.Application.Features.Rooms.Commands.CreateRoom;
 internal sealed class CreateRoomHandler : IRequestHandler<CreateRoomCommand, CreateRoomDto>
 {
     private readonly IRoomRepository _rooms;
-    private readonly IChallengeRepository _challenges;
 
-    public CreateRoomHandler(IRoomRepository rooms, IChallengeRepository challenges)
-    {
-        _rooms = rooms;
-        _challenges = challenges;
-    }
+    public CreateRoomHandler(IRoomRepository rooms) => _rooms = rooms;
 
     public async Task<CreateRoomDto> Handle(CreateRoomCommand request, CancellationToken cancellationToken)
     {
-        // Validate challenge exists
-        var challenge = await _challenges.GetByIdAsync(request.ChallengeId, cancellationToken)
-            ?? throw new KeyNotFoundException($"Challenge '{request.ChallengeId}' not found.");
-
         var activeRoomCount = await _rooms.CountActiveByHostUserIdAsync(request.HostUserId, cancellationToken);
         if (activeRoomCount >= Room.MaxActiveRoomsPerHost)
         {
@@ -30,10 +21,11 @@ internal sealed class CreateRoomHandler : IRequestHandler<CreateRoomCommand, Cre
 
         var inviteCode = GenerateInviteCode();
 
+        // El desafío se elige después, desde adentro de la sala (ver Commands/SelectChallenge).
         var room = new Room
         {
             InviteCode = inviteCode,
-            ChallengeId = challenge.Id,
+            ChallengeId = null,
             HostUserId = request.HostUserId,
             MemberIds = new List<string> { request.HostUserId },
             IsActive = true,
@@ -42,7 +34,7 @@ internal sealed class CreateRoomHandler : IRequestHandler<CreateRoomCommand, Cre
 
         var roomId = await _rooms.CreateAsync(room, cancellationToken);
 
-        return new CreateRoomDto(roomId, inviteCode, challenge.Id, Room.MaxMembers);
+        return new CreateRoomDto(roomId, inviteCode, room.ChallengeId, Room.MaxMembers);
     }
 
     private static string GenerateInviteCode()

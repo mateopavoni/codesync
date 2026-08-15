@@ -1,0 +1,38 @@
+<div class="lobby-page">
+  @if (loading()) {
+    <app-loading-spinner message="Cargando sala..." />
+  } @else if (error()) {
+    <app-error-message [message]="error()!" />
+  } @else if (room()) {
+    <div class="page-header">
+      <h1>Elegí un desafío para la sala</h1>
+      <p class="page-subtitle">
+        Código de invitación: <strong>{{ room()!.inviteCode }}</strong>
+        — compartilo para que se sumen hasta {{ room()!.maxMembers }} personas.
+      </p>
+    </div>
+
+    @if (challenges().length === 0) {
+      <app-loading-spinner message="Cargando desafíos..." />
+    } @else {
+      <div class="challenge-grid">
+        @for (challenge of challenges(); track challenge.id) {
+          <button
+            type="button"
+            class="challenge-card"
+            [disabled]="selecting()"
+            (click)="selectChallenge(challenge.id)"
+          >
+            <div class="card-header">
+              <h2 class="card-title">{{ challenge.title }}</h2>
+              <span class="badge" [class]="'badge-' + challenge.difficulty">
+                {{ difficultyLabel[challenge.difficulty] }}
+              </span>
+            </div>
+            <span class="language-label">{{ languageLabel[challenge.language] }}</span>
+          </button>
+        }
+      </div>
+    }
+  }
+</div>

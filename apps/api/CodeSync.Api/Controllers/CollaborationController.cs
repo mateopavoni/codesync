@@ -1,6 +1,8 @@
 using CodeSync.Api.Extensions;
 using CodeSync.Application.Features.Rooms.Commands.CreateRoom;
 using CodeSync.Application.Features.Rooms.Commands.JoinRoom;
+using CodeSync.Application.Features.Rooms.Commands.SelectChallenge;
+using CodeSync.Application.Features.Rooms.Queries.GetRoom;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -19,23 +21,45 @@ public sealed class CollaborationController : ControllerBase
     public CollaborationController(IMediator mediator) => _mediator = mediator;
 
     /// <summary>
-    /// Creates a new collaborative room for the given challenge.
+    /// Creates a new collaborative room, sin desafío asignado todavía.
     /// Returns the room ID and a 6-character invite code to share with collaborators.
+    /// El desafío se elige después con <see cref="SelectChallenge"/>, desde adentro de la sala.
     /// The realtime aspects (code sync, cursors, chat) are handled by Firebase Realtime DB
     /// directly from the Angular client — this endpoint only manages the room entity.
     /// </summary>
     [HttpPost]
     [ProducesResponseType(typeof(CreateRoomDto), 201)]
-    [ProducesResponseType(404)]
     [ProducesResponseType(422)]
-    public async Task<IActionResult> CreateRoom([FromBody] CreateRoomRequest request, CancellationToken ct)
+    public async Task<IActionResult> CreateRoom(CancellationToken ct)
     {
         var hostUserId = User.GetFirebaseUid();
 
-        var result = await _mediator.Send(
-            new CreateRoomCommand(request.ChallengeId, hostUserId), ct);
+        var result = await _mediator.Send(new CreateRoomCommand(hostUserId), ct);
 
         return StatusCode(201, result);
+    }
+
+    /// <summary>Estado actual de la sala (código de invitación, miembros, desafío si ya se eligió).</summary>
+    [HttpGet("{id}")]
+    [ProducesResponseType(typeof(RoomDto), 200)]
+    [ProducesResponseType(404)]
+    public async Task<IActionResult> GetRoom(string id, CancellationToken ct)
+    {
+        var result = await _mediator.Send(new GetRoomQuery(id), ct);
+        return Ok(result);
+    }
+
+    /// <summary>Asigna el desafío elegido para la sala. Requiere ser miembro de la sala.</summary>
+    [HttpPost("{id}/challenge")]
+    [ProducesResponseType(typeof(SelectChallengeDto), 200)]
+    [ProducesResponseType(404)]
+    [ProducesResponseType(422)]
+    public async Task<IActionResult> SelectChallenge(string id, [FromBody] SelectChallengeRequest request, CancellationToken ct)
+    {
+        var userId = User.GetFirebaseUid();
+
+        var result = await _mediator.Send(new SelectChallengeCommand(id, request.ChallengeId, userId), ct);
+        return Ok(result);
     }
 
     /// <summary>
@@ -55,4 +79,4 @@ public sealed class CollaborationController : ControllerBase
     }
 }
 
-public sealed record CreateRoomRequest(string ChallengeId);
+public sealed record SelectChallengeRequest(string ChallengeId);

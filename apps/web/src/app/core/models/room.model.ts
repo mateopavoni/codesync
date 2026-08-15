@@ -1,7 +1,7 @@
 export interface Room {
   id: string;
   inviteCode: string;
-  challengeId: string;
+  challengeId: string | null;
   hostUid: string;
   participants: RoomParticipant[];
   maxParticipants: number;
@@ -12,14 +12,23 @@ export interface Room {
 export interface CreateRoomResult {
   roomId: string;
   inviteCode: string;
-  challengeId: string;
+  challengeId: string | null;
   maxMembers: number;
 }
 
 // Respuesta real de POST /api/rooms/{code}/join (JoinRoomDto del backend)
 export interface JoinRoomResult {
   roomId: string;
-  challengeId: string;
+  challengeId: string | null;
+  memberIds: string[];
+  maxMembers: number;
+}
+
+// Respuesta real de GET /api/rooms/{id} (RoomDto del backend)
+export interface RoomStatus {
+  id: string;
+  inviteCode: string;
+  challengeId: string | null;
   memberIds: string[];
   maxMembers: number;
 }

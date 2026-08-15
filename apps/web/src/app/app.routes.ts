@@ -89,6 +89,14 @@ export const routes: Routes = [
       import('./features/collaboration/room/room.component').then((m) => m.RoomComponent),
   },
   {
+    path: 'sala/:roomId',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/collaboration/room-lobby/room-lobby.component').then(
+        (m) => m.RoomLobbyComponent,
+      ),
+  },
+  {
     path: '**',
     redirectTo: '',
   },
