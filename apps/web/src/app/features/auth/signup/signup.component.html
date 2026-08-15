@@ -31,11 +31,11 @@
           type="password"
           formControlName="password"
           autocomplete="new-password"
-          placeholder="Mínimo 6 caracteres"
+          placeholder="Mínimo 8 caracteres, con un número"
           [class.invalid]="form.get('password')?.invalid && form.get('password')?.touched"
         />
         @if (form.get('password')?.invalid && form.get('password')?.touched) {
-          <span class="field-error">Mínimo 6 caracteres</span>
+          <span class="field-error">Mínimo 8 caracteres, con al menos un número</span>
         }
         <app-password-strength [value]="form.controls.password.value ?? ''" />
       </div>

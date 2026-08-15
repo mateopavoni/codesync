@@ -5,6 +5,7 @@ import { AuthService } from '../../../core/services/auth.service';
 import { ErrorMessageComponent } from '../../../shared/components/error-message/error-message.component';
 import { AuthShellComponent } from '../../../shared/components/auth-shell/auth-shell.component';
 import { PasswordStrengthComponent } from '../../../shared/components/password-strength/password-strength.component';
+import { passwordValidators } from '../../../shared/validators/password.validator';
 
 @Component({
   selector: 'app-signup',
@@ -19,7 +20,7 @@ export class SignupComponent {
 
   readonly form = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required, Validators.minLength(6)]],
+    password: ['', passwordValidators],
     confirmPassword: ['', [Validators.required]],
   });
 
