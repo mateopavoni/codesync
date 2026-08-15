@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { FirebaseRealtimeService } from './firebase-realtime.service';
 import { environment } from '../../../environments/environment';
-import type { ChatMessage, CreateRoomResult, CursorPosition, JoinRoomResult } from '../models/room.model';
+import type { ChatMessage, CreateRoomResult, CursorPosition, JoinRoomResult, RoomStatus } from '../models/room.model';
 
 @Injectable({ providedIn: 'root' })
 export class CollaborationService {
@@ -11,12 +11,22 @@ export class CollaborationService {
   private readonly rtDb = inject(FirebaseRealtimeService);
   private readonly baseUrl = `${environment.apiUrl}/rooms`;
 
-  createRoom(challengeId: string): Observable<CreateRoomResult> {
-    return this.http.post<CreateRoomResult>(this.baseUrl, { challengeId });
+  createRoom(): Observable<CreateRoomResult> {
+    return this.http.post<CreateRoomResult>(this.baseUrl, {});
   }
 
   joinRoom(inviteCode: string): Observable<JoinRoomResult> {
     return this.http.post<JoinRoomResult>(`${this.baseUrl}/${inviteCode}/join`, {});
+  }
+
+  getRoom(roomId: string): Observable<RoomStatus> {
+    return this.http.get<RoomStatus>(`${this.baseUrl}/${roomId}`);
+  }
+
+  selectChallenge(roomId: string, challengeId: string): Observable<{ roomId: string; challengeId: string }> {
+    return this.http.post<{ roomId: string; challengeId: string }>(`${this.baseUrl}/${roomId}/challenge`, {
+      challengeId,
+    });
   }
 
   // Realtime DB — código compartido

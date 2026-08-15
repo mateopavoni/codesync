@@ -8,6 +8,6 @@ public sealed record JoinRoomCommand(
 
 public sealed record JoinRoomDto(
     string RoomId,
-    string ChallengeId,
+    string? ChallengeId,
     IReadOnlyList<string> MemberIds,
     int MaxMembers);

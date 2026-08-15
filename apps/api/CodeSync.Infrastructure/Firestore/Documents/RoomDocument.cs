@@ -9,7 +9,7 @@ internal sealed class RoomDocument
     public string InviteCode { get; set; } = "";
 
     [FirestoreProperty("challengeId")]
-    public string ChallengeId { get; set; } = "";
+    public string? ChallengeId { get; set; }
 
     [FirestoreProperty("hostUserId")]
     public string HostUserId { get; set; } = "";

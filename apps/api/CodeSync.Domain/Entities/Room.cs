@@ -7,7 +7,8 @@ public sealed class Room
     /// <summary>Short alphanumeric code shared with collaborators. E.g. "AB12CD".</summary>
     public string InviteCode { get; set; } = "";
 
-    public string ChallengeId { get; set; } = "";
+    /// <summary>Null hasta que alguien elige un desafío desde adentro de la sala.</summary>
+    public string? ChallengeId { get; set; }
     public string HostUserId { get; set; } = "";
 
     /// <summary>Firebase UIDs of all members currently in the room.</summary>

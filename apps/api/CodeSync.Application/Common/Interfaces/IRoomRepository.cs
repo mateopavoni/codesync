@@ -9,6 +9,9 @@ public interface IRoomRepository
     Task<string> CreateAsync(Room room, CancellationToken ct = default);
     Task<int> CountActiveByHostUserIdAsync(string hostUserId, CancellationToken ct = default);
 
+    /// <summary>Asigna el desafío elegido para la sala (se elige adentro de la sala, no al crearla).</summary>
+    Task UpdateChallengeAsync(string roomId, string challengeId, CancellationToken ct = default);
+
     /// <summary>
     /// Atomically adds <paramref name="userId"/> to the room identified by <paramref name="inviteCode"/>,
     /// enforcing <paramref name="maxMembers"/> inside a Firestore transaction so concurrent joins can't
