@@ -15,6 +15,7 @@ memory/
 # .NET
 apps/api/**/bin/
 apps/api/**/obj/
+apps/api/CodeSync.Api/wwwroot/avatars/
 *.user
 
 # Angular / Node
