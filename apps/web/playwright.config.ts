@@ -4,9 +4,9 @@ import { defineConfig, devices } from '@playwright/test';
  * Playwright E2E configuration for CodeSync.
  *
  * Pre-requisites before running `npx playwright test`:
- *  1. Firebase emulators running (auth:9099, firestore:8082, database:9000, storage:9199):
+ *  1. Firebase emulators running (auth:9099, firestore:8082, database:9000):
  *       cd <project-root>
- *       npx firebase-tools emulators:start --only auth,firestore,database,storage --project demo-codesync-test
+ *       npx firebase-tools emulators:start --only auth,firestore,database --project demo-codesync-test
  *
  *  2. .NET API running with emulator env vars:
  *       $env:FIREBASE_AUTH_EMULATOR_HOST = "127.0.0.1:9099"

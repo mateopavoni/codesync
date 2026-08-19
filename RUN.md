@@ -10,7 +10,7 @@
     cd apps/api/CodeSync.Infrastructure/Execution/docker
     docker build -t codesync-html-runner:1.48.0 -f html-runner.Dockerfile .
     ```
-- Proyecto de Firebase (Realtime DB + Firestore + Auth + Storage habilitados)
+- Proyecto de Firebase (Realtime DB + Firestore + Auth habilitados). La foto de perfil se guarda en disco del propio API, no en Firebase Storage (evita requerir plan Blaze).
 - API key de Gemini (IA Coach)
 
 ## Variables de entorno
