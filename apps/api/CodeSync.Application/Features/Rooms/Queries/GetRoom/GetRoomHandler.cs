@@ -15,6 +15,9 @@ internal sealed class GetRoomHandler : IRequestHandler<GetRoomQuery, RoomDto>
         var room = await _rooms.GetByIdAsync(request.RoomId, cancellationToken)
             ?? throw new KeyNotFoundException($"Room '{request.RoomId}' not found.");
 
-        return new RoomDto(room.Id, room.InviteCode, room.ChallengeId, room.MemberIds, Room.MaxMembers);
+        if (!room.IsUsable)
+            throw new KeyNotFoundException($"Room '{request.RoomId}' not found.");
+
+        return new RoomDto(room.Id, room.InviteCode, room.ChallengeId, room.MemberIds, Room.MaxMembers, room.HostUserId);
     }
 }

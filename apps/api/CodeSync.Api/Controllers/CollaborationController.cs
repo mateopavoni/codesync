@@ -1,4 +1,5 @@
 using CodeSync.Api.Extensions;
+using CodeSync.Application.Features.Rooms.Commands.CloseRoom;
 using CodeSync.Application.Features.Rooms.Commands.CreateRoom;
 using CodeSync.Application.Features.Rooms.Commands.JoinRoom;
 using CodeSync.Application.Features.Rooms.Commands.SelectChallenge;
@@ -76,6 +77,18 @@ public sealed class CollaborationController : ControllerBase
 
         var result = await _mediator.Send(new JoinRoomCommand(inviteCode, userId), ct);
         return Ok(result);
+    }
+
+    /// <summary>Cierra la sala (soft delete). Solo el host puede hacerlo.</summary>
+    [HttpDelete("{id}")]
+    [ProducesResponseType(204)]
+    [ProducesResponseType(404)]
+    [ProducesResponseType(422)]
+    public async Task<IActionResult> CloseRoom(string id, CancellationToken ct)
+    {
+        var userId = User.GetFirebaseUid();
+        await _mediator.Send(new CloseRoomCommand(id, userId), ct);
+        return NoContent();
     }
 }
 

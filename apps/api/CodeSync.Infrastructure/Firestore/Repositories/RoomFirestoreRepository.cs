@@ -26,7 +26,10 @@ internal sealed class RoomFirestoreRepository : IRoomRepository
             .Limit(1)
             .GetSnapshotAsync(ct);
 
-        return snap.Documents.Count > 0 ? ToEntity(snap.Documents[0]) : null;
+        if (snap.Documents.Count == 0) return null;
+
+        var room = ToEntity(snap.Documents[0]);
+        return room.IsExpired ? null : room;
     }
 
     public async Task<string> CreateAsync(Room room, CancellationToken ct = default)
@@ -43,14 +46,25 @@ internal sealed class RoomFirestoreRepository : IRoomRepository
             .WhereEqualTo("isActive", true)
             .GetSnapshotAsync(ct);
 
-        return snap.Documents.Count;
+        // Filtro de expiracion en memoria (a lo sumo MaxActiveRoomsPerHost documentos por
+        // host, no vale la pena un indice compuesto solo para esto).
+        return snap.Documents.Select(ToEntity).Count(r => !r.IsExpired);
     }
 
     public async Task UpdateChallengeAsync(string roomId, string challengeId, CancellationToken ct = default)
     {
         await Col.Document(roomId).UpdateAsync(new Dictionary<string, object>
         {
-            { "challengeId", challengeId }
+            { "challengeId", challengeId },
+            { "lastActivityAt", Timestamp.FromDateTime(DateTime.UtcNow) }
+        }, cancellationToken: ct);
+    }
+
+    public async Task CloseAsync(string roomId, CancellationToken ct = default)
+    {
+        await Col.Document(roomId).UpdateAsync(new Dictionary<string, object>
+        {
+            { "isActive", false }
         }, cancellationToken: ct);
     }
 
@@ -67,6 +81,9 @@ internal sealed class RoomFirestoreRepository : IRoomRepository
             var docSnap = querySnap[0];
             var room = ToEntity(docSnap);
 
+            if (room.IsExpired)
+                throw new KeyNotFoundException($"Room with invite code '{inviteCode}' not found.");
+
             if (room.MemberIds.Contains(userId))
                 return room;
 
@@ -74,6 +91,7 @@ internal sealed class RoomFirestoreRepository : IRoomRepository
                 throw new InvalidOperationException($"Room is full. Maximum {maxMembers} users allowed.");
 
             room.MemberIds.Add(userId);
+            room.LastActivityAt = DateTime.UtcNow;
             transaction.Set(docSnap.Reference, ToDocument(room));
             return room;
         }, cancellationToken: ct);
@@ -86,12 +104,14 @@ internal sealed class RoomFirestoreRepository : IRoomRepository
         HostUserId = r.HostUserId,
         MemberIds = r.MemberIds,
         IsActive = r.IsActive,
-        CreatedAt = Timestamp.FromDateTime(r.CreatedAt.ToUniversalTime())
+        CreatedAt = Timestamp.FromDateTime(r.CreatedAt.ToUniversalTime()),
+        LastActivityAt = Timestamp.FromDateTime(r.LastActivityAt.ToUniversalTime())
     };
 
     private static Room ToEntity(DocumentSnapshot snap)
     {
         var d = snap.ConvertTo<RoomDocument>();
+        var createdAt = d.CreatedAt.ToDateTime();
         return new Room
         {
             Id = snap.Id,
@@ -100,7 +120,10 @@ internal sealed class RoomFirestoreRepository : IRoomRepository
             HostUserId = d.HostUserId,
             MemberIds = d.MemberIds,
             IsActive = d.IsActive,
-            CreatedAt = d.CreatedAt.ToDateTime()
+            CreatedAt = createdAt,
+            // Docs viejos (pre-expiracion) no tienen este campo — Timestamp default cae en
+            // epoch 1970, lo que los marcaria como expirados al toque. Fallback a CreatedAt.
+            LastActivityAt = d.LastActivityAt.ToDateTime() > createdAt ? d.LastActivityAt.ToDateTime() : createdAt
         };
     }
 }
