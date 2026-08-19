@@ -10,6 +10,11 @@ using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.OpenApi.Models;
 using Serilog;
 
+// wwwroot no existe por default en el template webapi — el host resuelve
+// WebRootFileProvider en CreateBuilder(), así que la carpeta tiene que existir
+// en disco ANTES de esta llamada o UseStaticFiles() no sirve nada.
+Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "avatars"));
+
 var builder = WebApplication.CreateBuilder(args);
 
 // ── Logging ───────────────────────────────────────────────────────────────────
@@ -193,6 +198,7 @@ _ = Task.Run(async () =>
 });
 
 app.UseHttpsRedirection();
+app.UseStaticFiles();
 app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();

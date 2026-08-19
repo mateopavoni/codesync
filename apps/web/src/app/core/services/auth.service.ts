@@ -18,8 +18,10 @@ import {
   onAuthStateChanged,
   type User as FirebaseUser,
 } from 'firebase/auth';
-import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { environment } from '../../../environments/environment';
+
+/** Origin de la API sin el sufijo /api, para armar URLs absolutas de archivos estáticos (avatares). */
+const apiOrigin = environment.apiUrl.replace(/\/api\/?$/, '');
 
 export type AuthProvider = 'google' | 'github';
 
@@ -126,15 +128,17 @@ export class AuthService {
     await updatePassword(user, newPassword);
   }
 
-  /** Sube el archivo a Storage, actualiza el perfil de Firebase Auth y sincroniza el backend. */
+  /** Sube el archivo a la API (se guarda en el VPS), actualiza el perfil de Firebase Auth y sincroniza el backend. */
   async changeAvatar(file: File): Promise<void> {
     const user = this.auth.currentUser;
     if (!user) throw new Error('no-current-user');
 
-    const storage = getStorage();
-    const avatarRef = ref(storage, `avatars/${user.uid}`);
-    await uploadBytes(avatarRef, file);
-    const photoUrl = await getDownloadURL(avatarRef);
+    const form = new FormData();
+    form.append('file', file);
+    const { photoUrl: relativeUrl } = await firstValueFrom(
+      this.http.post<{ photoUrl: string }>(`${environment.apiUrl}/users/me/avatar`, form),
+    );
+    const photoUrl = `${apiOrigin}${relativeUrl}`;
 
     await updateProfile(user, { photoURL: photoUrl });
     await firstValueFrom(

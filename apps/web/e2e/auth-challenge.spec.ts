@@ -75,7 +75,7 @@ test.describe('Auth + Challenge + Execution + IA Coach', () => {
 
   test('challenge list shows challenges after login', async ({ page }) => {
     await signUp(page, `e2e-list-${Date.now()}@codesync.test`, TEST_PASSWORD);
-    await page.goto('/desafios');
+    await page.goto('/desafios/lenguaje/python');
     // Wait for at least one challenge card to appear (seeder runs on API start)
     await expect(page.locator('.challenge-card').first()).toBeVisible({ timeout: 15_000 });
   });
@@ -91,7 +91,7 @@ test.describe('Auth + Challenge + Execution + IA Coach', () => {
     await signUp(page, `e2e-solve-${Date.now()}@codesync.test`, TEST_PASSWORD);
 
     // 2. Navigate to challenge list
-    await page.goto('/desafios');
+    await page.goto('/desafios/lenguaje/python');
     await expect(page.locator('.challenge-card').first()).toBeVisible({ timeout: 15_000 });
 
     // 3. Click the first challenge card (seeder order: "Suma de dos numeros" Python)
@@ -128,7 +128,7 @@ test.describe('Auth + Challenge + Execution + IA Coach', () => {
     await signUp(page, `e2e-coach-${Date.now()}@codesync.test`, TEST_PASSWORD);
 
     // 2. Navigate to the first Python challenge
-    await page.goto('/desafios');
+    await page.goto('/desafios/lenguaje/python');
     await expect(page.locator('.challenge-card').first()).toBeVisible({ timeout: 15_000 });
     await page.locator('.challenge-card').first().click();
     await page.waitForURL(/\/desafios\/.+/, { timeout: 10_000 });
