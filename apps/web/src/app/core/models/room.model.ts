@@ -31,6 +31,7 @@ export interface RoomStatus {
   challengeId: string | null;
   memberIds: string[];
   maxMembers: number;
+  hostUserId: string;
 }
 
 export interface RoomParticipant {

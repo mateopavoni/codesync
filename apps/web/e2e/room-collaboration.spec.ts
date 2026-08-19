@@ -110,4 +110,55 @@ test.describe('Room collaboration — 2 browser contexts', () => {
     await ctx2.close();
   });
 
+  test('host closes a room before picking a challenge, invite code stops working', async ({ browser }: { browser: Browser }) => {
+    const ts = Date.now();
+    const email = `e2e-close-${ts}@codesync.test`;
+    const password = 'E2ePass123!';
+
+    const ctx = await browser.newContext();
+    const page = await ctx.newPage();
+    page.on('dialog', (d) => d.accept());
+
+    await signUp(page, email, password);
+    await page.goto('/colaboracion');
+
+    const [createResponse] = await Promise.all([
+      page.waitForResponse(
+        (resp) => resp.url().includes('/api/rooms') && resp.request().method() === 'POST',
+        { timeout: 15_000 },
+      ),
+      page.getByRole('button', { name: 'Crear sala' }).click(),
+    ]);
+    const inviteCode: string = (await createResponse.json()).inviteCode;
+
+    await page.waitForURL(/\/sala\/.+/, { timeout: 15_000 });
+    const closeButton = page.getByRole('button', { name: 'Cerrar sala' });
+    await expect(closeButton).toBeVisible({ timeout: 10_000 });
+
+    const [closeResponse] = await Promise.all([
+      page.waitForResponse(
+        (resp) => resp.request().method() === 'DELETE' && resp.url().includes('/api/rooms/'),
+        { timeout: 15_000 },
+      ),
+      closeButton.click(),
+    ]);
+    expect(closeResponse.status()).toBe(204);
+    await page.waitForURL(/\/colaboracion$/, { timeout: 10_000 });
+
+    // A closed room's invite code should no longer be joinable (404/422, not 200)
+    const [joinResponse] = await Promise.all([
+      page.waitForResponse(
+        (resp) => resp.url().includes('/join') && resp.request().method() === 'POST',
+        { timeout: 15_000 },
+      ),
+      (async () => {
+        await page.locator('#inviteCode').fill(inviteCode);
+        await page.locator('button.btn-secondary-action').click();
+      })(),
+    ]);
+    expect(joinResponse.status()).not.toBe(200);
+
+    await ctx.close();
+  });
+
 });

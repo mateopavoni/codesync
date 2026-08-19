@@ -29,6 +29,10 @@ export class CollaborationService {
     });
   }
 
+  closeRoom(roomId: string): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/${roomId}`);
+  }
+
   // Realtime DB — código compartido
   watchCode(roomId: string): Observable<string | null> {
     return this.rtDb.watch<string>(`collaborations/${roomId}/code`);

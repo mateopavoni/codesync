@@ -22,4 +22,7 @@ internal sealed class RoomDocument
 
     [FirestoreProperty("createdAt")]
     public Timestamp CreatedAt { get; set; }
+
+    [FirestoreProperty("lastActivityAt")]
+    public Timestamp LastActivityAt { get; set; }
 }

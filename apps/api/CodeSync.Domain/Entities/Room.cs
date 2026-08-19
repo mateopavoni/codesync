@@ -23,4 +23,16 @@ public sealed class Room
     public bool IsActive { get; set; } = true;
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+    /// <summary>Se actualiza al unirse alguien o elegir desafío — sirve para detectar salas abandonadas.</summary>
+    public DateTime LastActivityAt { get; set; } = DateTime.UtcNow;
+
+    // ponytail: expira sola a las 24hs sin actividad para no acumular salas
+    // fantasma que ocupen el cupo de MaxActiveRoomsPerHost. Sin job de limpieza:
+    // se chequea al leer (lazy). Si hace falta ajustar el tiempo, es esta constante.
+    public static readonly TimeSpan InactivityTimeout = TimeSpan.FromHours(24);
+
+    public bool IsExpired => DateTime.UtcNow - LastActivityAt > InactivityTimeout;
+
+    public bool IsUsable => IsActive && !IsExpired;
 }

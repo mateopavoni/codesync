@@ -19,6 +19,9 @@ internal sealed class SelectChallengeHandler : IRequestHandler<SelectChallengeCo
         var room = await _rooms.GetByIdAsync(request.RoomId, cancellationToken)
             ?? throw new KeyNotFoundException($"Room '{request.RoomId}' not found.");
 
+        if (!room.IsUsable)
+            throw new KeyNotFoundException($"Room '{request.RoomId}' not found.");
+
         if (!room.MemberIds.Contains(request.UserId))
         {
             throw new InvalidOperationException("Solo los miembros de la sala pueden elegir el desafío.");

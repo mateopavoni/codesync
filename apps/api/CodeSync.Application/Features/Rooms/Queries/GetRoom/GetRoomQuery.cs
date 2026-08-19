@@ -9,4 +9,5 @@ public sealed record RoomDto(
     string InviteCode,
     string? ChallengeId,
     IReadOnlyList<string> MemberIds,
-    int MaxMembers);
+    int MaxMembers,
+    string HostUserId);

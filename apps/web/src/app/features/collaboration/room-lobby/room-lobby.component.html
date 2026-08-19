@@ -4,16 +4,66 @@
   } @else if (error()) {
     <app-error-message [message]="error()!" />
   } @else if (room()) {
-    <div class="page-header">
-      <h1>Elegí un desafío para la sala</h1>
-      <p class="page-subtitle">
-        Código de invitación: <strong>{{ room()!.inviteCode }}</strong>
-        — compartilo para que se sumen hasta {{ room()!.maxMembers }} personas.
-      </p>
+    <div class="page-header lobby-header">
+      <div>
+        <h1>Elegí un desafío para la sala</h1>
+        <p class="page-subtitle">
+          Código de invitación: <strong>{{ room()!.inviteCode }}</strong>
+          — compartilo para que se sumen hasta {{ room()!.maxMembers }} personas.
+        </p>
+      </div>
+      @if (isHost) {
+        <button type="button" class="btn-close-room" [disabled]="closing()" (click)="closeRoom()">
+          @if (closing()) {
+            <span class="btn-spinner" aria-hidden="true"></span>
+          } @else {
+            Cerrar sala
+          }
+        </button>
+      }
+    </div>
+
+    <div class="filters">
+      <span class="filter-label">Lenguaje:</span>
+      <button
+        type="button"
+        class="filter-btn"
+        [class.active]="selectedLanguage() === undefined"
+        (click)="selectLanguage(undefined)"
+      >
+        Todos
+      </button>
+      @for (lang of languages; track lang) {
+        <button
+          type="button"
+          class="filter-btn lang-filter-btn"
+          [class.active]="selectedLanguage() === lang"
+          (click)="selectLanguage(lang)"
+        >
+          <app-lang-icon [language]="lang" [size]="18" />
+          {{ languageLabel[lang] }}
+        </button>
+      }
+    </div>
+
+    <div class="filters">
+      <span class="filter-label">Dificultad:</span>
+      @for (opt of difficultyOptions; track opt.value) {
+        <button
+          type="button"
+          class="filter-btn"
+          [class.active]="selectedDifficulty() === opt.value"
+          (click)="selectDifficulty(opt.value)"
+        >
+          {{ opt.label }}
+        </button>
+      }
     </div>
 
     @if (challenges().length === 0) {
-      <app-loading-spinner message="Cargando desafíos..." />
+      <div class="empty-state">
+        <p>No hay desafíos disponibles para este filtro.</p>
+      </div>
     } @else {
       <div class="challenge-grid">
         @for (challenge of challenges(); track challenge.id) {

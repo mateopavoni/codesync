@@ -9,6 +9,50 @@
 
 .page-header { display: flex; flex-direction: column; gap: 4px; }
 
+.lobby-header {
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--cs-sp-md);
+  flex-wrap: wrap;
+}
+
+.btn-close-room {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px var(--cs-sp-md);
+  background: transparent;
+  border: 1px solid var(--cs-error);
+  border-radius: var(--cs-radius-md);
+  color: var(--cs-error);
+  font-size: var(--cs-text-label);
+  font-weight: 600;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.btn-close-room:hover:not(:disabled) {
+  background: rgba(255, 180, 171, 0.1);
+}
+
+.btn-close-room:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.btn-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 180, 171, 0.3);
+  border-top-color: var(--cs-error);
+  border-radius: 50%;
+  animation: spin 0.75s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
 .page-header h1 {
   font-size: var(--cs-text-display);
   font-weight: 700;
@@ -21,6 +65,51 @@
   color: var(--cs-on-surface-var);
   margin: 0;
   font-size: var(--cs-text-body);
+}
+
+.filters {
+  display: flex;
+  align-items: center;
+  gap: var(--cs-sp-sm);
+  flex-wrap: wrap;
+}
+
+.filter-label {
+  font-size: var(--cs-text-body-sm);
+  color: var(--cs-on-surface-var);
+}
+
+.filter-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px var(--cs-sp-md);
+  background: var(--cs-surface-container);
+  border: 1px solid var(--cs-outline-var);
+  border-radius: var(--cs-radius-xl);
+  color: var(--cs-on-surface-var);
+  font-size: var(--cs-text-label);
+  font-weight: 600;
+  letter-spacing: var(--cs-ls-label);
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.filter-btn:hover {
+  border-color: var(--cs-primary);
+  color: var(--cs-on-surface);
+}
+
+.filter-btn.active {
+  background: rgba(173, 198, 255, 0.12);
+  border-color: var(--cs-primary);
+  color: var(--cs-primary);
+}
+
+.empty-state {
+  text-align: center;
+  padding: 80px var(--cs-sp-lg);
+  color: var(--cs-on-surface-var);
 }
 
 .challenge-grid {
