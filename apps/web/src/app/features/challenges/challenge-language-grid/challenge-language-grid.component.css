@@ -70,3 +70,11 @@
   font-size: var(--cs-text-body);
   font-weight: 600;
 }
+
+/* A 32px de gap + padding xl, en <480px el auto-fill cae a 1 columna
+   (7 lenguajes = scroll larguisimo). Achicamos gap/padding para que
+   entren 2 por fila. */
+@media (max-width: 480px) {
+  .lang-grid { gap: var(--cs-sp-sm); }
+  .lang-card { padding: var(--cs-sp-lg) var(--cs-sp-sm); }
+}
