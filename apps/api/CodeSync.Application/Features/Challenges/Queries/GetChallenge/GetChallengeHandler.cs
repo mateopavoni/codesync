@@ -13,7 +13,7 @@ internal sealed class GetChallengeHandler : IRequestHandler<GetChallengeQuery, C
     public async Task<ChallengeDetailDto> Handle(GetChallengeQuery request, CancellationToken cancellationToken)
     {
         var challenge = await _repo.GetByIdAsync(request.Id, cancellationToken)
-            ?? throw new KeyNotFoundException($"Challenge '{request.Id}' not found.");
+            ?? throw new KeyNotFoundException("El desafío no existe.");
 
         var visible = challenge.TestCases
             .Where(tc => tc.IsVisible)

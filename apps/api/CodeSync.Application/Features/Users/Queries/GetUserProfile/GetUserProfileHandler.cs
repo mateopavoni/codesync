@@ -12,7 +12,7 @@ internal sealed class GetUserProfileHandler : IRequestHandler<GetUserProfileQuer
     public async Task<UserProfileDto> Handle(GetUserProfileQuery request, CancellationToken cancellationToken)
     {
         var user = await _users.GetByIdAsync(request.Uid, cancellationToken)
-            ?? throw new KeyNotFoundException($"User profile '{request.Uid}' not found.");
+            ?? throw new KeyNotFoundException("No se encontró tu perfil.");
 
         return new UserProfileDto(
             user.Uid,

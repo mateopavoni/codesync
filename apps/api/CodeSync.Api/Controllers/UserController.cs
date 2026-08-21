@@ -72,12 +72,13 @@ public sealed class UserController : ControllerBase
         var isAllowed = AllowedAvatarTypes.Contains(contentType)
             || (isGenericType && AllowedAvatarExtensions.Contains(extFromName));
 
-        if (file.Length == 0 || file.Length > 5 * 1024 * 1024 || !isAllowed)
+        if (file.Length == 0 || file.Length > 5 * 1024 * 1024)
         {
-            return BadRequest(new
-            {
-                error = $"La imagen debe ser JPEG/PNG/WEBP/GIF de hasta 5MB (recibido: '{file.ContentType}', archivo '{file.FileName}', {file.Length} bytes)."
-            });
+            return BadRequest(new { error = "La imagen no puede pesar más de 5MB." });
+        }
+        if (!isAllowed)
+        {
+            return BadRequest(new { error = "Formato no soportado. Usá una foto JPEG, PNG, WEBP o GIF." });
         }
 
         var uid = User.GetFirebaseUid();

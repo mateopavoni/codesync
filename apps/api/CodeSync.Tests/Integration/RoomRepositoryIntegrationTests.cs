@@ -121,7 +121,7 @@ public sealed class RoomRepositoryIntegrationTests : IAsyncLifetime
         // 5th join must be rejected.
         var ex = await Assert.ThrowsAsync<InvalidOperationException>(
             () => handler.Handle(new JoinRoomCommand(inviteCode, "user_5"), ct));
-        Assert.Contains("full", ex.Message, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("llena", ex.Message, StringComparison.OrdinalIgnoreCase);
     }
 
     /// <summary>

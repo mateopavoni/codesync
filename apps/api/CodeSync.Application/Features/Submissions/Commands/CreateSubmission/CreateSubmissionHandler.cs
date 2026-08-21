@@ -35,7 +35,7 @@ internal sealed class CreateSubmissionHandler : IRequestHandler<CreateSubmission
     {
         // 1. Load the challenge
         var challenge = await _challenges.GetByIdAsync(request.ChallengeId, cancellationToken)
-            ?? throw new KeyNotFoundException($"Challenge '{request.ChallengeId}' not found.");
+            ?? throw new KeyNotFoundException("El desafío no existe.");
 
         // 2. Execute code in the sandbox
         var execution = await _executor.ExecuteAsync(

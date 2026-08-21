@@ -20,7 +20,7 @@ internal sealed class SelectChallengeHandler : IRequestHandler<SelectChallengeCo
             ?? throw new KeyNotFoundException($"Room '{request.RoomId}' not found.");
 
         if (!room.IsUsable)
-            throw new KeyNotFoundException($"Room '{request.RoomId}' not found.");
+            throw new KeyNotFoundException("La sala no existe o ya no está disponible.");
 
         if (!room.MemberIds.Contains(request.UserId))
         {
@@ -28,7 +28,7 @@ internal sealed class SelectChallengeHandler : IRequestHandler<SelectChallengeCo
         }
 
         var challenge = await _challenges.GetByIdAsync(request.ChallengeId, cancellationToken)
-            ?? throw new KeyNotFoundException($"Challenge '{request.ChallengeId}' not found.");
+            ?? throw new KeyNotFoundException("El desafío no existe.");
 
         await _rooms.UpdateChallengeAsync(room.Id, challenge.Id, cancellationToken);
 
