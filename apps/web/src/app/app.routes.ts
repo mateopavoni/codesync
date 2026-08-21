@@ -37,6 +37,12 @@ export const routes: Routes = [
       import('./features/dashboard/dashboard.component').then((m) => m.DashboardComponent),
   },
   {
+    path: 'ranking',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/leaderboard/leaderboard.component').then((m) => m.LeaderboardComponent),
+  },
+  {
     path: 'perfil',
     canActivate: [authGuard],
     loadComponent: () =>

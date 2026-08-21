@@ -62,6 +62,25 @@
   margin: 0;
 }
 
+.header-badges {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--cs-sp-sm);
+  margin-top: -8px;
+}
+
+.xp-pill {
+  font-size: var(--cs-text-label);
+  font-weight: 600;
+  color: var(--cs-on-surface-var);
+}
+
+.xp-pill-muted {
+  font-weight: 400;
+  opacity: 0.7;
+}
+
 /* Secciones */
 .section {
   background: var(--cs-surface-low);

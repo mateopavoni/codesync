@@ -1,0 +1,100 @@
+.leaderboard-page {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: var(--cs-sp-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--cs-sp-lg);
+}
+
+.page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--cs-sp-md);
+}
+
+.page-header h1 {
+  font-size: var(--cs-text-display);
+  font-weight: 700;
+  letter-spacing: var(--cs-ls-display);
+  color: var(--cs-on-surface);
+  margin: 0 0 4px;
+}
+
+.page-subtitle {
+  color: var(--cs-on-surface-var);
+  margin: 0;
+  font-size: var(--cs-text-body-sm);
+}
+
+.btn-secondary {
+  padding: var(--cs-sp-sm) var(--cs-sp-md);
+  background: var(--cs-surface-container);
+  border: 1px solid var(--cs-outline-var);
+  border-radius: var(--cs-radius-xl);
+  color: var(--cs-on-surface);
+  font-size: var(--cs-text-body-sm);
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: border-color 0.15s, background 0.15s;
+}
+.btn-secondary:hover {
+  border-color: var(--cs-primary);
+  background: rgba(173, 198, 255, 0.06);
+}
+
+.empty-text {
+  color: var(--cs-on-surface-var);
+  font-size: var(--cs-text-body-sm);
+}
+
+.leaderboard-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--cs-sp-xs);
+}
+
+.leaderboard-row {
+  display: grid;
+  grid-template-columns: 48px 1fr auto auto;
+  align-items: center;
+  gap: var(--cs-sp-sm);
+  padding: var(--cs-sp-sm) var(--cs-sp-md);
+  background: var(--cs-surface-low);
+  border: 1px solid var(--cs-outline-var);
+  border-radius: var(--cs-radius-lg);
+}
+
+.leaderboard-row.is-me {
+  border-color: var(--cs-primary);
+  background: rgba(173, 198, 255, 0.06);
+}
+
+.rank {
+  font-weight: 700;
+  color: var(--cs-on-surface-var);
+}
+
+.rank-top { color: var(--cs-primary); }
+
+.entry-name {
+  font-size: var(--cs-text-body-sm);
+  font-weight: 600;
+  color: var(--cs-on-surface);
+}
+
+.entry-level {
+  font-size: var(--cs-text-label);
+  color: var(--cs-on-surface-var);
+  white-space: nowrap;
+}
+
+.entry-xp {
+  font-size: var(--cs-text-body-sm);
+  font-weight: 600;
+  color: var(--cs-on-surface);
+  white-space: nowrap;
+}

@@ -1,0 +1,28 @@
+<div class="leaderboard-page">
+  <div class="page-header">
+    <div>
+      <h1>Ranking global</h1>
+      <p class="page-subtitle">Top usuarios por nivel y XP. Las salas colaborativas no otorgan XP.</p>
+    </div>
+    <a routerLink="/dashboard" class="btn-secondary">Volver al dashboard</a>
+  </div>
+
+  @if (loading()) {
+    <app-loading-spinner message="Cargando ranking..." />
+  } @else if (error()) {
+    <app-error-message [message]="error()!" [retryable]="true" (retry)="load()" />
+  } @else if (entries().length === 0) {
+    <p class="empty-text">Todavía no hay usuarios con XP. ¡Sé el primero!</p>
+  } @else {
+    <div class="leaderboard-list">
+      @for (entry of entries(); track entry.uid) {
+        <div class="leaderboard-row" [class.is-me]="entry.uid === currentUid">
+          <span class="rank" [class.rank-top]="entry.rank <= 3">#{{ entry.rank }}</span>
+          <span class="entry-name">{{ entry.displayName || 'Usuario' }}</span>
+          <span class="entry-level">Nivel {{ entry.level }}</span>
+          <span class="entry-xp">{{ entry.xp }} XP</span>
+        </div>
+      }
+    </div>
+  }
+</div>

@@ -18,6 +18,19 @@ export interface DashboardFeedback {
   createdAt: string;
 }
 
+export interface LeaderboardEntry {
+  rank: number;
+  uid: string;
+  displayName: string;
+  photoUrl: string | null;
+  xp: number;
+  level: number;
+}
+
+export interface LeaderboardData {
+  entries: LeaderboardEntry[];
+}
+
 export interface DashboardData {
   level: number;
   xp: number;
@@ -44,5 +57,9 @@ export class DashboardService {
 
   getUserProfile(): Observable<UserProfile> {
     return this.http.get<UserProfile>(`${this.baseUrl}/users/me`);
+  }
+
+  getLeaderboard(limit = 20): Observable<LeaderboardData> {
+    return this.http.get<LeaderboardData>(`${this.baseUrl}/dashboard/leaderboard?limit=${limit}`);
   }
 }
