@@ -200,13 +200,15 @@ public sealed class CodeExecutionService : ICodeExecutionService
             // SDK's own csc.dll against its bundled ref pack, then running the DLL
             // with the plain "dotnet" muxer, stays fully offline. Paths are
             // discovered at runtime (not hardcoded) so an SDK image bump doesn't
-            // silently break this.
+            // silently break this. -maxdepth 4 on the csc.dll search (sdk/<ver>/Roslyn/
+            // bincore/csc.dll) — an unbounded find was walking the whole SDK tree
+            // (thousands of files) on every single submission.
             ProgrammingLanguage.CSharp => (
                 "mcr.microsoft.com/dotnet/sdk:10.0",
                 new[]
                 {
                     """
-                    sh -c 'CSC=$(find /usr/share/dotnet/sdk -name csc.dll | head -1)
+                    sh -c 'CSC=$(find /usr/share/dotnet/sdk -maxdepth 4 -name csc.dll | head -1)
                     REF=$(find /usr/share/dotnet/packs/Microsoft.NETCore.App.Ref -maxdepth 2 -mindepth 2 -type d | sort -V | tail -1)/net10.0
                     RTVER=$(basename "$(find /usr/share/dotnet/shared/Microsoft.NETCore.App -maxdepth 1 -mindepth 1 -type d | sort -V | tail -1)")
                     cat > /tmp/Program.cs
