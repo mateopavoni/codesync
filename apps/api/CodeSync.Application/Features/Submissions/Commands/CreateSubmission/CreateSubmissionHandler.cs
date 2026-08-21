@@ -75,7 +75,7 @@ internal sealed class CreateSubmissionHandler : IRequestHandler<CreateSubmission
         // 5. If all tests passed, update user progress
         if (execution.AllTestsPassed)
         {
-            await UpdateUserProgressAsync(request.UserId, request.ChallengeId, cancellationToken);
+            await UpdateUserProgressAsync(request.UserId, request.ChallengeId, challenge.Difficulty, cancellationToken);
         }
 
         // 6. If any tests failed, request AI coaching (non-blocking: don't fail the submission if coach errors)
@@ -157,7 +157,7 @@ internal sealed class CreateSubmissionHandler : IRequestHandler<CreateSubmission
         return result.AllTestsPassed ? SubmissionStatus.Completed : SubmissionStatus.Failed;
     }
 
-    private async Task UpdateUserProgressAsync(string userId, string challengeId, CancellationToken ct)
+    private async Task UpdateUserProgressAsync(string userId, string challengeId, DifficultyLevel difficulty, CancellationToken ct)
     {
         var user = await _users.GetByIdAsync(userId, ct);
         if (user == null) return;
@@ -165,7 +165,8 @@ internal sealed class CreateSubmissionHandler : IRequestHandler<CreateSubmission
         if (!user.CompletedChallengeIds.Contains(challengeId))
         {
             user.CompletedChallengeIds.Add(challengeId);
-            user.Level = LevelCalculator.CalculateLevel(user.CompletedChallengeIds.Count);
+            user.Xp += difficulty.Xp();
+            user.Level = LevelCalculator.CalculateLevel(user.Xp);
             user.UpdatedAt = DateTime.UtcNow;
             await _users.UpsertAsync(user, ct);
         }

@@ -35,7 +35,7 @@ internal sealed class GetDashboardHandler : IRequestHandler<GetDashboardQuery, D
 
         if (user == null)
             return new DashboardDto(
-                1, Array.Empty<DashboardChallengeDto>(), Array.Empty<DashboardChallengeDto>(), Array.Empty<DashboardFeedbackDto>(),
+                1, 0, Array.Empty<DashboardChallengeDto>(), Array.Empty<DashboardChallengeDto>(), Array.Empty<DashboardFeedbackDto>(),
                 LevelCalculator.NextLevelThreshold(0), LevelCalculator.CurrentLevelFloor(0));
 
         var completedIds = new HashSet<string>(user.CompletedChallengeIds);
@@ -60,9 +60,8 @@ internal sealed class GetDashboardHandler : IRequestHandler<GetDashboardQuery, D
                 f.CreatedAt))
             .ToList();
 
-        var completedCount = user.CompletedChallengeIds.Count;
         return new DashboardDto(
-            user.Level, completedChallenges, pendingChallenges, recentFeedback,
-            LevelCalculator.NextLevelThreshold(completedCount), LevelCalculator.CurrentLevelFloor(completedCount));
+            user.Level, user.Xp, completedChallenges, pendingChallenges, recentFeedback,
+            LevelCalculator.NextLevelThreshold(user.Xp), LevelCalculator.CurrentLevelFloor(user.Xp));
     }
 }

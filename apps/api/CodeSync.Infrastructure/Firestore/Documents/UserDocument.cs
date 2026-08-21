@@ -14,6 +14,9 @@ internal sealed class UserDocument
     [FirestoreProperty("photoUrl")]
     public string? PhotoUrl { get; set; }
 
+    [FirestoreProperty("xp")]
+    public int Xp { get; set; }
+
     [FirestoreProperty("level")]
     public int Level { get; set; } = 1;
 

@@ -43,7 +43,7 @@
         <div class="level-progress-header">
           <span>Nivel {{ data()!.level }}</span>
           <span class="level-progress-hint">
-            {{ progress.maxed ? '¡Nivel máximo alcanzado!' : progress.remaining + ' desafío(s) para subir de nivel' }}
+            {{ progress.maxed ? '¡Nivel máximo alcanzado!' : progress.remaining + ' XP para subir de nivel' }}
           </span>
         </div>
         <div class="level-progress-bar" role="progressbar" [attr.aria-valuenow]="progress.percent" aria-valuemin="0" aria-valuemax="100">
