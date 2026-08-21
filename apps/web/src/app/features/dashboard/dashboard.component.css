@@ -144,9 +144,81 @@
   color: var(--cs-on-surface);
 }
 
+.level-progress-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.xp-info-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--cs-on-surface-var);
+  cursor: pointer;
+  line-height: 0;
+}
+.xp-info-btn:hover { color: var(--cs-primary); }
+.xp-info-btn .material-symbols-outlined { font-size: 18px; }
+
 .level-progress-hint {
   font-weight: 500;
   color: var(--cs-on-surface-var);
+}
+
+/* XP info modal */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.xp-info-dialog {
+  background: var(--cs-surface-container);
+  border: 1px solid var(--cs-surface-highest, var(--cs-outline-var));
+  border-radius: var(--cs-radius-lg);
+  padding: var(--cs-sp-lg);
+  max-width: 380px;
+  width: calc(100% - 32px);
+}
+
+.xp-info-dialog h2 {
+  margin: 0 0 var(--cs-sp-sm);
+  font-size: var(--cs-text-body);
+  color: var(--cs-on-surface);
+}
+
+.xp-info-list {
+  list-style: none;
+  margin: 0 0 var(--cs-sp-sm);
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--cs-sp-xs);
+}
+
+.xp-info-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--cs-sp-sm);
+  font-size: var(--cs-text-body-sm);
+  font-weight: 600;
+  color: var(--cs-on-surface);
+}
+
+.xp-info-note {
+  font-size: var(--cs-text-body-sm);
+  color: var(--cs-on-surface-var);
+  line-height: 1.5;
+  margin: 0 0 var(--cs-sp-md);
 }
 
 .level-progress-bar {

@@ -72,8 +72,8 @@ internal sealed class CreateSubmissionHandler : IRequestHandler<CreateSubmission
 
         var submissionId = await _submissions.CreateAsync(submission, cancellationToken);
 
-        // 5. If all tests passed, update user progress
-        if (execution.AllTestsPassed)
+        // 5. If all tests passed, update user progress — rooms award no XP, only solo attempts do
+        if (execution.AllTestsPassed && string.IsNullOrEmpty(request.RoomId))
         {
             await UpdateUserProgressAsync(request.UserId, request.ChallengeId, challenge.Difficulty, cancellationToken);
         }

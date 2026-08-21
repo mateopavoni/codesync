@@ -6,7 +6,7 @@ import { DashboardService, type DashboardData } from '../../core/services/dashbo
 import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner/loading-spinner.component';
 import { ErrorMessageComponent } from '../../shared/components/error-message/error-message.component';
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
-import { DIFFICULTY_LABEL } from '../../core/models/challenge.model';
+import { DIFFICULTY_LABEL, DIFFICULTY_XP } from '../../core/models/challenge.model';
 
 @Component({
   selector: 'app-dashboard',
@@ -24,11 +24,13 @@ export class DashboardComponent implements OnInit {
   readonly error = signal<string | null>(null);
 
   readonly difficultyLabel = DIFFICULTY_LABEL;
+  readonly difficultyXp = DIFFICULTY_XP;
 
   readonly currentUser = this.authService.currentUser;
 
   readonly clearingHistory = signal(false);
   readonly showClearHistoryConfirm = signal(false);
+  readonly showXpInfo = signal(false);
 
   /** Fill percent + remaining-count for the level progress bar. null while loading. */
   readonly levelProgress = computed(() => {

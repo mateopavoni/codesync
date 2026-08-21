@@ -4,7 +4,7 @@ import { ChallengeService } from '../../../core/services/challenge.service';
 import { LoadingSpinnerComponent } from '../../../shared/components/loading-spinner/loading-spinner.component';
 import { ErrorMessageComponent } from '../../../shared/components/error-message/error-message.component';
 import type { Challenge } from '../../../core/models/challenge.model';
-import { LANGUAGE_LABEL } from '../../../core/models/challenge.model';
+import { DIFFICULTY_LABEL, DIFFICULTY_XP, LANGUAGE_LABEL } from '../../../core/models/challenge.model';
 
 @Component({
   selector: 'app-challenge-detail',
@@ -19,6 +19,8 @@ export class ChallengeDetailComponent implements OnInit {
 
   readonly challenge = signal<Challenge | null>(null);
   readonly languageLabel = LANGUAGE_LABEL;
+  readonly difficultyLabel = DIFFICULTY_LABEL;
+  readonly difficultyXp = DIFFICULTY_XP;
   readonly loading = signal(true);
   readonly error = signal<string | null>(null);
 

@@ -38,6 +38,13 @@ export const DIFFICULTY_LABEL: Record<DifficultyLevel, string> = {
   dificil: 'Difícil',
 };
 
+// Espeja DifficultyLevelExtensions.Xp() del backend (apps/api/CodeSync.Domain/Enums/DifficultyLevel.cs)
+export const DIFFICULTY_XP: Record<DifficultyLevel, number> = {
+  facil: 10,
+  medio: 20,
+  dificil: 40,
+};
+
 export const LANGUAGE_LABEL: Record<ProgrammingLanguage, string> = {
   javascript: 'JavaScript',
   python: 'Python',

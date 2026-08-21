@@ -1,6 +1,7 @@
 using CodeSync.Api.Extensions;
 using CodeSync.Application.Features.Dashboard.Commands.ClearFeedbackHistory;
 using CodeSync.Application.Features.Dashboard.Queries.GetDashboard;
+using CodeSync.Application.Features.Leaderboard.Queries.GetLeaderboard;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -40,5 +41,17 @@ public sealed class DashboardController : ControllerBase
         var userId = User.GetFirebaseUid();
         await _mediator.Send(new ClearFeedbackHistoryCommand(userId), ct);
         return NoContent();
+    }
+
+    /// <summary>
+    /// Returns the global top users ranked by XP descending. Rooms award no XP,
+    /// only solo challenge completions count.
+    /// </summary>
+    [HttpGet("leaderboard")]
+    [ProducesResponseType(typeof(LeaderboardDto), 200)]
+    public async Task<IActionResult> GetLeaderboard([FromQuery] int limit, CancellationToken ct)
+    {
+        var result = await _mediator.Send(new GetLeaderboardQuery(limit is > 0 and <= 100 ? limit : 20), ct);
+        return Ok(result);
     }
 }

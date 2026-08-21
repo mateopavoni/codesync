@@ -7,7 +7,10 @@ public sealed record CreateSubmissionCommand(
     string ChallengeId,
     string UserId,
     string Code,
-    ProgrammingLanguage Language) : IRequest<SubmissionResultDto>;
+    ProgrammingLanguage Language,
+    // Submissions made inside a collaborative room award no XP — only solo
+    // challenge attempts count toward level progress.
+    string? RoomId = null) : IRequest<SubmissionResultDto>;
 
 public sealed record SubmissionResultDto(
     string SubmissionId,

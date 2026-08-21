@@ -36,6 +36,12 @@ internal sealed class UserFirestoreRepository : IUserRepository
         await Col.Document(user.Uid).SetAsync(doc, cancellationToken: ct);
     }
 
+    public async Task<IReadOnlyList<User>> GetTopByXpAsync(int limit, CancellationToken ct = default)
+    {
+        var snap = await Col.OrderByDescending("xp").Limit(limit).GetSnapshotAsync(ct);
+        return snap.Documents.Select(d => ToEntity(d.Id, d)).ToList();
+    }
+
     private static User ToEntity(string uid, DocumentSnapshot snap)
     {
         var d = snap.ConvertTo<UserDocument>();

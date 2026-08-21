@@ -38,9 +38,12 @@
         <a [routerLink]="['/desafios', challenge.id]" class="challenge-card">
           <div class="card-header">
             <h2 class="card-title">{{ challenge.title }}</h2>
-            <span class="badge" [class]="'badge-' + challenge.difficulty">
-              {{ difficultyLabel[challenge.difficulty] }}
-            </span>
+            <div class="card-header-badges">
+              <span class="badge" [class]="'badge-' + challenge.difficulty">
+                {{ difficultyLabel[challenge.difficulty] }}
+              </span>
+              <span class="xp-pill">+{{ difficultyXp[challenge.difficulty] }} XP</span>
+            </div>
           </div>
 
           @if (challenge.status !== 'not_started') {

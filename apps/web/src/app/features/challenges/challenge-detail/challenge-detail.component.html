@@ -22,6 +22,14 @@
 
       <h1>{{ challenge()!.title }}</h1>
 
+      <div class="header-badges">
+        <span class="badge" [class]="'badge-' + challenge()!.difficulty">
+          {{ difficultyLabel[challenge()!.difficulty] }}
+        </span>
+        <span class="xp-pill">+{{ difficultyXp[challenge()!.difficulty] }} XP</span>
+        <span class="xp-pill xp-pill-muted">En sala colaborativa no suma XP</span>
+      </div>
+
       <div class="section">
         <h2>Descripción</h2>
         <div class="description-text">{{ challenge()!.description }}</div>

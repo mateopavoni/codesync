@@ -33,7 +33,8 @@ public sealed class SubmissionController : ControllerBase
             request.ChallengeId,
             userId,
             request.Code,
-            request.Language);
+            request.Language,
+            request.RoomId);
 
         var result = await _mediator.Send(command, ct);
         return Ok(result);
@@ -43,4 +44,5 @@ public sealed class SubmissionController : ControllerBase
 public sealed record SubmitRequest(
     string ChallengeId,
     string Code,
-    CodeSync.Domain.Enums.ProgrammingLanguage Language);
+    CodeSync.Domain.Enums.ProgrammingLanguage Language,
+    string? RoomId = null);

@@ -158,6 +158,20 @@
   border: 1px solid rgba(255, 180, 171, 0.3);
 }
 
+.card-header-badges {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.xp-pill {
+  font-size: var(--cs-text-label);
+  font-weight: 600;
+  color: var(--cs-on-surface-var);
+  white-space: nowrap;
+}
+
 .card-footer {
   display: flex;
   align-items: center;

@@ -9,6 +9,7 @@
     <div class="header-actions">
       <a routerLink="/desafios" class="btn-primary">Ver desafíos</a>
       <a routerLink="/colaboracion" class="btn-secondary">Sala colaborativa</a>
+      <a routerLink="/ranking" class="btn-secondary">Ranking</a>
     </div>
   </div>
 
@@ -41,7 +42,12 @@
     @if (levelProgress(); as progress) {
       <div class="level-progress-card">
         <div class="level-progress-header">
-          <span>Nivel {{ data()!.level }}</span>
+          <span class="level-progress-title">
+            Nivel {{ data()!.level }}
+            <button type="button" class="xp-info-btn" (click)="showXpInfo.set(true)" aria-label="Cómo se gana XP">
+              <span class="material-symbols-outlined" aria-hidden="true">info</span>
+            </button>
+          </span>
           <span class="level-progress-hint">
             {{ progress.maxed ? '¡Nivel máximo alcanzado!' : progress.remaining + ' XP para subir de nivel' }}
           </span>
@@ -116,6 +122,21 @@
         }
       </section>
     </div>
+
+    @if (showXpInfo()) {
+      <div class="overlay" (click)="showXpInfo.set(false)">
+        <div class="xp-info-dialog" role="dialog" aria-modal="true" aria-label="Cómo se gana XP" (click)="$event.stopPropagation()">
+          <h2>Cómo se gana XP</h2>
+          <ul class="xp-info-list">
+            <li><span class="badge badge-facil">{{ difficultyLabel['facil'] }}</span><span>+{{ difficultyXp['facil'] }} XP</span></li>
+            <li><span class="badge badge-medio">{{ difficultyLabel['medio'] }}</span><span>+{{ difficultyXp['medio'] }} XP</span></li>
+            <li><span class="badge badge-dificil">{{ difficultyLabel['dificil'] }}</span><span>+{{ difficultyXp['dificil'] }} XP</span></li>
+          </ul>
+          <p class="xp-info-note">Solo suma la primera vez que resolvés un desafío en solitario. Las salas colaborativas no otorgan XP.</p>
+          <button type="button" class="btn-secondary" (click)="showXpInfo.set(false)">Cerrar</button>
+        </div>
+      </div>
+    }
 
     @if (showClearHistoryConfirm()) {
       <app-confirm-dialog
