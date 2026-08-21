@@ -104,7 +104,11 @@ public sealed class UserController : ControllerBase
         await using (var stream = System.IO.File.Create(path))
             await file.CopyToAsync(stream, ct);
 
-        return Ok(new AvatarUploadResponse($"/avatars/{uid}{ext}"));
+        // cache-buster: nombre de archivo es fijo por uid, sin esto dos uploads con la misma
+        // extensión devuelven la misma URL y el <img> nunca refetchea (Angular no ve el string
+        // cambiar).
+        var version = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+        return Ok(new AvatarUploadResponse($"/avatars/{uid}{ext}?v={version}"));
     }
 }
 
