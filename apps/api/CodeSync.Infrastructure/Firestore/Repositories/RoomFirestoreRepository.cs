@@ -76,19 +76,19 @@ internal sealed class RoomFirestoreRepository : IRoomRepository
         {
             var querySnap = await transaction.GetSnapshotAsync(query, ct);
             if (querySnap.Count == 0)
-                throw new KeyNotFoundException($"Room with invite code '{inviteCode}' not found.");
+                throw new KeyNotFoundException("No existe una sala activa con ese código de invitación.");
 
             var docSnap = querySnap[0];
             var room = ToEntity(docSnap);
 
             if (room.IsExpired)
-                throw new KeyNotFoundException($"Room with invite code '{inviteCode}' not found.");
+                throw new KeyNotFoundException("No existe una sala activa con ese código de invitación.");
 
             if (room.MemberIds.Contains(userId))
                 return room;
 
             if (room.MemberIds.Count >= maxMembers)
-                throw new InvalidOperationException($"Room is full. Maximum {maxMembers} users allowed.");
+                throw new InvalidOperationException($"La sala está llena (máximo {maxMembers} usuarios).");
 
             room.MemberIds.Add(userId);
             room.LastActivityAt = DateTime.UtcNow;

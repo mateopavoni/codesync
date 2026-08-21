@@ -13,6 +13,6 @@ internal sealed class CreateSubmissionValidator : AbstractValidator<CreateSubmis
         RuleFor(x => x.Code)
             .NotEmpty()
             .MaximumLength(MaxCodeLength)
-            .WithMessage($"Code must not exceed {MaxCodeLength} characters.");
+            .WithMessage($"El código no puede superar los {MaxCodeLength} caracteres.");
     }
 }

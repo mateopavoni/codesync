@@ -12,7 +12,7 @@ internal sealed class CloseRoomHandler : IRequestHandler<CloseRoomCommand>
     public async Task Handle(CloseRoomCommand request, CancellationToken cancellationToken)
     {
         var room = await _rooms.GetByIdAsync(request.RoomId, cancellationToken)
-            ?? throw new KeyNotFoundException($"Room '{request.RoomId}' not found.");
+            ?? throw new KeyNotFoundException("La sala no existe o ya no está disponible.");
 
         if (room.HostUserId != request.UserId)
             throw new InvalidOperationException("Solo el host puede cerrar la sala.");
