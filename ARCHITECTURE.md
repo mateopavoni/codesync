@@ -169,8 +169,8 @@ Firestore:
 
 **Trade-off:** Si aparece un reporte complejo (ej. "desafíos más intentados por nivel"), se reconsideraría un data warehouse o replicación a BigQuery.
 
-### 2. Gemini API en vez de Claude para el IA Coach
-**Por qué:** Costo y free tier. Mateo quiere un proyecto de portfolio defensible sin quemar presupuesto. Gemini tiene 60 requests/min gratis; Claude es más caro.
+### 2. Gemini API para el IA Coach
+**Por qué:** Costo y free tier. Mateo quiere un proyecto de portfolio defensible sin quemar presupuesto. Gemini tiene 60 requests/min gratis.
 
 **Trade-off:** Gemini es menos potente en razonamiento complejo, pero para hints de programación básica (Python/JS nivel educativo) es más que suficiente.
 
