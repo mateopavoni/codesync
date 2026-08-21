@@ -1,5 +1,6 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
 import { RouterLink } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../../core/services/auth.service';
@@ -86,8 +87,9 @@ export class ProfileComponent implements OnInit {
     try {
       await this.authService.changeAvatar(file);
       this.loadProfile();
-    } catch {
-      this.avatarError.set('No se pudo subir la foto. Intentá de nuevo.');
+    } catch (err) {
+      const backendMessage = err instanceof HttpErrorResponse ? err.error?.error : undefined;
+      this.avatarError.set(backendMessage ?? 'No se pudo subir la foto. Intentá de nuevo.');
     } finally {
       this.avatarUploading.set(false);
       input.value = '';

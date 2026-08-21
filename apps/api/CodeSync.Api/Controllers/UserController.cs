@@ -12,7 +12,8 @@ namespace CodeSync.Api.Controllers;
 [Authorize]
 public sealed class UserController : ControllerBase
 {
-    private static readonly string[] AllowedAvatarTypes = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+    private static readonly string[] AllowedAvatarTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp", "image/gif"];
+    private static readonly string[] AllowedAvatarExtensions = [".jpg", ".jpeg", ".png", ".webp", ".gif"];
     private readonly IMediator _mediator;
     private readonly IWebHostEnvironment _env;
 
@@ -63,17 +64,30 @@ public sealed class UserController : ControllerBase
     [RequestSizeLimit(5 * 1024 * 1024)]
     public async Task<IActionResult> UploadAvatar(IFormFile file, CancellationToken ct)
     {
-        if (file.Length == 0 || file.Length > 5 * 1024 * 1024 || !AllowedAvatarTypes.Contains(file.ContentType))
+        var contentType = file.ContentType.Trim().ToLowerInvariant();
+        var extFromName = Path.GetExtension(file.FileName).ToLowerInvariant();
+        // algunos navegadores/OS no setean bien el content-type en el FormData (queda vacío
+        // o application/octet-stream) — en ese caso confiamos en la extensión del archivo.
+        var isGenericType = contentType is "" or "application/octet-stream";
+        var isAllowed = AllowedAvatarTypes.Contains(contentType)
+            || (isGenericType && AllowedAvatarExtensions.Contains(extFromName));
+
+        if (file.Length == 0 || file.Length > 5 * 1024 * 1024 || !isAllowed)
         {
-            return BadRequest(new { error = "La imagen debe ser JPEG/PNG/WEBP/GIF de hasta 5MB." });
+            return BadRequest(new
+            {
+                error = $"La imagen debe ser JPEG/PNG/WEBP/GIF de hasta 5MB (recibido: '{file.ContentType}', archivo '{file.FileName}', {file.Length} bytes)."
+            });
         }
 
         var uid = User.GetFirebaseUid();
-        var ext = file.ContentType switch
+        var ext = contentType switch
         {
             "image/png" => ".png",
             "image/webp" => ".webp",
             "image/gif" => ".gif",
+            "image/jpeg" or "image/jpg" => ".jpg",
+            _ when extFromName is ".png" or ".webp" or ".gif" => extFromName,
             _ => ".jpg"
         };
 
