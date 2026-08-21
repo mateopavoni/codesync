@@ -39,10 +39,9 @@ export class DashboardComponent implements OnInit {
       return { percent: 100, remaining: 0, maxed: true };
     }
 
-    const completed = d.completedChallenges.length;
     const span = d.nextLevelThreshold - d.currentLevelFloor;
-    const percent = span > 0 ? Math.min(100, Math.max(0, ((completed - d.currentLevelFloor) / span) * 100)) : 100;
-    return { percent, remaining: d.nextLevelThreshold - completed, maxed: false };
+    const percent = span > 0 ? Math.min(100, Math.max(0, ((d.xp - d.currentLevelFloor) / span) * 100)) : 100;
+    return { percent, remaining: d.nextLevelThreshold - d.xp, maxed: false };
   });
 
   ngOnInit(): void {

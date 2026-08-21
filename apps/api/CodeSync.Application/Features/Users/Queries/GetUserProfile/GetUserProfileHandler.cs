@@ -20,6 +20,7 @@ internal sealed class GetUserProfileHandler : IRequestHandler<GetUserProfileQuer
             user.Email,
             user.PhotoUrl,
             user.Level,
+            user.Xp,
             user.CompletedChallengeIds.Count,
             user.CreatedAt);
     }

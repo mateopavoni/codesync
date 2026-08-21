@@ -6,6 +6,7 @@ public sealed record GetDashboardQuery(string UserId) : IRequest<DashboardDto>;
 
 public sealed record DashboardDto(
     int Level,
+    int Xp,
     IReadOnlyList<DashboardChallengeDto> CompletedChallenges,
     IReadOnlyList<DashboardChallengeDto> PendingChallenges,
     IReadOnlyList<DashboardFeedbackDto> RecentFeedback,

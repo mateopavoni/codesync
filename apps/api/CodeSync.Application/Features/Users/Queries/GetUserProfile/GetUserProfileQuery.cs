@@ -10,5 +10,6 @@ public sealed record UserProfileDto(
     string Email,
     string? PhotoUrl,
     int Level,
+    int Xp,
     int CompletedChallengeCount,
     DateTime CreatedAt);

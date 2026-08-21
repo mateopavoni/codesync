@@ -4,6 +4,7 @@ export interface UserProfile {
   displayName: string | null;
   photoUrl: string | null;
   level: number;
+  xp: number;
   completedChallengeCount: number;
   createdAt: string;
 }

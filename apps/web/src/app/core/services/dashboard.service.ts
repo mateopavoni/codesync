@@ -20,6 +20,7 @@ export interface DashboardFeedback {
 
 export interface DashboardData {
   level: number;
+  xp: number;
   completedChallenges: DashboardChallenge[];
   pendingChallenges: DashboardChallenge[];
   recentFeedback: DashboardFeedback[];

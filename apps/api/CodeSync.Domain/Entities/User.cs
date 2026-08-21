@@ -8,7 +8,10 @@ public sealed class User
     public string Email { get; set; } = "";
     public string? PhotoUrl { get; set; }
 
-    /// <summary>XP-based level, increments as challenges are completed.</summary>
+    /// <summary>Total XP earned from completed challenges, weighted by difficulty.</summary>
+    public int Xp { get; set; }
+
+    /// <summary>Level derived from Xp via LevelCalculator.</summary>
     public int Level { get; set; } = 1;
 
     /// <summary>IDs of challenges the user has fully passed.</summary>
