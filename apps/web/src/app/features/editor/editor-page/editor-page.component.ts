@@ -76,7 +76,7 @@ export class EditorPageComponent implements OnInit, OnDestroy {
   private readonly PREVIEW_DEBOUNCE_MS = 400;
 
   // Auto-save periódico via debounce sobre los cambios del editor
-  private readonly AUTO_SAVE_DEBOUNCE_MS = 2000;
+  private readonly AUTO_SAVE_DEBOUNCE_MS = 600;
 
   private challengeId: string | null = null;
 
