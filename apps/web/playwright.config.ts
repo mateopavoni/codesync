@@ -34,7 +34,7 @@ export default defineConfig({
   reporter: [['list'], ['html', { open: 'never', outputFolder: 'playwright-report' }]],
 
   use: {
-    baseURL: 'http://localhost:4200',
+    baseURL: 'http://localhost:4210',
     // Capture traces only on first retry — useful for debugging
     trace: 'on-first-retry',
     // Headless for speed; set to false to watch the browser during development
@@ -53,9 +53,18 @@ export default defineConfig({
 
   // Start the Angular dev server in e2e mode automatically.
   // The emulators and .NET API must be started manually beforehand.
+  //
+  // ponytail: port 4210, not the default 4200 — `reuseExistingServer: true`
+  // used to reuse whatever was already listening on 4200, which is also the
+  // port `npm start` (production Firebase config) binds to. A plain `ng serve`
+  // left running during an E2E pass got silently reused instead of the
+  // e2e-configured server, so tests wrote real accounts into production
+  // Firebase (found and cleaned 2026-08-25). A dedicated port makes that
+  // collision structurally impossible instead of relying on remembering to
+  // close the dev server first.
   webServer: {
-    command: 'npx ng serve --configuration=e2e --port 4200',
-    url: 'http://localhost:4200',
+    command: 'npx ng serve --configuration=e2e --port 4210',
+    url: 'http://localhost:4210',
     reuseExistingServer: true,
     timeout: 120_000,
   },
