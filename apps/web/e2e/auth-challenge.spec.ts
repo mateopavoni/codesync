@@ -94,8 +94,11 @@ test.describe('Auth + Challenge + Execution + IA Coach', () => {
     await page.goto('/desafios/lenguaje/python');
     await expect(page.locator('.challenge-card').first()).toBeVisible({ timeout: 15_000 });
 
-    // 3. Click the first challenge card (seeder order: "Suma de dos numeros" Python)
-    await page.locator('.challenge-card').first().click();
+    // 3. Click by title, not position — the seed list has grown past the
+    // original 10 challenges (now 34 across 7 languages), so card order is
+    // no longer stable. Matching by title keeps this test correct regardless
+    // of how many challenges get seeded later.
+    await page.locator('.challenge-card').filter({ hasText: 'Encontrar el maximo' }).click();
     await page.waitForURL(/\/desafios\/.+/, { timeout: 10_000 });
 
     // 4. Click "Resolver desafío"
@@ -105,7 +108,7 @@ test.describe('Auth + Challenge + Execution + IA Coach', () => {
     // 5. Wait for Monaco editor container to be in the DOM
     await expect(page.locator('.editor-container')).toBeVisible({ timeout: 20_000 });
 
-    // 6. Set a correct solution for the first challenge ("Encontrar el maximo" — Python)
+    // 6. Set a correct solution for "Encontrar el maximo" (Python)
     await setEditorCode(page, 'def solution(nums):\n    return max(nums)\n');
 
     // 7. Click "Ejecutar"
