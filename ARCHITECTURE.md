@@ -60,7 +60,7 @@ codesync/
 5 proyectos, dependencias apuntando hacia adentro (sin ciclos):
 
 ### CodeSync.Api (punto de entrada HTTP)
-- **Controllers:** `ChallengeController`, `SubmissionController`, `CollaborationController`, `AICoachController`, `UserController`, `DashboardController`
+- **Controllers:** `ChallengeController`, `SubmissionController`, `CollaborationController`, `UserController`, `DashboardController` (el IA Coach no tiene controller propio — se dispara dentro de `CreateSubmissionHandler` cuando falla un test, ver más abajo)
 - **Auth:** `FirebaseAuthenticationHandler` (custom ASP.NET Core auth scheme) valida JWT con Firebase Admin SDK
 - **Exception handler global:** mapea `KeyNotFoundException` → 404, `ValidationException` → 400, `InvalidOperationException` → 422, `UnauthorizedAccessException` → 401
 - **Swagger:** configurado en `Program.cs`, servido en `/swagger` (dev) con documentación de endpoints
@@ -88,14 +88,19 @@ codesync/
 - **Rate limiter:** `InMemoryRateLimiter` (diccionario con ventana configurable; no es persistente, reset en redeploy)
 - **Seeding:** `ChallengeSeeder` carga 10 desafíos seed (Python + JavaScript) en desarrollo
 
-### CodeSync.Tests (35 tests green)
+### CodeSync.Tests (64 tests green)
 - **Unit tests:** `CodeExecutionService` (6 tests: pass/partial-fail/timeout/syntax-error/docker-error/language-routing)
 - **Unit tests CQRS:** `GetChallengeHandler` (found/not-found), `GetChallengesHandler` (order), `CreateRoomHandler` (happy path/challenge missing), `JoinRoomHandler` (add/idempotent/full/bad-code)
 - **Unit tests utilidades:** `InMemoryRateLimiter` (5 tests: request/blocked/keys/expiry)
-- **Integration tests:** 15 tests contra **Firestore emulator real** (no mocks)
+- **Integration tests:** contra **Firestore emulator real** (no mocks), incluyendo `HtmlAssertionEngineTests` (Chromium real vía `codesync-html-runner`) y `DockerExecutorTests`
   - `Challenge`, `User`, `Room` repository tests
   - **Prueba crítica:** `JoinRoomAsync` con 2 usuarios concurrentes por el último cupo; verifica que Firestore transaction serializa y solo uno gana (sin last-write-wins)
-- **Tests de E2E:** pendiente (un agente de QA está terminando en paralelo; no tocar)
+- **Requiere Docker corriendo** — 3 tests (Docker + HTML runner) fallan con timeout/"Docker error" si el daemon está apagado o si `codesync-html-runner:1.48.0` no se buildeó localmente todavía (ver `RUN.md`). No es un bug de código, es un prerequisito de entorno.
+
+### E2E (Playwright, `apps/web/e2e/`, 8 tests green)
+`auth-challenge.spec.ts` (signup, lista de desafíos, resolver con éxito, feedback IA Coach fallback), `avatar-upload.spec.ts`, `change-password.spec.ts`, `room-collaboration.spec.ts` (2 browser contexts). Corre contra Firebase emulators (`demo-codesync-test`) + Docker real — ver `playwright.config.ts`.
+
+**Quirk de seguridad resuelto (2026-08-25):** el `webServer` de Playwright apuntaba al puerto 4200 con `reuseExistingServer: true` — el mismo puerto que `npm start` (Firebase de **producción**). Si quedaba un `ng serve` normal corriendo, Playwright lo reusaba en vez de levantar el server con config de emulators, y los tests escribían cuentas reales en Firestore/Auth de producción (así aparecieron 4 cuentas `e2e-*@codesync.test` en `codesync-95667`, limpiadas en esa fecha). Fix: E2E corre en su propio puerto (4210), estructuralmente no puede colisionar con el dev server. Requirió agregar `http://localhost:4210` a `Cors:AllowedOrigins` en `appsettings.json`.
 
 ## Frontend — Angular 20 standalone
 
@@ -223,6 +228,7 @@ await db.RunTransactionAsync(async txn => {
 2. **Cola de ejecuciones** — si el volumen de submissions sube, ejecutar código via BullMQ (o similar) en vez de sincrónico
 3. **Tipos compartidos** — NSwag para generar TypeScript desde OpenAPI, evitar duplicación
 4. **Observabilidad** — Application Insights + logs estructurados para producción
-5. **Leaderboard + badges** — features del backlog; ya está la DB para soportarlas
+5. **Badges/logros** — el leaderboard global por nivel ya se agregó (v0.2.0, `GetLeaderboardHandler`); badges siguen en backlog, la DB ya los soporta
 6. **Modo profesor** — gestionar aulas, asignar desafíos, ver reportes por estudiante
-7. **Más lenguajes** — Java, Go, Rust en el sandbox (hoy solo Python + JavaScript)
+7. **Más lenguajes** — el sandbox ya cubre Python, JavaScript, HTML, CSS, Ruby, Java y C#; Go se evaluó y se descartó por ahora (ver `ProgrammingLanguage.cs` — necesita tmpfs ejecutable, incompatible con el `noexec /tmp` del contenedor). Rust sigue pendiente.
+8. **Deploy a producción** — hoy corre solo en local; no hay CI/CD ni demo pública todavía
