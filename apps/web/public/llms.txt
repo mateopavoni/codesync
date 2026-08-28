@@ -1,0 +1,15 @@
+# CodeSync
+
+> IDE colaborativo para aprender a programar. Editor Monaco sincronizado en tiempo real, desafíos de código con ejecución sandboxed, IA Coach con feedback automático y salas colaborativas con chat y cursores compartidos.
+
+CodeSync es un SaaS educativo pensado para aprender a programar practicando en un editor real, con feedback inmediato de una IA cuando un desafío falla, y la posibilidad de resolver desafíos en salas colaborativas junto a otras personas.
+
+## Páginas principales
+
+- [Inicio](https://codesync.example.com/): landing del producto.
+- [Funcionalidades](https://codesync.example.com/funcionalidades): detalle de las funcionalidades del IDE colaborativo.
+- [Acerca de](https://codesync.example.com/acerca-de): información sobre el proyecto.
+
+## Notas
+
+- Producto en etapa de portfolio/demo; el ranking y las salas colaborativas requieren cuenta.

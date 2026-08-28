@@ -80,6 +80,10 @@ public sealed class UserController : ControllerBase
         {
             return BadRequest(new { error = "Formato no soportado. Usá una foto JPEG, PNG, WEBP o GIF." });
         }
+        if (!await HasValidImageSignatureAsync(file, ct))
+        {
+            return BadRequest(new { error = "El archivo no es una imagen válida." });
+        }
 
         var uid = User.GetFirebaseUid();
         var ext = contentType switch
@@ -92,7 +96,7 @@ public sealed class UserController : ControllerBase
             _ => ".jpg"
         };
 
-        // ponytail: archivo en disco del propio host, no bucket externo — evita depender
+        // archivo en disco del propio host, no bucket externo — evita depender
         // del plan Blaze de Firebase Storage. Si el deploy pasa a multi-instancia, mover
         // a un volumen compartido o storage externo.
         var avatarsDir = Path.Combine(_env.WebRootPath, "avatars");
@@ -110,6 +114,25 @@ public sealed class UserController : ControllerBase
         // cambiar).
         var version = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
         return Ok(new AvatarUploadResponse($"/avatars/{uid}{ext}?v={version}"));
+    }
+
+    // Content-Type/extensión declarados por el cliente no confirman el contenido real —
+    // valida la firma binaria (magic bytes) de los formatos permitidos.
+    private static async Task<bool> HasValidImageSignatureAsync(IFormFile file, CancellationToken ct)
+    {
+        var header = new byte[12];
+        await using var stream = file.OpenReadStream();
+        var read = await stream.ReadAsync(header.AsMemory(0, (int)Math.Min(header.Length, stream.Length)), ct);
+        if (read < 4) return false;
+
+        bool IsPng() => header[0] == 0x89 && header[1] == 0x50 && header[2] == 0x4E && header[3] == 0x47;
+        bool IsJpeg() => header[0] == 0xFF && header[1] == 0xD8 && header[2] == 0xFF;
+        bool IsGif() => header[0] == 0x47 && header[1] == 0x49 && header[2] == 0x46 && header[3] == 0x38;
+        bool IsWebp() => read >= 12
+            && header[0] == 0x52 && header[1] == 0x49 && header[2] == 0x46 && header[3] == 0x46
+            && header[8] == 0x57 && header[9] == 0x45 && header[10] == 0x42 && header[11] == 0x50;
+
+        return IsPng() || IsJpeg() || IsGif() || IsWebp();
     }
 }
 

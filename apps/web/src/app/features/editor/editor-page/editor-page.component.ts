@@ -252,7 +252,7 @@ export class EditorPageComponent implements OnInit, OnDestroy {
     return Math.abs(hash) % CURSOR_COLORS.length;
   }
 
-  // ponytail: borrador en sessionStorage para desafíos sin sala — se pierde al
+  // borrador en sessionStorage para desafíos sin sala — se pierde al
   // cerrar la pestaña, no entre dispositivos. Si hace falta cross-device, escalar
   // a un endpoint de borrador en el backend.
   private draftKey(challengeId: string): string {

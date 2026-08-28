@@ -38,7 +38,7 @@ public sealed class CodeExecutionService : ICodeExecutionService
         var sw = Stopwatch.StartNew();
 
         var (image, command) = GetContainerSpec(language);
-        // ponytail: HTML cold-starts a full Chromium inside the container on top of
+        // HTML cold-starts a full Chromium inside the container on top of
         // the container-start cost every other language already pays — 5s is too
         // tight for that, 12s leaves headroom without letting a stuck submission
         // hold the sandbox much longer than the others.
@@ -116,7 +116,7 @@ public sealed class CodeExecutionService : ICodeExecutionService
     {
         try
         {
-            // ponytail: student code (console.log/print) can write to the same stdout
+            // student code (console.log/print) can write to the same stdout
             // before the harness does. The harness always prints its JSON as the last
             // line, so take the last non-empty line instead of the whole stream —
             // everything before it is the student's own output, surfaced separately
@@ -174,7 +174,7 @@ public sealed class CodeExecutionService : ICodeExecutionService
             ProgrammingLanguage.JavaScript => (
                 "node:22-alpine",
                 new[] { "node", "--input-type=commonjs" }),
-            // ponytail: the *official* Playwright image ships Chromium preinstalled
+            // the *official* Playwright image ships Chromium preinstalled
             // but not the npm package itself (it's meant as a base you `npm ci` your
             // own project onto) — with NetworkMode=none inside the execution
             // container, a bare `require('playwright')` would fail with "Cannot find
@@ -189,13 +189,13 @@ public sealed class CodeExecutionService : ICodeExecutionService
             ProgrammingLanguage.Ruby => (
                 "ruby:3.3-alpine",
                 new[] { "ruby", "-" }),
-            // ponytail: Java's JEP 330 single-file launcher compiles+runs in one JVM
+            // Java's JEP 330 single-file launcher compiles+runs in one JVM
             // process (no exec of a file written to the noexec /tmp), so a plain
             // "java <file>" works here — unlike Go, see ProgrammingLanguage.cs.
             ProgrammingLanguage.Java => (
                 "eclipse-temurin:21-jdk-alpine",
                 new[] { "sh -c 'cat > /tmp/Main.java && java /tmp/Main.java'" }),
-            // ponytail: "dotnet run" needs a NuGet restore (network, unavailable
+            // "dotnet run" needs a NuGet restore (network, unavailable
             // here) even for a zero-dependency file. Compiling straight through the
             // SDK's own csc.dll against its bundled ref pack, then running the DLL
             // with the plain "dotnet" muxer, stays fully offline. Paths are
@@ -381,7 +381,7 @@ public sealed class CodeExecutionService : ICodeExecutionService
         {{code}}
 
         # --- Test runner (injected by CodeSync) ---
-        # ponytail: raw JSON dropped straight into a single-quoted Ruby string. Safe
+        # raw JSON dropped straight into a single-quoted Ruby string. Safe
         # because JSON only ever uses double quotes, so it can't collide with the
         # single-quote delimiter (same trick BuildPythonRunner relies on for dict/
         # list literal syntax — Ruby just needs the explicit JSON.parse call).
@@ -400,7 +400,7 @@ public sealed class CodeExecutionService : ICodeExecutionService
         puts _results.to_json
         """;
 
-    // ponytail: Java/C# are statically typed, so unlike the dynamic-language
+    // Java/C# are statically typed, so unlike the dynamic-language
     // runners above we can't just splat parsed JSON args into the student's
     // function — we have to look up its declared parameter types via reflection
     // and coerce each JSON value to match. That's what the Json/reflection

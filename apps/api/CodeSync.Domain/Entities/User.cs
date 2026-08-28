@@ -8,6 +8,9 @@ public sealed class User
     public string Email { get; set; } = "";
     public string? PhotoUrl { get; set; }
 
+    /// <summary>"Student" (default) or "Admin". Admin-only actions (ej. crear challenges) lo requieren.</summary>
+    public string Role { get; set; } = "Student";
+
     /// <summary>Total XP earned from completed challenges, weighted by difficulty.</summary>
     public int Xp { get; set; }
 

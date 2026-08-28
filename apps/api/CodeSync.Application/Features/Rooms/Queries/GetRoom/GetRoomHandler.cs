@@ -18,6 +18,9 @@ internal sealed class GetRoomHandler : IRequestHandler<GetRoomQuery, RoomDto>
         if (!room.IsUsable)
             throw new KeyNotFoundException("La sala no existe o ya no está disponible.");
 
+        if (!room.MemberIds.Contains(request.UserId))
+            throw new KeyNotFoundException("La sala no existe o ya no está disponible.");
+
         return new RoomDto(room.Id, room.InviteCode, room.ChallengeId, room.MemberIds, Room.MaxMembers, room.HostUserId);
     }
 }

@@ -2,7 +2,7 @@ using MediatR;
 
 namespace CodeSync.Application.Features.Rooms.Queries.GetRoom;
 
-public sealed record GetRoomQuery(string RoomId) : IRequest<RoomDto>;
+public sealed record GetRoomQuery(string RoomId, string UserId) : IRequest<RoomDto>;
 
 public sealed record RoomDto(
     string Id,
