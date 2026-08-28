@@ -7,8 +7,13 @@ namespace CodeSync.Application.Features.Rooms.Commands.CreateRoom;
 internal sealed class CreateRoomHandler : IRequestHandler<CreateRoomCommand, CreateRoomDto>
 {
     private readonly IRoomRepository _rooms;
+    private readonly IRealtimeMembershipSync _rtdb;
 
-    public CreateRoomHandler(IRoomRepository rooms) => _rooms = rooms;
+    public CreateRoomHandler(IRoomRepository rooms, IRealtimeMembershipSync rtdb)
+    {
+        _rooms = rooms;
+        _rtdb = rtdb;
+    }
 
     public async Task<CreateRoomDto> Handle(CreateRoomCommand request, CancellationToken cancellationToken)
     {
@@ -33,6 +38,7 @@ internal sealed class CreateRoomHandler : IRequestHandler<CreateRoomCommand, Cre
         };
 
         var roomId = await _rooms.CreateAsync(room, cancellationToken);
+        await _rtdb.AddMemberAsync(roomId, request.HostUserId, cancellationToken);
 
         return new CreateRoomDto(roomId, inviteCode, room.ChallengeId, Room.MaxMembers);
     }

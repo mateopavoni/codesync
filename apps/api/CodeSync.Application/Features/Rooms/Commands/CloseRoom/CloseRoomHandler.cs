@@ -6,8 +6,13 @@ namespace CodeSync.Application.Features.Rooms.Commands.CloseRoom;
 internal sealed class CloseRoomHandler : IRequestHandler<CloseRoomCommand>
 {
     private readonly IRoomRepository _rooms;
+    private readonly IRealtimeMembershipSync _rtdb;
 
-    public CloseRoomHandler(IRoomRepository rooms) => _rooms = rooms;
+    public CloseRoomHandler(IRoomRepository rooms, IRealtimeMembershipSync rtdb)
+    {
+        _rooms = rooms;
+        _rtdb = rtdb;
+    }
 
     public async Task Handle(CloseRoomCommand request, CancellationToken cancellationToken)
     {
@@ -18,5 +23,6 @@ internal sealed class CloseRoomHandler : IRequestHandler<CloseRoomCommand>
             throw new InvalidOperationException("Solo el host puede cerrar la sala.");
 
         await _rooms.CloseAsync(room.Id, cancellationToken);
+        await _rtdb.RemoveRoomAsync(room.Id, cancellationToken);
     }
 }

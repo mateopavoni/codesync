@@ -91,6 +91,13 @@ public static class DependencyInjection
         services.AddScoped<GeminiApiClient>();
         services.AddScoped<IAICoachService, AICoachService>();
 
+        // ── Realtime DB — espeja membership de salas para database.rules.json ──
+        services.AddHttpClient("RealtimeDatabaseAdmin", client =>
+        {
+            client.Timeout = TimeSpan.FromSeconds(10);
+        });
+        services.AddScoped<IRealtimeMembershipSync, RealtimeMembershipSync>();
+
         // ── Rate limiter ──────────────────────────────────────────────────────
         // In-process singleton: one state per instance. Acceptable for MVP.
         services.AddSingleton<IRateLimiterService, InMemoryRateLimiter>();

@@ -1,8 +1,16 @@
+using CodeSync.Application.Common.Interfaces;
 using CodeSync.Application.Features.Rooms.Commands.JoinRoom;
 using CodeSync.Domain.Entities;
 using CodeSync.Infrastructure.Firestore.Repositories;
 
 namespace CodeSync.Tests.Integration;
+
+/// <summary>No-op fake — estos tests ejercitan el repositorio de Firestore, no RTDB.</summary>
+internal sealed class NoOpRealtimeMembershipSync : IRealtimeMembershipSync
+{
+    public Task AddMemberAsync(string roomId, string userId, CancellationToken ct = default) => Task.CompletedTask;
+    public Task RemoveRoomAsync(string roomId, CancellationToken ct = default) => Task.CompletedTask;
+}
 
 /// <summary>
 /// Integration tests for <see cref="RoomFirestoreRepository"/> against the Firestore emulator.
@@ -98,7 +106,7 @@ public sealed class RoomRepositoryIntegrationTests : IAsyncLifetime
         var room = MakeRoom(inviteCode);
         await _repo.CreateAsync(room);
 
-        var handler = new JoinRoomHandler(_repo);
+        var handler = new JoinRoomHandler(_repo, new NoOpRealtimeMembershipSync());
         var ct = CancellationToken.None;
 
         // Act: 3 more users join (total 4).
@@ -133,7 +141,7 @@ public sealed class RoomRepositoryIntegrationTests : IAsyncLifetime
         var inviteCode = UniqueCode("IDP");
         await _repo.CreateAsync(MakeRoom(inviteCode));
 
-        var handler = new JoinRoomHandler(_repo);
+        var handler = new JoinRoomHandler(_repo, new NoOpRealtimeMembershipSync());
 
         // First join (adds user_2).
         var r1 = await handler.Handle(new JoinRoomCommand(inviteCode, "user_2"), CancellationToken.None);
@@ -174,7 +182,7 @@ public sealed class RoomRepositoryIntegrationTests : IAsyncLifetime
         };
         await _repo.CreateAsync(room);
 
-        var handler = new JoinRoomHandler(_repo);
+        var handler = new JoinRoomHandler(_repo, new NoOpRealtimeMembershipSync());
 
         // Act: two concurrent joins competing for the single remaining slot.
         // One or both may succeed depending on read-write interleaving (timing-dependent).
