@@ -1,6 +1,13 @@
 {
   "rules": {
-    ".read": "auth != null",
-    ".write": "auth != null"
+    "collaborations": {
+      "$roomId": {
+        ".read": "auth != null && data.child('members').child(auth.uid).exists()",
+        ".write": "auth != null && data.child('members').child(auth.uid).exists()",
+        "members": {
+          ".write": false
+        }
+      }
+    }
   }
 }
