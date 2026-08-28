@@ -20,7 +20,7 @@ public enum ProgrammingLanguage
     /// HTML and CSS as separate categories with separate icons.</summary>
     Css = 7
 
-    // ponytail: Go was evaluated and dropped for now — `go run` compiles a real
+    // Go was evaluated and dropped for now — `go run` compiles a real
     // ELF binary and execve()s it, which needs an executable tmpfs. The other
     // languages here either interpret (Ruby) or JIT in-process (Java, C#), so
     // they run fine under DockerExecutor's noexec /tmp. Go also needs ~4s just

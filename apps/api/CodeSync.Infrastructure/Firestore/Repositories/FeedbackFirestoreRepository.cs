@@ -42,7 +42,7 @@ internal sealed class FeedbackFirestoreRepository : IFeedbackRepository
         return reference.Id;
     }
 
-    // ponytail: single batch, caps at Firestore's 500 writes/batch — fine for a
+    // single batch, caps at Firestore's 500 writes/batch — fine for a
     // per-user feedback history. Chunk into multiple batches if that ever fills up.
     public async Task DeleteAllByUserIdAsync(string userId, CancellationToken ct = default)
     {

@@ -47,7 +47,7 @@ internal sealed class GetChallengesHandler : IRequestHandler<GetChallengesQuery,
         if (userId == null) return (new HashSet<string>(), new HashSet<string>());
 
         var userTask = _users.GetByIdAsync(userId, ct);
-        // ponytail: últimos 50 intentos alcanza para detectar "en curso"; si algún día hay
+        // últimos 50 intentos alcanza para detectar "en curso"; si algún día hay
         // usuarios con >50 intentos sin completar, cambiar por una query dedicada por challengeId.
         var submissionsTask = _submissions.GetByUserIdAsync(userId, ct);
         await Task.WhenAll(userTask, submissionsTask);

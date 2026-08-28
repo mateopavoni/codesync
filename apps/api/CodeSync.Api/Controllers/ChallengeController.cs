@@ -1,4 +1,5 @@
 using CodeSync.Api.Extensions;
+using CodeSync.Application.Common.Interfaces;
 using CodeSync.Application.Features.Challenges.Commands.CreateChallenge;
 using CodeSync.Application.Features.Challenges.Queries.GetChallenge;
 using CodeSync.Application.Features.Challenges.Queries.GetChallenges;
@@ -13,8 +14,13 @@ namespace CodeSync.Api.Controllers;
 public sealed class ChallengeController : ControllerBase
 {
     private readonly IMediator _mediator;
+    private readonly IUserRepository _users;
 
-    public ChallengeController(IMediator mediator) => _mediator = mediator;
+    public ChallengeController(IMediator mediator, IUserRepository users)
+    {
+        _mediator = mediator;
+        _users = users;
+    }
 
     /// <summary>Lists all active challenges (public).</summary>
     [HttpGet]
@@ -47,6 +53,11 @@ public sealed class ChallengeController : ControllerBase
     [ProducesResponseType(400)]
     public async Task<IActionResult> Create([FromBody] CreateChallengeCommand command, CancellationToken ct)
     {
+        var userId = User.GetFirebaseUid();
+        var user = await _users.GetByIdAsync(userId, ct);
+        if (user is null || user.Role != "Admin")
+            return Forbid();
+
         var id = await _mediator.Send(command, ct);
         return CreatedAtAction(nameof(GetById), new { id }, new { id });
     }

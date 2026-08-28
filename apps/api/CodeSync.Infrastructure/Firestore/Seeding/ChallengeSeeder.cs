@@ -26,7 +26,7 @@ public sealed class ChallengeSeeder
     {
         var existing = await _repo.GetAllActiveAsync(ct);
 
-        // ponytail: migracion de una sola vez — los primeros 6 challenges se
+        // migracion de una sola vez — los primeros 6 challenges se
         // sembraron con el mismo titulo en Python y JavaScript (se veian
         // "duplicados" en la UI). Renombra en Firestore los docs viejos para
         // que coincidan con los titulos nuevos de SeedData; se puede borrar
@@ -41,7 +41,7 @@ public sealed class ChallengeSeeder
             }
         }
 
-        // ponytail: "Centrar un div" se sembró como Html antes de separar CSS en su
+        // "Centrar un div" se sembró como Html antes de separar CSS en su
         // propia categoría (mismo motivo/mecánica que LegacyTitleRenames arriba, pero
         // cambiando Language en vez de Title). Se puede borrar una vez confirmado que
         // corrió contra el ambiente real.
@@ -52,7 +52,7 @@ public sealed class ChallengeSeeder
             await _repo.UpdateAsync(centrarDiv, ct);
         }
 
-        // ponytail: los 3 seeds de HTML se crearon con TestCases vacío (antes de que
+        // los 3 seeds de HTML se crearon con TestCases vacío (antes de que
         // hubiera calificación automática para ese lenguaje). El upsert de más abajo
         // es por (Title, Language) y nunca toca un challenge que ya existe, así que
         // agregarles TestCases en SeedData no alcanza en ningún ambiente donde el

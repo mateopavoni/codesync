@@ -23,7 +23,7 @@ internal sealed class ChallengeFirestoreRepository : IChallengeRepository
     {
         var query = Col.WhereEqualTo("isActive", true);
         var snap = await query.GetSnapshotAsync(ct);
-        // ponytail: un doc con difficulty/language fuera de rango (dato viejo o corrupto)
+        // un doc con difficulty/language fuera de rango (dato viejo o corrupto)
         // no debe tumbar el listado entero para todos los usuarios — se descarta ese doc.
         return snap.Documents.Select(ToEntity).OfType<Challenge>().ToList();
     }

@@ -54,7 +54,7 @@ export default defineConfig({
   // Start the Angular dev server in e2e mode automatically.
   // The emulators and .NET API must be started manually beforehand.
   //
-  // ponytail: port 4210, not the default 4200 — `reuseExistingServer: true`
+  // port 4210, not the default 4200 — `reuseExistingServer: true`
   // used to reuse whatever was already listening on 4200, which is also the
   // port `npm start` (production Firebase config) binds to. A plain `ng serve`
   // left running during an E2E pass got silently reused instead of the

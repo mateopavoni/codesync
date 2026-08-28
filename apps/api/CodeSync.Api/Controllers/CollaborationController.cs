@@ -46,7 +46,8 @@ public sealed class CollaborationController : ControllerBase
     [ProducesResponseType(404)]
     public async Task<IActionResult> GetRoom(string id, CancellationToken ct)
     {
-        var result = await _mediator.Send(new GetRoomQuery(id), ct);
+        var userId = User.GetFirebaseUid();
+        var result = await _mediator.Send(new GetRoomQuery(id, userId), ct);
         return Ok(result);
     }
 

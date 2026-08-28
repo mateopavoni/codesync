@@ -197,6 +197,20 @@ _ = Task.Run(async () =>
     }
 });
 
+if (!app.Environment.IsDevelopment())
+    app.UseHsts();
+
+app.Use(async (context, next) =>
+{
+    context.Response.Headers["X-Content-Type-Options"] = "nosniff";
+    context.Response.Headers["X-Frame-Options"] = "DENY";
+    context.Response.Headers["Referrer-Policy"] = "strict-origin-when-cross-origin";
+    // Swagger UI (solo en dev, ver bloque de abajo) necesita inline script/style — CSP estricta solo fuera de dev.
+    if (!app.Environment.IsDevelopment())
+        context.Response.Headers["Content-Security-Policy"] = "default-src 'none'; img-src 'self'; frame-ancestors 'none'";
+    await next();
+});
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseCors();

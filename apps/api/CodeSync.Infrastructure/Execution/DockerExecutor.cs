@@ -20,7 +20,7 @@ namespace CodeSync.Infrastructure.Execution;
 /// </summary>
 public sealed class DockerExecutor : IDockerExecutor, IDisposable
 {
-    // ponytail: caps how much of a container's stdout/stderr we ever buffer in the
+    // caps how much of a container's stdout/stderr we ever buffer in the
     // API process's own RAM. The 256MB HostConfig.Memory limit only bounds the
     // *container's* memory — a tight print-flood loop (e.g. `while(true) print(...)`)
     // can still push megabytes/sec through the log stream, and without a cap we'd
@@ -75,7 +75,7 @@ public sealed class DockerExecutor : IDockerExecutor, IDisposable
                     NetworkMode = "none",
                     Memory = memoryBytes,
                     MemorySwap = memoryBytes,
-                    // ponytail: caps this container at 1 CPU core so a CPU-bound
+                    // caps this container at 1 CPU core so a CPU-bound
                     // submission (busy loop, crypto mining attempt, etc.) can't starve
                     // other concurrent submissions or the host itself. Combined with the
                     // 5s wall-clock timeout, worst case is ~1 core-second per submission.
