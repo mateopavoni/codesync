@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+Disallow: /dashboard
+Disallow: /desafios
+Disallow: /editor
+Disallow: /colaboracion
+Disallow: /sala
+Disallow: /ranking
+Disallow: /perfil
+
+Sitemap: https://codesync.mateopavoni.com.ar/sitemap.xml
