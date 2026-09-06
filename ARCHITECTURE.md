@@ -12,7 +12,7 @@ codesync/
 │   │   ├── CodeSync.Application/  Handlers CQRS (GetChallengesHandler, CreateSubmissionHandler, JoinRoomHandler, etc.)
 │   │   ├── CodeSync.Domain/    Entidades puras (Challenge, Submission, User, Feedback, Room) + value objects
 │   │   ├── CodeSync.Infrastructure/  Servicios concretos (FirestoreRepository, DockerExecutor, GeminiApiClient, etc.)
-│   │   └── CodeSync.Tests/     35 unit + integration tests (Firestore emulator real, no mocks)
+│   │   └── CodeSync.Tests/     64 unit + integration tests (Firestore emulator real, no mocks)
 │   │
 │   └── web/                    Angular 20 standalone components
 │       ├── src/app/
@@ -30,8 +30,6 @@ codesync/
 │   ├── design-tokens.md        Sistema de tokens: paleta, tipografía, escala, spacing
 │   └── screenshots/            Capturas para README / ARCHITECTURE (a llenar con deploy)
 │
-├── infra/                      Docker Compose para ambiente local + deploy
-├── .github/workflows/          CI/CD (tests, build)
 └── LICENSE                     Propietario — all rights reserved
 ```
 
@@ -231,4 +229,4 @@ await db.RunTransactionAsync(async txn => {
 5. **Badges/logros** — el leaderboard global por nivel ya se agregó (v0.2.0, `GetLeaderboardHandler`); badges siguen en backlog, la DB ya los soporta
 6. **Modo profesor** — gestionar aulas, asignar desafíos, ver reportes por estudiante
 7. **Más lenguajes** — el sandbox ya cubre Python, JavaScript, HTML, CSS, Ruby, Java y C#; Go se evaluó y se descartó por ahora (ver `ProgrammingLanguage.cs` — necesita tmpfs ejecutable, incompatible con el `noexec /tmp` del contenedor). Rust sigue pendiente.
-8. **Deploy a producción** — hoy corre solo en local; no hay CI/CD ni demo pública todavía
+8. **CI/CD** — deploy hoy es manual (`git push dokku-api/dokku-web main`); un workflow de GitHub Actions que corra los 64+8 tests antes de cada push es la mejora natural

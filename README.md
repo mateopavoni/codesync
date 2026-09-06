@@ -60,6 +60,14 @@ contraseña → avatar, contra emulators de Firebase + Docker real) · 5 control
 
 ---
 
+## Capturas
+
+| Editor + ejecución | IA Coach | Sala colaborativa | Dashboard |
+|---|---|---|---|
+| ![Editor](./docs/screenshots/demo.png) | ![IA Coach](./docs/screenshots/coach.png) | ![Sala colaborativa](./docs/screenshots/room.png) | ![Dashboard](./docs/screenshots/dashboard.png) |
+
+---
+
 ## Arquitectura (resumen)
 
 El detalle —por qué Firestore y no SQL, por qué Gemini y no otro proveedor, por qué
@@ -117,8 +125,8 @@ npm install && npm start
 
 - Web: http://localhost:4200 — API: http://localhost:5117 (Swagger en `/swagger`)
 
-**Demo en vivo:** todavía no deployado — proyecto de portfolio corrido en local. Ver
-`ARCHITECTURE.md` → "Qué mejoraría con más tiempo" para el plan de deploy.
+**Demo en vivo:** [codesync.mateopavoni.com.ar](https://codesync.mateopavoni.com.ar/) — deployado
+en VPS propio vía Dokku (`apps/api/Dockerfile`, `apps/web/Dockerfile` + `nginx.conf`).
 
 ---
 
@@ -150,8 +158,8 @@ Ninguna de estas es un descuido — son simplificaciones deliberadas con un tech
 
 - **Rate limiter del IA Coach en memoria** (`InMemoryRateLimiter`) — válido para una sola
   instancia; resetea en cada redeploy. Escalar a réplicas necesita Redis.
-- **Sin deploy a producción todavía** — corrido en local; el plan de deploy está en
-  `ARCHITECTURE.md`.
+- **CI/CD manual** — deploy es `git push` directo a Dokku, sin pipeline que corra los tests antes
+  del push todavía.
 - **Docker, no una VM**, para el sandbox — trade-off consciente costo/complejidad vs. seguridad.
   Riesgo residual: Docker escape o vulnerabilidades del intérprete, ambos parcheables.
 - **Sin tipos compartidos entre backend y frontend** — DTOs (.NET) y interfaces TypeScript se
