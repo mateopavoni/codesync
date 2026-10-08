@@ -1,16 +1,20 @@
+// Local-only config: the Firebase client SDK talks to the emulators started by
+// `docker compose up` (see /docker-compose.yml). The original production Firebase
+// project was retired; no real project credentials live in this repo.
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:5117/api',
-  // Emulator support (off by default — activated in environment.e2e.ts)
-  useEmulators: false,
-  emulatorAuthUrl: '',
+  apiUrl: 'http://127.0.0.1:5117/api',
+  useEmulators: true,
+  emulatorAuthUrl: 'http://127.0.0.1:9099',
   firebase: {
-    apiKey: 'REMOVED-FIREBASE-WEB-KEY',
-    authDomain: 'codesync-95667.firebaseapp.com',
-    databaseURL: 'https://codesync-95667-default-rtdb.firebaseio.com',
-    projectId: 'codesync-95667',
-    storageBucket: 'codesync-95667.firebasestorage.app',
-    messagingSenderId: '235625621954',
-    appId: '1:235625621954:web:be6a87d39c4fd46165ce5b',
+    // Any non-empty API key works with the emulators — they don't validate it.
+    apiKey: 'fake-api-key-for-emulator',
+    authDomain: 'demo-codesync-test.firebaseapp.com',
+    // Realtime DB emulator (the host/port are wired in app.config.ts)
+    databaseURL: 'http://127.0.0.1:9000?ns=demo-codesync-test',
+    projectId: 'demo-codesync-test',
+    storageBucket: 'demo-codesync-test.appspot.com',
+    messagingSenderId: '000000000000',
+    appId: '1:000000000000:web:0000000000000000',
   },
 };
