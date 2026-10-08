@@ -1,0 +1,65 @@
+# CodeSync — stack local completo: `docker compose up --build`
+#   web      → http://127.0.0.1:4200
+#   api      → http://127.0.0.1:5117/swagger (si está habilitado) / /api/*
+#   firebase → emuladores Auth :9099, Firestore :8082, Realtime DB :9000 (solo 127.0.0.1)
+# El IA Coach usa OpenRouter si exportás OPENROUTER_API_KEY; sin key cae a hints pre-generados.
+services:
+  firebase:
+    build:
+      context: .
+      dockerfile: infra/firebase.Dockerfile
+    ports:
+      - "127.0.0.1:9099:9099"
+      - "127.0.0.1:8082:8082"
+      - "127.0.0.1:9000:9000"
+    healthcheck:
+      # Healthy only once all three emulators accept connections (the API's
+      # Firestore client fails on startup otherwise).
+      test:
+        - CMD
+        - node
+        - -e
+        - "Promise.all([9099,8082,9000].map(p=>new Promise((ok,no)=>require('net').connect(p,'127.0.0.1').on('connect',ok).on('error',no)))).then(()=>process.exit(0),()=>process.exit(1))"
+      interval: 5s
+      timeout: 5s
+      retries: 24
+      start_period: 10s
+    mem_limit: 768m
+
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      Firebase__ProjectId: demo-codesync-test
+      FIREBASE_AUTH_EMULATOR_HOST: firebase:9099
+      FIRESTORE_EMULATOR_HOST: firebase:8082
+      FIREBASE_DATABASE_EMULATOR_HOST: firebase:9000
+      Cors__AllowedOrigins__0: http://127.0.0.1:4200
+      Cors__AllowedOrigins__1: http://localhost:4200
+      OpenRouter__ApiKey: ${OPENROUTER_API_KEY:-}
+      OpenRouter__Model: ${OPENROUTER_MODEL:-google/gemma-4-31b-it:free}
+      OpenRouter__ApiBaseUrl: ${OPENROUTER_BASE_URL:-https://openrouter.ai}
+      # El sandbox ejecuta el código del usuario en contenedores hermanos vía el socket del host.
+      Docker__EndpointUri: unix:///var/run/docker.sock
+    volumes:
+      # ATENCIÓN: dar el socket de Docker a la API equivale a darle control del Docker del host.
+      # Aceptable para una demo local; no hacer esto en un servidor compartido.
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - "127.0.0.1:5117:8080"
+    depends_on:
+      firebase:
+        condition: service_healthy
+    mem_limit: 512m
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    ports:
+      - "127.0.0.1:4200:8080"
+    depends_on:
+      - api
+    mem_limit: 64m
