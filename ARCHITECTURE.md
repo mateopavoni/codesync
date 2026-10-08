@@ -11,7 +11,7 @@ codesync/
 │   │   ├── CodeSync.Api/       Controllers HTTP (ChallengeController, SubmissionController, CollaborationController, etc.)
 │   │   ├── CodeSync.Application/  Handlers CQRS (GetChallengesHandler, CreateSubmissionHandler, JoinRoomHandler, etc.)
 │   │   ├── CodeSync.Domain/    Entidades puras (Challenge, Submission, User, Feedback, Room) + value objects
-│   │   ├── CodeSync.Infrastructure/  Servicios concretos (FirestoreRepository, DockerExecutor, GeminiApiClient, etc.)
+│   │   ├── CodeSync.Infrastructure/  Servicios concretos (FirestoreRepository, DockerExecutor, OpenRouterApiClient, etc.)
 │   │   └── CodeSync.Tests/     64 unit + integration tests (Firestore emulator real, no mocks)
 │   │
 │   └── web/                    Angular 20 standalone components
@@ -28,7 +28,7 @@ codesync/
 │
 ├── docs/
 │   ├── design-tokens.md        Sistema de tokens: paleta, tipografía, escala, spacing
-│   └── screenshots/            Capturas para README / ARCHITECTURE (a llenar con deploy)
+│   └── screenshots/            Capturas para README / ARCHITECTURE 
 │
 └── LICENSE                     Propietario — all rights reserved
 ```
@@ -44,7 +44,7 @@ codesync/
     ├─→ SubmissionController → CreateSubmissionHandler
     ├─→ CodeExecutionService → DockerExecutor
     │   └─→ Corre código en contenedor con límites (256MB, 5s, sin red)
-    ├─→ Si test falla → AICoachService → GeminiApiClient
+    ├─→ Si test falla → AICoachService → OpenRouterApiClient
     │   └─→ Rate limit 1/min + fallback a hints pre-generados
     └─→ Persiste resultado + feedback en Firestore
         ↓
@@ -82,7 +82,7 @@ codesync/
   - `RoomFirestoreRepository.JoinAsync` usa `FirestoreDb.RunTransactionAsync` para garantizar serialización en el cupo máximo de 4 usuarios (previene race condition last-write-wins)
 - **Docker executor:** `DockerExecutor` vía `Docker.DotNet`; limites: `NetworkMode=none`, `MemorySwap=Memory` (256MB), `ReadonlyRootfs=true`, `User=nobody`, timeout 5s SIGKILL
 - **Firebase Realtime:** `FirebaseRealtimeService` para sync de editor, cursores, chat
-- **Gemini API Client:** `GeminiApiClient` HttpClient tipado (no SDK, solo REST) con fallback a `FallbackHintProvider`
+- **OpenRouter API Client:** `OpenRouterApiClient` HttpClient tipado (no SDK, REST compatible con OpenAI `/chat/completions`) con fallback a `FallbackHintProvider`. Si el modelo gratuito se retira (404) o hay un 5xx reintenta una vez con `openrouter/free`; un 429 no se reintenta porque la cuota diaria de los `:free` es compartida.
 - **Rate limiter:** `InMemoryRateLimiter` (diccionario con ventana configurable; no es persistente, reset en redeploy)
 - **Seeding:** `ChallengeSeeder` carga 10 desafíos seed (Python + JavaScript) en desarrollo
 
@@ -98,7 +98,7 @@ codesync/
 ### E2E (Playwright, `apps/web/e2e/`, 8 tests green)
 `auth-challenge.spec.ts` (signup, lista de desafíos, resolver con éxito, feedback IA Coach fallback), `avatar-upload.spec.ts`, `change-password.spec.ts`, `room-collaboration.spec.ts` (2 browser contexts). Corre contra Firebase emulators (`demo-codesync-test`) + Docker real — ver `playwright.config.ts`.
 
-**Quirk de seguridad resuelto (2026-08-25):** el `webServer` de Playwright apuntaba al puerto 4200 con `reuseExistingServer: true` — el mismo puerto que `npm start` (Firebase de **producción**). Si quedaba un `ng serve` normal corriendo, Playwright lo reusaba en vez de levantar el server con config de emulators, y los tests escribían cuentas reales en Firestore/Auth de producción (así aparecieron 4 cuentas `e2e-*@codesync.test` en `codesync-95667`, limpiadas en esa fecha). Fix: E2E corre en su propio puerto (4210), estructuralmente no puede colisionar con el dev server. Requirió agregar `http://localhost:4210` a `Cors:AllowedOrigins` en `appsettings.json`.
+**Quirk de seguridad resuelto (2026-08-25):** el `webServer` de Playwright apuntaba al puerto 4200 con `reuseExistingServer: true` — el mismo puerto que `npm start` (en su momento apuntaba al Firebase de **producción**; hoy `environment.ts` apunta a los emuladores). Si quedaba un `ng serve` normal corriendo, Playwright lo reusaba en vez de levantar el server con config de emulators, y los tests escribían cuentas reales en Firestore/Auth de producción (así aparecieron 4 cuentas `e2e-*@codesync.test` en `codesync-95667`, limpiadas en esa fecha). Fix: E2E corre en su propio puerto (4210), estructuralmente no puede colisionar con el dev server. Requirió agregar `http://localhost:4210` a `Cors:AllowedOrigins` en `appsettings.json`.
 
 ## Frontend — Angular 20 standalone
 
@@ -172,10 +172,10 @@ Firestore:
 
 **Trade-off:** Si aparece un reporte complejo (ej. "desafíos más intentados por nivel"), se reconsideraría un data warehouse o replicación a BigQuery.
 
-### 2. Gemini API para el IA Coach
-**Por qué:** Costo y free tier. Mateo quiere un proyecto de portfolio defensible sin quemar presupuesto. Gemini tiene 60 requests/min gratis.
+### 2. OpenRouter (modelos gratuitos) para el IA Coach
+**Por qué:** Costo y free tier. Proyecto de portfolio defendible sin quemar presupuesto, y un solo cliente HTTP compatible con OpenAI permite cambiar de modelo con una variable de entorno (`OpenRouter__Model`). Originalmente se usó la API de Gemini; se reemplazó al archivar el proyecto porque el modelo configurado (`gemini-1.5-flash`) era viejo y OpenRouter expone modelos gratuitos actuales con la misma interfaz.
 
-**Trade-off:** Gemini es menos potente en razonamiento complejo, pero para hints de programación básica (Python/JS nivel educativo) es más que suficiente.
+**Trade-off:** los modelos `:free` tienen cuota diaria baja (50 requests/día sin créditos según el FAQ de OpenRouter) y la lista cambia sin aviso; por eso el fallback a hints pre-generados es parte del diseño, no un parche. Para hints de programación de nivel educativo alcanza.
 
 ### 3. Docker sandbox (no intérprete embebido ni remote execution)
 **Por qué:** Seguridad. Ejecutar código arbitrario de usuarios en el backend sin aislamiento es suicidio. Docker no es perfecto (VM sería mejor), pero es el trade-off práctico: costo/complejidad vs. seguridad.
@@ -229,4 +229,4 @@ await db.RunTransactionAsync(async txn => {
 5. **Badges/logros** — el leaderboard global por nivel ya se agregó (v0.2.0, `GetLeaderboardHandler`); badges siguen en backlog, la DB ya los soporta
 6. **Modo profesor** — gestionar aulas, asignar desafíos, ver reportes por estudiante
 7. **Más lenguajes** — el sandbox ya cubre Python, JavaScript, HTML, CSS, Ruby, Java y C#; Go se evaluó y se descartó por ahora (ver `ProgrammingLanguage.cs` — necesita tmpfs ejecutable, incompatible con el `noexec /tmp` del contenedor). Rust sigue pendiente.
-8. **CI/CD** — deploy hoy es manual (`git push dokku-api/dokku-web main`); un workflow de GitHub Actions que corra los 64+8 tests antes de cada push es la mejora natural
+8. **CI/CD** — hay un workflow (`.github/workflows/ci.yml`) que corre los tests unitarios del backend y el build del front; faltan los tests de integración (necesitan emulador de Firestore) y los E2E
