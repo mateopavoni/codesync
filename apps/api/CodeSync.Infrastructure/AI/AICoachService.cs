@@ -8,18 +8,18 @@ namespace CodeSync.Infrastructure.AI;
 
 public sealed class AICoachService : IAICoachService
 {
-    private readonly GeminiApiClient _gemini;
+    private readonly OpenRouterApiClient _llm;
     private readonly IRateLimiterService _rateLimiter;
     private readonly IConfiguration _config;
     private readonly ILogger<AICoachService> _logger;
 
     public AICoachService(
-        GeminiApiClient gemini,
+        OpenRouterApiClient llm,
         IRateLimiterService rateLimiter,
         IConfiguration config,
         ILogger<AICoachService> logger)
     {
-        _gemini = gemini;
+        _llm = llm;
         _rateLimiter = rateLimiter;
         _config = config;
         _logger = logger;
@@ -53,11 +53,11 @@ public sealed class AICoachService : IAICoachService
         }
 
         var prompt = BuildPrompt(challengeTitle, difficulty, language, code, failedTests);
-        var geminiText = await _gemini.GenerateAsync(prompt, ct);
+        var llmText = await _llm.GenerateAsync(prompt, ct);
 
-        if (geminiText == null)
+        if (llmText == null)
         {
-            _logger.LogWarning("Gemini returned null for challenge {ChallengeId}. Using fallback hint.", challengeId);
+            _logger.LogWarning("AI provider returned null for challenge {ChallengeId}. Using fallback hint.", challengeId);
             return new AICoachResponse(
                 Feedback: FallbackHintProvider.GetHint(challengeTitle, difficulty, language),
                 IsFallback: true,
@@ -65,7 +65,7 @@ public sealed class AICoachService : IAICoachService
         }
 
         return new AICoachResponse(
-            Feedback: geminiText.Trim(),
+            Feedback: llmText.Trim(),
             IsFallback: false,
             WasRateLimited: false);
     }

@@ -81,14 +81,14 @@ public static class DependencyInjection
         services.AddSingleton<IDockerExecutor, DockerExecutor>();
         services.AddScoped<ICodeExecutionService, CodeExecutionService>();
 
-        // ── AI Coach (Gemini) ─────────────────────────────────────────────────
-        var geminiBase = configuration["Gemini:ApiBaseUrl"] ?? "https://generativelanguage.googleapis.com";
-        services.AddHttpClient("Gemini", client =>
+        // ── AI Coach (OpenRouter, OpenAI-compatible; free ":free" models work) ──
+        var openRouterBase = configuration["OpenRouter:ApiBaseUrl"] ?? "https://openrouter.ai";
+        services.AddHttpClient("OpenRouter", client =>
         {
-            client.BaseAddress = new Uri(geminiBase);
-            client.Timeout = TimeSpan.FromSeconds(20);
+            client.BaseAddress = new Uri(openRouterBase);
+            client.Timeout = TimeSpan.FromSeconds(30);
         });
-        services.AddScoped<GeminiApiClient>();
+        services.AddScoped<OpenRouterApiClient>();
         services.AddScoped<IAICoachService, AICoachService>();
 
         // ── Realtime DB — espeja membership de salas para database.rules.json ──
