@@ -75,7 +75,7 @@ public static class DependencyInjection
         // ── Docker sandbox ────────────────────────────────────────────────────
         services.AddSingleton<DockerClient>(_ =>
         {
-            var uri = configuration["Docker:EndpointUri"] ?? "npipe://./pipe/docker_engine";
+            var uri = DockerEndpoint.Resolve(configuration["Docker:EndpointUri"]);
             return new DockerClientConfiguration(new Uri(uri)).CreateClient();
         });
         services.AddSingleton<IDockerExecutor, DockerExecutor>();

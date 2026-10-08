@@ -9,9 +9,9 @@ import { defineConfig, devices } from '@playwright/test';
  *       npx firebase-tools emulators:start --only auth,firestore,database --project demo-codesync-test
  *
  *  2. .NET API running with emulator env vars:
- *       $env:FIREBASE_AUTH_EMULATOR_HOST = "127.0.0.1:9099"
- *       $env:FIRESTORE_EMULATOR_HOST     = "127.0.0.1:8082"
- *       $env:Firebase__ProjectId         = "demo-codesync-test"
+ *       export FIREBASE_AUTH_EMULATOR_HOST=127.0.0.1:9099
+ *       export FIRESTORE_EMULATOR_HOST=127.0.0.1:8082
+ *       export Firebase__ProjectId=demo-codesync-test
  *       dotnet run --project apps/api/CodeSync.Api
  *
  *  3. Angular dev server (started automatically by `webServer` below with e2e config).

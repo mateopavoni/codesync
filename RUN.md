@@ -45,7 +45,6 @@ export FIREBASE_AUTH_EMULATOR_HOST=127.0.0.1:9099
 export FIRESTORE_EMULATOR_HOST=127.0.0.1:8082
 export FIREBASE_DATABASE_EMULATOR_HOST=127.0.0.1:9000
 export Firebase__ProjectId=demo-codesync-test
-export Docker__EndpointUri=unix:///var/run/docker.sock
 dotnet run --project CodeSync.Api
 
 # 3. Frontend

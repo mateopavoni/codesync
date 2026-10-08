@@ -52,7 +52,7 @@ Un IDE colaborativo con desafíos de código tiene tres problemas que un CRUD no
 
 ### En números
 
-**53 tests unitarios backend** (verificados en esta versión, corriendo con `dotnet test --filter
+**58 tests unitarios backend** (verificados en esta versión, corriendo con `dotnet test --filter
 "Category!=Integration"`) + una suite de integración contra **Firestore emulator real** y **8 tests
 E2E** de Playwright (signup → resolver desafío → sala colaborativa → cambio de contraseña →
 avatar) que requieren los emuladores de Firebase · 5 controllers, 14 handlers CQRS (MediatR) · 7
@@ -149,7 +149,7 @@ por día sin créditos, según el FAQ de OpenRouter) y la lista cambia seguido: 
 ## Tests
 
 ```bash
-# Backend — unitarios (53)
+# Backend — unitarios (58)
 cd apps/api && dotnet test --filter "Category!=Integration"
 # Backend — integración (necesita Java + firebase-tools para el emulador de Firestore)
 cd apps/api && dotnet test --filter "Category=Integration"
